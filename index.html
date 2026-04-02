@@ -1,1 +1,1364 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Chambari Academia | Método Sinopsis</title>
+  <style>
+    :root {
+      --bg: #fff8ef;
+      --card: #ffffff;
+      --primary: #f59e0b;
+      --primary-dark: #d97706;
+      --secondary: #0f172a;
+      --muted: #64748b;
+      --line: #e5e7eb;
+      --success: #16a34a;
+      --danger: #dc2626;
+      --accent: #0ea5e9;
+      --shadow: 0 18px 45px rgba(15, 23, 42, 0.08);
+      --radius: 24px;
+    }
 
+    * { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(245,158,11,0.12), transparent 25%),
+        radial-gradient(circle at top right, rgba(14,165,233,0.10), transparent 20%),
+        var(--bg);
+      color: var(--secondary);
+    }
+
+    .app {
+      width: min(1180px, calc(100% - 28px));
+      margin: 0 auto;
+      padding: 18px 0 40px;
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 30;
+      backdrop-filter: blur(12px);
+      background: rgba(255, 248, 239, 0.85);
+      border-bottom: 1px solid rgba(229,231,235,0.7);
+    }
+
+    .topbar-inner {
+      width: min(1180px, calc(100% - 28px));
+      margin: 0 auto;
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 0;
+      flex-wrap: wrap;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-badge {
+      width: 54px;
+      height: 54px;
+      border-radius: 16px;
+      display: grid;
+      place-items: center;
+      background: linear-gradient(135deg, var(--primary), #fdba74);
+      color: #fff;
+      font-weight: 700;
+      font-size: 18px;
+      box-shadow: var(--shadow);
+    }
+
+    .brand h1 {
+      margin: 0;
+      font-size: clamp(22px, 3vw, 30px);
+    }
+
+    .brand p {
+      margin: 2px 0 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .toolbar {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .pill, button, select, input {
+      font: inherit;
+    }
+
+    .pill {
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 10px 14px;
+      color: var(--secondary);
+    }
+
+    .controls {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    button, .btn {
+      border: none;
+      border-radius: 16px;
+      padding: 12px 16px;
+      cursor: pointer;
+      transition: transform .15s ease, box-shadow .15s ease, background .2s ease;
+      box-shadow: 0 8px 18px rgba(15,23,42,.06);
+      font-weight: 700;
+    }
+
+    button:hover, .btn:hover { transform: translateY(-1px); }
+
+    .btn-primary {
+      background: var(--primary);
+      color: #fff;
+    }
+
+    .btn-primary:hover { background: var(--primary-dark); }
+
+    .btn-secondary {
+      background: #fff;
+      color: var(--secondary);
+      border: 1px solid var(--line);
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: 1.2fr .8fr;
+      gap: 18px;
+      margin-top: 18px;
+    }
+
+    .card {
+      background: var(--card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 22px;
+      border: 1px solid rgba(229,231,235,0.7);
+    }
+
+    .hero-left {
+      background: linear-gradient(145deg, #fff 0%, #fff8eb 100%);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-left::after {
+      content: "";
+      position: absolute;
+      right: -40px;
+      top: -40px;
+      width: 180px;
+      height: 180px;
+      background: rgba(245, 158, 11, 0.12);
+      border-radius: 50%;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      gap: 8px;
+      align-items: center;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: #fff;
+      border: 1px solid #fde68a;
+      color: var(--primary-dark);
+      font-weight: 700;
+      margin-bottom: 14px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero h2 {
+      margin: 0 0 12px;
+      font-size: clamp(30px, 4vw, 48px);
+      line-height: 1.05;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero p {
+      color: #334155;
+      font-size: 17px;
+      line-height: 1.6;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 18px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-visual {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      align-content: start;
+    }
+
+    .stat {
+      border-radius: 22px;
+      padding: 18px;
+      color: #fff;
+      min-height: 130px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .s1 { background: linear-gradient(135deg, #f59e0b, #fb923c); }
+    .s2 { background: linear-gradient(135deg, #0f172a, #334155); }
+    .s3 { background: linear-gradient(135deg, #16a34a, #22c55e); }
+    .s4 { background: linear-gradient(135deg, #0ea5e9, #38bdf8); }
+
+    .stat span { opacity: .85; font-size: 13px; }
+    .stat strong { font-size: 30px; }
+
+    .section-title {
+      display: flex;
+      justify-content: space-between;
+      align-items: end;
+      gap: 12px;
+      margin: 28px 0 14px;
+      flex-wrap: wrap;
+    }
+
+    .section-title h3 {
+      margin: 0;
+      font-size: 28px;
+    }
+
+    .section-title p {
+      margin: 6px 0 0;
+      color: var(--muted);
+    }
+
+    .grid-6 {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 12px;
+    }
+
+    .sinopsis-card {
+      padding: 16px;
+      border-radius: 22px;
+      background: #fff;
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow);
+      min-height: 175px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .sinopsis-card .num {
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      display: grid;
+      place-items: center;
+      background: #fff7ed;
+      color: var(--primary-dark);
+      font-weight: 700;
+      border: 1px solid #fed7aa;
+    }
+
+    .sinopsis-card h4 { margin: 12px 0 8px; font-size: 18px; }
+    .sinopsis-card p { margin: 0; color: var(--muted); line-height: 1.45; font-size: 14px; }
+
+    .lesson-layout {
+      display: grid;
+      grid-template-columns: 340px 1fr;
+      gap: 18px;
+      margin-top: 12px;
+    }
+
+    .sidebar .progress-wrap {
+      margin: 14px 0 20px;
+    }
+
+    .progress-bar {
+      height: 14px;
+      background: #f1f5f9;
+      border-radius: 999px;
+      overflow: hidden;
+      border: 1px solid var(--line);
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 0;
+      background: linear-gradient(90deg, var(--primary), #fdba74);
+      transition: width .35s ease;
+      border-radius: 999px;
+    }
+
+    .path {
+      display: grid;
+      gap: 12px;
+    }
+
+    .path-item {
+      display: grid;
+      grid-template-columns: 54px 1fr;
+      gap: 12px;
+      align-items: center;
+      padding: 12px;
+      border-radius: 20px;
+      border: 1px solid var(--line);
+      background: #fff;
+      cursor: pointer;
+      transition: .2s ease;
+    }
+
+    .path-item.active {
+      border-color: #fdba74;
+      background: #fffaf2;
+      box-shadow: 0 10px 24px rgba(245,158,11,.12);
+    }
+
+    .path-icon {
+      width: 54px;
+      height: 54px;
+      border-radius: 16px;
+      display: grid;
+      place-items: center;
+      font-size: 24px;
+      background: #fff7ed;
+    }
+
+    .path-item small {
+      color: var(--muted);
+      display: block;
+      margin-top: 4px;
+    }
+
+    .lesson-main {
+      display: grid;
+      gap: 18px;
+    }
+
+    .lesson-header {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: flex-start;
+      flex-wrap: wrap;
+    }
+
+    .lesson-header h4 {
+      margin: 0 0 6px;
+      font-size: 26px;
+    }
+
+    .badge {
+      display: inline-flex;
+      gap: 8px;
+      align-items: center;
+      background: #eff6ff;
+      color: #1d4ed8;
+      border: 1px solid #bfdbfe;
+      padding: 8px 12px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .question-box {
+      display: grid;
+      gap: 16px;
+    }
+
+    .image-box {
+      width: 100%;
+      min-height: 220px;
+      border-radius: 24px;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      background: #f8fafc;
+      display: grid;
+      place-items: center;
+      position: relative;
+    }
+
+    .image-box img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .image-fallback {
+      padding: 18px;
+      text-align: center;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .prompt {
+      font-size: clamp(22px, 3vw, 34px);
+      font-weight: 700;
+      line-height: 1.2;
+    }
+
+    .subprompt {
+      color: var(--muted);
+      line-height: 1.6;
+      font-size: 15px;
+    }
+
+    .options {
+      display: grid;
+      gap: 12px;
+    }
+
+    .option {
+      width: 100%;
+      text-align: left;
+      background: #fff;
+      color: var(--secondary);
+      border: 2px solid var(--line);
+      padding: 16px;
+      border-radius: 18px;
+      box-shadow: none;
+      font-weight: 700;
+    }
+
+    .option small {
+      display: block;
+      margin-top: 4px;
+      color: var(--muted);
+      font-weight: 400;
+    }
+
+    .option:hover { border-color: #fdba74; }
+    .option.correct { border-color: var(--success); background: #f0fdf4; }
+    .option.wrong { border-color: var(--danger); background: #fef2f2; }
+
+    .typing-zone {
+      display: grid;
+      gap: 12px;
+    }
+
+    .typing-zone input {
+      width: 100%;
+      border: 2px solid var(--line);
+      border-radius: 18px;
+      padding: 16px;
+      outline: none;
+      font-size: 18px;
+      background: #fff;
+    }
+
+    .typing-zone input:focus { border-color: #fdba74; }
+
+    .result-box {
+      min-height: 56px;
+      border-radius: 18px;
+      padding: 14px 16px;
+      background: #f8fafc;
+      border: 1px dashed #cbd5e1;
+      display: flex;
+      align-items: center;
+      color: #334155;
+      font-weight: 700;
+    }
+
+    .result-box.success { background: #f0fdf4; border-style: solid; border-color: #86efac; color: #166534; }
+    .result-box.error { background: #fef2f2; border-style: solid; border-color: #fca5a5; color: #991b1b; }
+
+    .mini-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 18px;
+      margin-top: 10px;
+    }
+
+    .tool-box h4, .library-card h4 {
+      margin: 0 0 8px;
+      font-size: 22px;
+    }
+
+    .tool-box p, .library-card p {
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .sentence-builder {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin: 14px 0;
+    }
+
+    .word-chip {
+      padding: 12px 16px;
+      border-radius: 999px;
+      background: #fff;
+      border: 1px solid var(--line);
+      cursor: pointer;
+      font-weight: 700;
+      user-select: none;
+    }
+
+    .builder-output {
+      min-height: 64px;
+      padding: 14px 16px;
+      border-radius: 18px;
+      border: 2px dashed #cbd5e1;
+      background: #f8fafc;
+      font-size: 20px;
+      font-weight: 700;
+    }
+
+    .library {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+
+    .library-card {
+      overflow: hidden;
+      padding: 0;
+    }
+
+    .library-card img {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+      display: block;
+    }
+
+    .library-card .body {
+      padding: 18px;
+    }
+
+    .footer-note {
+      margin-top: 24px;
+      color: var(--muted);
+      text-align: center;
+      font-size: 14px;
+      line-height: 1.7;
+    }
+
+    @media (max-width: 1040px) {
+      .grid-6 { grid-template-columns: repeat(3, 1fr); }
+      .lesson-layout { grid-template-columns: 1fr; }
+      .hero { grid-template-columns: 1fr; }
+      .mini-grid, .library { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 680px) {
+      .grid-6 { grid-template-columns: repeat(2, 1fr); }
+      .hero-visual { grid-template-columns: 1fr 1fr; }
+      .topbar-inner, .lesson-header { align-items: stretch; }
+      .brand { align-items: flex-start; }
+      .hero h2 { font-size: 32px; }
+      .prompt { font-size: 26px; }
+    }
+
+    @media (max-width: 480px) {
+      .grid-6, .hero-visual { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="brand">
+        <div class="brand-badge">CH</div>
+        <div>
+          <h1>Chambari Academia</h1>
+          <p>Método Sinopsis · Inglés y Español en 6 áreas de dominio</p>
+        </div>
+      </div>
+
+      <div class="toolbar">
+        <div class="pill" id="scorePill">Puntos: 0</div>
+        <div class="pill" id="streakPill">Racha: 0</div>
+        <div class="controls">
+          <select id="learningMode" class="pill" aria-label="Modo de aprendizaje">
+            <option value="en-es">Enseñar inglés con apoyo en español</option>
+            <option value="es-en">Enseñar español con apoyo en inglés</option>
+          </select>
+          <button class="btn-secondary" id="resetProgress">Reiniciar</button>
+          <button class="btn-primary" onclick="document.getElementById('ruta').scrollIntoView()">Comenzar</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="app">
+    <section class="hero">
+      <div class="card hero-left">
+        <div class="eyebrow">Método propio · Sinopsis 6X</div>
+        <h2>Aprender un idioma no es repetir. Es dominar sus 6 campos esenciales.</h2>
+        <p>
+          Esta página está diseñada para enseñar inglés y español con un sistema dinámico, visual e interactivo.
+          El método <strong>Sinopsis</strong> organiza cada lección en 6 áreas de dominio para que el alumno vea,
+          relacione, responda, construya, use y consolide el idioma con lógica real.
+        </p>
+        <div class="hero-actions">
+          <button class="btn-primary" onclick="document.getElementById('sinopsis').scrollIntoView()">Ver el método</button>
+          <button class="btn-secondary" onclick="document.getElementById('biblioteca').scrollIntoView()">Ver material visual</button>
+        </div>
+      </div>
+
+      <div class="hero-visual">
+        <div class="stat s1">
+          <span>Lecciones activas</span>
+          <strong>12</strong>
+          <span>inglés y español</span>
+        </div>
+        <div class="stat s2">
+          <span>Áreas del método</span>
+          <strong>6</strong>
+          <span>Sinopsis total</span>
+        </div>
+        <div class="stat s3">
+          <span>Ejercicios vivos</span>
+          <strong>24</strong>
+          <span>con respuesta inmediata</span>
+        </div>
+        <div class="stat s4">
+          <span>Uso ideal</span>
+          <strong>Clases</strong>
+          <span>pantalla, celular y laptop</span>
+        </div>
+      </div>
+    </section>
+
+    <section id="sinopsis">
+      <div class="section-title">
+        <div>
+          <h3>Las 6 áreas del método Sinopsis</h3>
+          <p>Cada tema del idioma se recorre en una secuencia completa para generar comprensión y uso real.</p>
+        </div>
+      </div>
+
+      <div class="grid-6">
+        <article class="sinopsis-card">
+          <div class="num">1</div>
+          <div>
+            <h4>Observar</h4>
+            <p>El alumno ve la palabra, imagen, gesto o escena. Aquí nace la asociación visual y emocional.</p>
+          </div>
+        </article>
+        <article class="sinopsis-card">
+          <div class="num">2</div>
+          <div>
+            <h4>Relacionar</h4>
+            <p>Conecta la idea con su equivalente en el otro idioma, el contexto y su significado inmediato.</p>
+          </div>
+        </article>
+        <article class="sinopsis-card">
+          <div class="num">3</div>
+          <div>
+            <h4>Responder</h4>
+            <p>El estudiante elige, compara o contesta. Aquí comienzan las 6 posibles respuestas guiadas.</p>
+          </div>
+        </article>
+        <article class="sinopsis-card">
+          <div class="num">4</div>
+          <div>
+            <h4>Construir</h4>
+            <p>Forma frases, ordena ideas y estructura el idioma para pasar de memoria a producción.</p>
+          </div>
+        </article>
+        <article class="sinopsis-card">
+          <div class="num">5</div>
+          <div>
+            <h4>Aplicar</h4>
+            <p>Usa la expresión en diálogo, vida diaria, trabajo, escuela o conversación práctica.</p>
+          </div>
+        </article>
+        <article class="sinopsis-card">
+          <div class="num">6</div>
+          <div>
+            <h4>Consolidar</h4>
+            <p>Corrige, repite, compara y afirma el conocimiento para hacerlo más estable y natural.</p>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section id="ruta">
+      <div class="section-title">
+        <div>
+          <h3>Ruta interactiva de clase</h3>
+          <p>Inspirada en aprendizaje por progreso, pero adaptada al método Sinopsis de Chambari Academia.</p>
+        </div>
+      </div>
+
+      <div class="lesson-layout">
+        <aside class="card sidebar">
+          <div class="badge">Ruta Sinopsis activa</div>
+          <div class="progress-wrap">
+            <p><strong>Progreso de la clase</strong></p>
+            <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+            <p id="progressText">0% completado</p>
+          </div>
+
+          <div class="path" id="pathList"></div>
+        </aside>
+
+        <section class="lesson-main">
+          <div class="card">
+            <div class="lesson-header">
+              <div>
+                <div class="badge" id="lessonBadge">Área 1 · Observar</div>
+                <h4 id="lessonTitle">Lección interactiva</h4>
+                <p id="lessonDescription" class="subprompt"></p>
+              </div>
+              <button class="btn-secondary" id="nextStepTop">Siguiente área</button>
+            </div>
+          </div>
+
+          <div class="card question-box">
+            <div class="image-box" id="imageBox"></div>
+            <div class="prompt" id="promptText"></div>
+            <div class="subprompt" id="subpromptText"></div>
+            <div class="options" id="optionsBox"></div>
+            <div class="typing-zone" id="typingZone" style="display:none;">
+              <input type="text" id="typingInput" placeholder="Escribe tu respuesta aquí" />
+              <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                <button class="btn-primary" id="checkTyping">Comprobar</button>
+                <button class="btn-secondary" id="showAnswer">Mostrar respuesta</button>
+              </div>
+            </div>
+            <div class="result-box" id="resultBox">Aquí aparecerá la retroalimentación de la actividad.</div>
+            <div style="display:flex; gap:10px; flex-wrap:wrap;">
+              <button class="btn-primary" id="nextStepBottom">Continuar</button>
+              <button class="btn-secondary" id="speakBtn">Escuchar texto</button>
+            </div>
+          </div>
+        </section>
+      </div>
+    </section>
+
+    <section>
+      <div class="section-title">
+        <div>
+          <h3>Herramientas de codificación educativa</h3>
+          <p>Estas partes hacen la clase más viva y convierten la página en un laboratorio de idioma.</p>
+        </div>
+      </div>
+
+      <div class="mini-grid">
+        <div class="card tool-box">
+          <h4>Constructor de oraciones</h4>
+          <p>El alumno toca palabras, arma la frase y refuerza estructura, orden y lógica.</p>
+          <div class="sentence-builder" id="builderWords"></div>
+          <div class="builder-output" id="builderOutput">Toca las palabras para construir la oración.</div>
+          <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:12px;">
+            <button class="btn-primary" id="checkBuilder">Verificar</button>
+            <button class="btn-secondary" id="resetBuilder">Limpiar</button>
+          </div>
+          <div class="result-box" id="builderResult" style="margin-top:12px;">Resultado del constructor.</div>
+        </div>
+
+        <div class="card tool-box">
+          <h4>Traductor guiado de aula</h4>
+          <p>No es un traductor abierto. Está pensado para enseñar equivalencias útiles en clase.</p>
+          <div class="typing-zone">
+            <input type="text" id="microTranslatorInput" placeholder="Ejemplo: buenos días / good morning" />
+            <div style="display:flex; gap:10px; flex-wrap:wrap;">
+              <button class="btn-primary" id="translateBtn">Buscar equivalencia</button>
+              <button class="btn-secondary" id="swapModeBtn">Cambiar dirección</button>
+            </div>
+          </div>
+          <div class="result-box" id="translatorResult" style="margin-top:12px;">La equivalencia aparecerá aquí.</div>
+        </div>
+      </div>
+    </section>
+
+    <section id="biblioteca">
+      <div class="section-title">
+        <div>
+          <h3>Biblioteca visual para tus clases</h3>
+          <p>Reemplaza estas imágenes por tus propias fotos, materiales, escenas o tarjetas educativas.</p>
+        </div>
+      </div>
+
+      <div class="library">
+        <article class="card library-card">
+          <img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=900&q=80" alt="Clase interactiva" />
+          <div class="body">
+            <h4>Conversación y aula</h4>
+            <p>Úsala para practicar saludos, presentaciones, preguntas personales y respuestas cortas.</p>
+          </div>
+        </article>
+
+        <article class="card library-card">
+          <img src="https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&w=900&q=80" alt="Aprendizaje visual" />
+          <div class="body">
+            <h4>Aprendizaje visual</h4>
+            <p>Perfecta para sustantivos, acciones, emociones, colores, objetos y lugares comunes.</p>
+          </div>
+        </article>
+
+        <article class="card library-card">
+          <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=900&q=80" alt="Trabajo colaborativo" />
+          <div class="body">
+            <h4>Trabajo colaborativo</h4>
+            <p>Ideal para juegos por equipos, retos, competencias sanas y repaso dinámico.</p>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <p class="footer-note">
+      Chambari Academia · Página demostrativa del método Sinopsis.
+      Puedes ampliarla con más unidades, audios, nuevos campos semánticos, ciudadanía, negocios, niños, camioneros o práctica profesional.
+    </p>
+  </main>
+
+  <script>
+    const state = {
+      mode: 'en-es',
+      currentStep: 0,
+      score: 0,
+      streak: 0,
+      builderWords: [],
+      builderCorrect: '',
+      dictionary: {
+        'good morning': 'buenos días',
+        'good afternoon': 'buenas tardes',
+        'good night': 'buenas noches',
+        'hello': 'hola',
+        'water': 'agua',
+        'house': 'casa',
+        'school': 'escuela',
+        'book': 'libro',
+        'teacher': 'maestro',
+        'student': 'estudiante',
+        'how are you': '¿cómo estás?',
+        'my name is': 'me llamo',
+        'buenos días': 'good morning',
+        'buenas tardes': 'good afternoon',
+        'buenas noches': 'good night',
+        'hola': 'hello',
+        'agua': 'water',
+        'casa': 'house',
+        'escuela': 'school',
+        'libro': 'book',
+        'maestro': 'teacher',
+        'estudiante': 'student',
+        '¿cómo estás?': 'how are you',
+        'me llamo': 'my name is'
+      }
+    };
+
+    const lessons = {
+      'en-es': [
+        {
+          area: 'Área 1 · Observar',
+          title: 'Reconoce la imagen y el concepto',
+          description: 'El alumno observa primero. Sinopsis inicia con una entrada visual clara.',
+          type: 'choice',
+          prompt: 'What is this?',
+          subprompt: 'Mira la imagen y elige la opción correcta en español.',
+          image: 'https://images.unsplash.com/photo-1544717305-2782549b5136?auto=format&fit=crop&w=1200&q=80',
+          correct: 'Un libro',
+          options: [
+            { text: 'Una mesa', note: 'table' },
+            { text: 'Un libro', note: 'book' },
+            { text: 'Una puerta', note: 'door' },
+            { text: 'Una silla', note: 'chair' }
+          ]
+        },
+        {
+          area: 'Área 2 · Relacionar',
+          title: 'Conecta palabra y significado',
+          description: 'Aquí el alumno relaciona el término con su equivalente exacto.',
+          type: 'choice',
+          prompt: 'Choose the best translation for “Good morning”.',
+          subprompt: 'Relaciona inglés con español usando memoria inmediata.',
+          image: '',
+          correct: 'Buenos días',
+          options: [
+            { text: 'Buenas noches', note: 'night' },
+            { text: 'Buenos días', note: 'morning' },
+            { text: 'Buenas tardes', note: 'afternoon' },
+            { text: 'Hasta luego', note: 'see you later' }
+          ]
+        },
+        {
+          area: 'Área 3 · Responder',
+          title: 'Responde con intención',
+          description: 'El alumno entra en respuesta guiada. Aquí empieza a decidir activamente.',
+          type: 'choice',
+          prompt: 'How do you answer “How are you?”',
+          subprompt: 'Elige una respuesta natural en inglés con apoyo en español.',
+          image: '',
+          correct: 'I am fine',
+          options: [
+            { text: 'I am fine', note: 'Estoy bien' },
+            { text: 'Blue table', note: 'No responde la pregunta' },
+            { text: 'Book house', note: 'No tiene sentido' },
+            { text: 'Good night teacher', note: 'No es respuesta directa' }
+          ]
+        },
+        {
+          area: 'Área 4 · Construir',
+          title: 'Escribe una frase simple',
+          description: 'El estudiante empieza a producir el idioma y no solo a reconocerlo.',
+          type: 'typing',
+          prompt: 'Write in English: “Me llamo Ana”.',
+          subprompt: 'Acepta: My name is Ana',
+          image: '',
+          answer: ['my name is ana', 'i am ana']
+        },
+        {
+          area: 'Área 5 · Aplicar',
+          title: 'Usa el idioma en contexto',
+          description: 'La frase ya se usa en una situación real, no como elemento aislado.',
+          type: 'choice',
+          prompt: 'You arrive at a class in the morning. What do you say?',
+          subprompt: 'Aplica el idioma a una escena cotidiana.',
+          image: 'https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?auto=format&fit=crop&w=1200&q=80',
+          correct: 'Good morning',
+          options: [
+            { text: 'Good morning', note: 'saludo correcto' },
+            { text: 'Good night', note: 'hora incorrecta' },
+            { text: 'Table', note: 'no es un saludo' },
+            { text: 'My water', note: 'fuera de contexto' }
+          ]
+        },
+        {
+          area: 'Área 6 · Consolidar',
+          title: 'Fija el conocimiento',
+          description: 'Se confirma lo aprendido y se consolida la estructura clave.',
+          type: 'choice',
+          prompt: 'Which pair is fully correct?',
+          subprompt: 'Cierre de la secuencia Sinopsis.',
+          image: '',
+          correct: 'Teacher = maestro',
+          options: [
+            { text: 'Teacher = mesa', note: 'incorrecto' },
+            { text: 'Teacher = maestro', note: 'correcto' },
+            { text: 'Teacher = ventana', note: 'incorrecto' },
+            { text: 'Teacher = agua', note: 'incorrecto' }
+          ]
+        }
+      ],
+      'es-en': [
+        {
+          area: 'Área 1 · Observar',
+          title: 'Observa y nombra la escena',
+          description: 'La entrada visual abre el campo semántico del español.',
+          type: 'choice',
+          prompt: '¿Qué ves en la imagen?',
+          subprompt: 'Elige la respuesta correcta en inglés.',
+          image: 'https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&w=1200&q=80',
+          correct: 'A school',
+          options: [
+            { text: 'A school', note: 'escuela' },
+            { text: 'A river', note: 'río' },
+            { text: 'A kitchen', note: 'cocina' },
+            { text: 'A beach', note: 'playa' }
+          ]
+        },
+        {
+          area: 'Área 2 · Relacionar',
+          title: 'Relaciona español con inglés',
+          description: 'La equivalencia fortalece la comprensión bilingüe.',
+          type: 'choice',
+          prompt: 'Selecciona la traducción de “Agua”.',
+          subprompt: 'Trabaja la relación directa entre concepto y término.',
+          image: '',
+          correct: 'Water',
+          options: [
+            { text: 'Water', note: 'correcto' },
+            { text: 'Window', note: 'ventana' },
+            { text: 'Chair', note: 'silla' },
+            { text: 'Food', note: 'comida' }
+          ]
+        },
+        {
+          area: 'Área 3 · Responder',
+          title: 'Contesta una situación simple',
+          description: 'El alumno responde con una estructura útil y real.',
+          type: 'choice',
+          prompt: 'Si alguien dice “Hola”, ¿cuál es una buena respuesta?',
+          subprompt: 'Busca naturalidad, no solo traducción mecánica.',
+          image: '',
+          correct: 'Hello',
+          options: [
+            { text: 'Hello', note: 'respuesta natural' },
+            { text: 'Table', note: 'no es respuesta' },
+            { text: 'Blue chair', note: 'fuera de contexto' },
+            { text: 'Good night water', note: 'sin sentido' }
+          ]
+        },
+        {
+          area: 'Área 4 · Construir',
+          title: 'Construye una frase en español',
+          description: 'Ahora el alumno produce y estructura su conocimiento.',
+          type: 'typing',
+          prompt: 'Escribe en español: “Good afternoon”.',
+          subprompt: 'Acepta: buenas tardes',
+          image: '',
+          answer: ['buenas tardes']
+        },
+        {
+          area: 'Área 5 · Aplicar',
+          title: 'Aplica el idioma a la vida real',
+          description: 'Se transfiere el conocimiento a la acción concreta.',
+          type: 'choice',
+          prompt: 'Llegas a una casa y quieres decir “My name is Luis”. ¿Cuál es la mejor opción?',
+          subprompt: 'Elige la frase correcta en español.',
+          image: '',
+          correct: 'Me llamo Luis',
+          options: [
+            { text: 'Me llamo Luis', note: 'correcto' },
+            { text: 'Buenas noches agua', note: 'incorrecto' },
+            { text: 'Casa estudiante', note: 'incompleto' },
+            { text: 'Yo puerta Luis', note: 'incorrecto' }
+          ]
+        },
+        {
+          area: 'Área 6 · Consolidar',
+          title: 'Cierra y afirma la lección',
+          description: 'La consolidación fija equivalencias útiles en memoria.',
+          type: 'choice',
+          prompt: '¿Cuál pareja está correcta?',
+          subprompt: 'Repaso final de cierre Sinopsis.',
+          image: '',
+          correct: 'Libro = book',
+          options: [
+            { text: 'Libro = window', note: 'incorrecto' },
+            { text: 'Libro = book', note: 'correcto' },
+            { text: 'Libro = school', note: 'incorrecto' },
+            { text: 'Libro = teacher', note: 'incorrecto' }
+          ]
+        }
+      ]
+    };
+
+    const builderSets = {
+      'en-es': {
+        words: ['My', 'name', 'is', 'Maria'],
+        correct: 'My name is Maria'
+      },
+      'es-en': {
+        words: ['Me', 'llamo', 'María'],
+        correct: 'Me llamo María'
+      }
+    };
+
+    const scorePill = document.getElementById('scorePill');
+    const streakPill = document.getElementById('streakPill');
+    const learningMode = document.getElementById('learningMode');
+    const pathList = document.getElementById('pathList');
+    const progressFill = document.getElementById('progressFill');
+    const progressText = document.getElementById('progressText');
+    const lessonBadge = document.getElementById('lessonBadge');
+    const lessonTitle = document.getElementById('lessonTitle');
+    const lessonDescription = document.getElementById('lessonDescription');
+    const imageBox = document.getElementById('imageBox');
+    const promptText = document.getElementById('promptText');
+    const subpromptText = document.getElementById('subpromptText');
+    const optionsBox = document.getElementById('optionsBox');
+    const typingZone = document.getElementById('typingZone');
+    const typingInput = document.getElementById('typingInput');
+    const resultBox = document.getElementById('resultBox');
+    const checkTyping = document.getElementById('checkTyping');
+    const showAnswer = document.getElementById('showAnswer');
+    const nextStepTop = document.getElementById('nextStepTop');
+    const nextStepBottom = document.getElementById('nextStepBottom');
+    const speakBtn = document.getElementById('speakBtn');
+    const builderWords = document.getElementById('builderWords');
+    const builderOutput = document.getElementById('builderOutput');
+    const builderResult = document.getElementById('builderResult');
+    const checkBuilder = document.getElementById('checkBuilder');
+    const resetBuilder = document.getElementById('resetBuilder');
+    const microTranslatorInput = document.getElementById('microTranslatorInput');
+    const translatorResult = document.getElementById('translatorResult');
+    const translateBtn = document.getElementById('translateBtn');
+    const swapModeBtn = document.getElementById('swapModeBtn');
+    const resetProgress = document.getElementById('resetProgress');
+
+    function normalize(text) {
+      return text
+        .toLowerCase()
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .replace(/[¿?¡!.,]/g, '')
+        .replace(/\s+/g, ' ')
+        .trim();
+    }
+
+    function getCurrentLessons() {
+      return lessons[state.mode];
+    }
+
+    function renderPath() {
+      const data = getCurrentLessons();
+      pathList.innerHTML = '';
+      data.forEach((item, index) => {
+        const el = document.createElement('div');
+        el.className = `path-item ${index === state.currentStep ? 'active' : ''}`;
+        el.innerHTML = `
+          <div class="path-icon">${index + 1}</div>
+          <div>
+            <strong>${item.area.replace('Área ', '').replace('·', '-')}</strong>
+            <small>${item.title}</small>
+          </div>
+        `;
+        el.addEventListener('click', () => {
+          state.currentStep = index;
+          renderAll();
+        });
+        pathList.appendChild(el);
+      });
+    }
+
+    function renderProgress() {
+      const total = getCurrentLessons().length;
+      const percent = Math.round((state.currentStep / total) * 100);
+      progressFill.style.width = `${percent}%`;
+      progressText.textContent = `${percent}% completado`;
+      scorePill.textContent = `Puntos: ${state.score}`;
+      streakPill.textContent = `Racha: ${state.streak}`;
+    }
+
+    function renderImage(src) {
+      if (src) {
+        imageBox.innerHTML = `<img src="${src}" alt="Imagen educativa" />`;
+      } else {
+        imageBox.innerHTML = `
+          <div class="image-fallback">
+            <strong>Zona visual lista para tus imágenes</strong><br>
+            Puedes poner aquí fotos de objetos, escenas, clientes, alumnos, lugares, familia, trabajo o ciudadanía.
+          </div>
+        `;
+      }
+    }
+
+    function clearResult(message = 'Aquí aparecerá la retroalimentación de la actividad.') {
+      resultBox.className = 'result-box';
+      resultBox.textContent = message;
+    }
+
+    function awardPoint() {
+      state.score += 10;
+      state.streak += 1;
+      renderProgress();
+    }
+
+    function failPoint() {
+      state.streak = 0;
+      renderProgress();
+    }
+
+    function renderLesson() {
+      const lesson = getCurrentLessons()[state.currentStep];
+      lessonBadge.textContent = lesson.area;
+      lessonTitle.textContent = lesson.title;
+      lessonDescription.textContent = lesson.description;
+      promptText.textContent = lesson.prompt;
+      subpromptText.textContent = lesson.subprompt;
+      renderImage(lesson.image);
+      optionsBox.innerHTML = '';
+      typingInput.value = '';
+      clearResult();
+
+      if (lesson.type === 'choice') {
+        typingZone.style.display = 'none';
+        lesson.options.forEach(option => {
+          const btn = document.createElement('button');
+          btn.className = 'option';
+          btn.innerHTML = `${option.text}<small>${option.note || ''}</small>`;
+          btn.addEventListener('click', () => {
+            const alreadyAnswered = optionsBox.querySelector('.correct, .wrong');
+            if (alreadyAnswered) return;
+
+            if (option.text === lesson.correct) {
+              btn.classList.add('correct');
+              resultBox.className = 'result-box success';
+              resultBox.textContent = 'Correcto. Esta respuesta sí corresponde con la lógica del método Sinopsis.';
+              awardPoint();
+            } else {
+              btn.classList.add('wrong');
+              failPoint();
+              resultBox.className = 'result-box error';
+              resultBox.textContent = `No es la mejor opción. Respuesta correcta: ${lesson.correct}`;
+              [...optionsBox.children].forEach(child => {
+                if (child.textContent.includes(lesson.correct)) {
+                  child.classList.add('correct');
+                }
+              });
+            }
+          });
+          optionsBox.appendChild(btn);
+        });
+      } else {
+        typingZone.style.display = 'grid';
+      }
+    }
+
+    function renderBuilder() {
+      const set = builderSets[state.mode];
+      state.builderWords = [];
+      state.builderCorrect = set.correct;
+      builderWords.innerHTML = '';
+      builderOutput.textContent = 'Toca las palabras para construir la oración.';
+      builderResult.className = 'result-box';
+      builderResult.textContent = 'Resultado del constructor.';
+
+      const shuffled = [...set.words].sort(() => Math.random() - 0.5);
+      shuffled.forEach(word => {
+        const chip = document.createElement('div');
+        chip.className = 'word-chip';
+        chip.textContent = word;
+        chip.addEventListener('click', () => {
+          state.builderWords.push(word);
+          builderOutput.textContent = state.builderWords.join(' ');
+          chip.style.opacity = '0.4';
+          chip.style.pointerEvents = 'none';
+        });
+        builderWords.appendChild(chip);
+      });
+    }
+
+    function renderAll() {
+      renderPath();
+      renderProgress();
+      renderLesson();
+      renderBuilder();
+    }
+
+    function goNext() {
+      const total = getCurrentLessons().length;
+      if (state.currentStep < total - 1) {
+        state.currentStep += 1;
+        renderAll();
+        window.scrollTo({ top: document.getElementById('ruta').offsetTop - 70, behavior: 'smooth' });
+      } else {
+        resultBox.className = 'result-box success';
+        resultBox.textContent = 'Secuencia completada. Ya puedes duplicar esta ruta y crear nuevas unidades con tu método Sinopsis.';
+      }
+    }
+
+    nextStepTop.addEventListener('click', goNext);
+    nextStepBottom.addEventListener('click', goNext);
+
+    checkTyping.addEventListener('click', () => {
+      const lesson = getCurrentLessons()[state.currentStep];
+      const value = normalize(typingInput.value);
+      const valid = lesson.answer.some(ans => normalize(ans) === value);
+      if (valid) {
+        resultBox.className = 'result-box success';
+        resultBox.textContent = 'Muy bien. La estructura escrita es válida.';
+        awardPoint();
+      } else {
+        resultBox.className = 'result-box error';
+        resultBox.textContent = `Aún no. Respuesta esperada: ${lesson.answer[0]}`;
+        failPoint();
+      }
+    });
+
+    showAnswer.addEventListener('click', () => {
+      const lesson = getCurrentLessons()[state.currentStep];
+      typingInput.value = lesson.answer[0];
+      resultBox.className = 'result-box';
+      resultBox.textContent = `Respuesta modelo: ${lesson.answer[0]}`;
+    });
+
+    speakBtn.addEventListener('click', () => {
+      const lesson = getCurrentLessons()[state.currentStep];
+      const text = `${lesson.prompt}. ${lesson.subprompt}`;
+      if ('speechSynthesis' in window) {
+        const utter = new SpeechSynthesisUtterance(text);
+        utter.lang = state.mode === 'en-es' ? 'en-US' : 'es-ES';
+        speechSynthesis.cancel();
+        speechSynthesis.speak(utter);
+      } else {
+        resultBox.className = 'result-box error';
+        resultBox.textContent = 'Tu navegador no permite lectura en voz en este momento.';
+      }
+    });
+
+    checkBuilder.addEventListener('click', () => {
+      const built = normalize(builderOutput.textContent);
+      const correct = normalize(state.builderCorrect);
+      if (built === correct) {
+        builderResult.className = 'result-box success';
+        builderResult.textContent = 'Oración correcta. La estructura quedó bien formada.';
+        state.score += 10;
+        renderProgress();
+      } else {
+        builderResult.className = 'result-box error';
+        builderResult.textContent = `Aún no. Modelo correcto: ${state.builderCorrect}`;
+      }
+    });
+
+    resetBuilder.addEventListener('click', renderBuilder);
+
+    translateBtn.addEventListener('click', () => {
+      const value = microTranslatorInput.value.trim().toLowerCase();
+      if (!value) {
+        translatorResult.className = 'result-box error';
+        translatorResult.textContent = 'Escribe una palabra o frase corta.';
+        return;
+      }
+
+      const result = state.dictionary[value];
+      if (result) {
+        translatorResult.className = 'result-box success';
+        translatorResult.textContent = `Equivalencia guiada: ${result}`;
+      } else {
+        translatorResult.className = 'result-box';
+        translatorResult.textContent = 'No está en el diccionario base. Puedes ampliar este bloque con tus propias frases.';
+      }
+    });
+
+    swapModeBtn.addEventListener('click', () => {
+      state.mode = state.mode === 'en-es' ? 'es-en' : 'en-es';
+      learningMode.value = state.mode;
+      state.currentStep = 0;
+      renderAll();
+    });
+
+    learningMode.addEventListener('change', (e) => {
+      state.mode = e.target.value;
+      state.currentStep = 0;
+      renderAll();
+    });
+
+    resetProgress.addEventListener('click', () => {
+      state.currentStep = 0;
+      state.score = 0;
+      state.streak = 0;
+      renderAll();
+    });
+
+    renderAll();
+  </script>
+</body>
+</html>
