@@ -874,191 +874,117 @@
     };
 
     const lessons = {
-      'en-es': [
-        {
-          area: 'Área 1 · Observar',
-          title: 'Reconoce la imagen y el concepto',
-          description: 'El alumno observa primero. Sinapsis inicia con una entrada visual clara.',
-          type: 'choice',
-          prompt: 'What is this?',
-          subprompt: 'Mira la imagen y elige la opción correcta en español.',
-          image: 'https://images.unsplash.com/photo-1544717305-2782549b5136?auto=format&fit=crop&w=1200&q=80',
-          correct: 'Un libro',
-          options: [
-            { text: 'Una mesa', note: 'table' },
-            { text: 'Un libro', note: 'book' },
-            { text: 'Una puerta', note: 'door' },
-            { text: 'Una silla', note: 'chair' }
-          ]
-        },
-        {
-          area: 'Área 2 · Relacionar',
-          title: 'Conecta palabra y significado',
-          description: 'Aquí el alumno relaciona el término con su equivalente exacto.',
-          type: 'choice',
-          prompt: 'Choose the best translation for “Good morning”.',
-          subprompt: 'Relaciona inglés con español usando memoria inmediata.',
-          image: '',
-          correct: 'Buenos días',
-          options: [
-            { text: 'Buenas noches', note: 'night' },
-            { text: 'Buenos días', note: 'morning' },
-            { text: 'Buenas tardes', note: 'afternoon' },
-            { text: 'Hasta luego', note: 'see you later' }
-          ]
-        },
-        {
-          area: 'Área 3 · Responder',
-          title: 'Responde con intención',
-          description: 'El alumno entra en respuesta guiada. Aquí empieza a decidir activamente.',
-          type: 'choice',
-          prompt: 'How do you answer “How are you?”',
-          subprompt: 'Elige una respuesta natural en inglés con apoyo en español.',
-          image: '',
-          correct: 'I am fine',
-          options: [
-            { text: 'I am fine', note: 'Estoy bien' },
-            { text: 'Blue table', note: 'No responde la pregunta' },
-            { text: 'Book house', note: 'No tiene sentido' },
-            { text: 'Good night teacher', note: 'No es respuesta directa' }
-          ]
-        },
-        {
-          area: 'Área 4 · Construir',
-          title: 'Escribe una frase simple',
-          description: 'El estudiante empieza a producir el idioma y no solo a reconocerlo.',
-          type: 'typing',
-          prompt: 'Write in English: “Me llamo Ana”.',
-          subprompt: 'Acepta: My name is Ana',
-          image: '',
-          answer: ['my name is ana', 'i am ana']
-        },
-        {
-          area: 'Área 5 · Aplicar',
-          title: 'Usa el idioma en contexto',
-          description: 'La frase ya se usa en una situación real, no como elemento aislado.',
-          type: 'choice',
-          prompt: 'You arrive at a class in the morning. What do you say?',
-          subprompt: 'Aplica el idioma a una escena cotidiana.',
-          image: 'https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?auto=format&fit=crop&w=1200&q=80',
-          correct: 'Good morning',
-          options: [
-            { text: 'Good morning', note: 'saludo correcto' },
-            { text: 'Good night', note: 'hora incorrecta' },
-            { text: 'Table', note: 'no es un saludo' },
-            { text: 'My water', note: 'fuera de contexto' }
-          ]
-        },
-        {
-          area: 'Área 6 · Consolidar',
-          title: 'Fija el conocimiento',
-          description: 'Se confirma lo aprendido y se consolida la estructura clave.',
-          type: 'choice',
-          prompt: 'Which pair is fully correct?',
-          subprompt: 'Cierre de la secuencia Sinapsis.',
-          image: '',
-          correct: 'Teacher = maestro',
-          options: [
-            { text: 'Teacher = mesa', note: 'incorrecto' },
-            { text: 'Teacher = maestro', note: 'correcto' },
-            { text: 'Teacher = ventana', note: 'incorrecto' },
-            { text: 'Teacher = agua', note: 'incorrecto' }
-          ]
-        }
-      ],
-      'es-en': [
-        {
-          area: 'Área 1 · Observar',
-          title: 'Observa y nombra la escena',
-          description: 'La entrada visual abre el campo semántico del español.',
-          type: 'choice',
-          prompt: '¿Qué ves en la imagen?',
-          subprompt: 'Elige la respuesta correcta en inglés.',
-          image: 'https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&w=1200&q=80',
-          correct: 'A school',
-          options: [
-            { text: 'A school', note: 'escuela' },
-            { text: 'A river', note: 'río' },
-            { text: 'A kitchen', note: 'cocina' },
-            { text: 'A beach', note: 'playa' }
-          ]
-        },
-        {
-          area: 'Área 2 · Relacionar',
-          title: 'Relaciona español con inglés',
-          description: 'La equivalencia fortalece la comprensión bilingüe.',
-          type: 'choice',
-          prompt: 'Selecciona la traducción de “Agua”.',
-          subprompt: 'Trabaja la relación directa entre concepto y término.',
-          image: '',
-          correct: 'Water',
-          options: [
-            { text: 'Water', note: 'correcto' },
-            { text: 'Window', note: 'ventana' },
-            { text: 'Chair', note: 'silla' },
-            { text: 'Food', note: 'comida' }
-          ]
-        },
-        {
-          area: 'Área 3 · Responder',
-          title: 'Contesta una situación simple',
-          description: 'El alumno responde con una estructura útil y real.',
-          type: 'choice',
-          prompt: 'Si alguien dice “Hola”, ¿cuál es una buena respuesta?',
-          subprompt: 'Busca naturalidad, no solo traducción mecánica.',
-          image: '',
-          correct: 'Hello',
-          options: [
-            { text: 'Hello', note: 'respuesta natural' },
-            { text: 'Table', note: 'no es respuesta' },
-            { text: 'Blue chair', note: 'fuera de contexto' },
-            { text: 'Good night water', note: 'sin sentido' }
-          ]
-        },
-        {
-          area: 'Área 4 · Construir',
-          title: 'Construye una frase en español',
-          description: 'Ahora el alumno produce y estructura su conocimiento.',
-          type: 'typing',
-          prompt: 'Escribe en español: “Good afternoon”.',
-          subprompt: 'Acepta: buenas tardes',
-          image: '',
-          answer: ['buenas tardes']
-        },
-        {
-          area: 'Área 5 · Aplicar',
-          title: 'Aplica el idioma a la vida real',
-          description: 'Se transfiere el conocimiento a la acción concreta.',
-          type: 'choice',
-          prompt: 'Llegas a una casa y quieres decir “My name is Luis”. ¿Cuál es la mejor opción?',
-          subprompt: 'Elige la frase correcta en español.',
-          image: '',
-          correct: 'Me llamo Luis',
-          options: [
-            { text: 'Me llamo Luis', note: 'correcto' },
-            { text: 'Buenas noches agua', note: 'incorrecto' },
-            { text: 'Casa estudiante', note: 'incompleto' },
-            { text: 'Yo puerta Luis', note: 'incorrecto' }
-          ]
-        },
-        {
-          area: 'Área 6 · Consolidar',
-          title: 'Cierra y afirma la lección',
-          description: 'La consolidación fija equivalencias útiles en memoria.',
-          type: 'choice',
-          prompt: '¿Cuál pareja está correcta?',
-          subprompt: 'Repaso final de cierre Sinapsis.',
-          image: '',
-          correct: 'Libro = book',
-          options: [
-            { text: 'Libro = window', note: 'incorrecto' },
-            { text: 'Libro = book', note: 'correcto' },
-            { text: 'Libro = school', note: 'incorrecto' },
-            { text: 'Libro = teacher', note: 'incorrecto' }
-          ]
-        }
+  'en-es': [
+    {
+      area: 'Área 1 · Observar',
+      title: 'Presentación del oficio',
+      description: 'El alumno observa el concepto del oficio y su contexto.',
+      type: 'choice',
+      prompt: 'What do you do?',
+      subprompt: 'Observa la idea del oficio y selecciona la respuesta correcta.',
+      image: '',
+      correct: 'I am a teacher',
+      options: [
+        { text: 'I am a teacher', note: 'Soy maestro' },
+        { text: 'Blue table', note: 'Incorrecto' },
+        { text: 'Good night', note: 'No responde' },
+        { text: 'Water house', note: 'Sin sentido' }
       ]
-    };
+    },
+    {
+      area: 'Área 2 · Relacionar',
+      title: 'Relaciona oficio y significado',
+      description: 'El alumno conecta profesión con su traducción.',
+      type: 'choice',
+      prompt: 'Teacher = ?',
+      subprompt: 'Relaciona correctamente el oficio.',
+      image: '',
+      correct: 'Maestro',
+      options: [
+        { text: 'Maestro', note: 'Correcto' },
+        { text: 'Casa', note: 'Incorrecto' },
+        { text: 'Agua', note: 'Incorrecto' },
+        { text: 'Mesa', note: 'Incorrecto' }
+      ]
+    },
+    {
+      area: 'Área 3 · Responder',
+      title: 'Responde según escenario',
+      description: 'Aquí entran los 6 escenarios de respuesta.',
+      type: 'choice',
+      prompt: 'Someone asks: "What do you do?"',
+      subprompt: 'Selecciona la mejor respuesta según el escenario.',
+      image: '',
+      correct: 'I work as a driver',
+      options: [
+        { text: 'I work as a driver', note: 'Respuesta directa' },
+        { text: 'I like water', note: 'No responde' },
+        { text: 'Blue teacher', note: 'Incorrecto' },
+        { text: 'Good afternoon house', note: 'Sin sentido' }
+      ]
+    },
+    {
+      area: 'Área 4 · Construir',
+      title: 'Construye tu respuesta',
+      description: 'El alumno crea su propia presentación.',
+      type: 'typing',
+      prompt: 'Write: "Soy mecánico" in English',
+      subprompt: 'Respuesta esperada: I am a mechanic',
+      image: '',
+      answer: ['i am a mechanic']
+    },
+    {
+      area: 'Área 5 · Aplicar',
+      title: 'Aplicar en contexto real',
+      description: 'Uso del idioma en conversación real.',
+      type: 'choice',
+      prompt: 'You meet a client. What do you say?',
+      subprompt: 'Escenario profesional.',
+      image: '',
+      correct: 'I am an electrician',
+      options: [
+        { text: 'I am an electrician', note: 'Correcto' },
+        { text: 'Water table', note: 'Incorrecto' },
+        { text: 'Good night teacher', note: 'No aplica' },
+        { text: 'Blue car', note: 'Sin sentido' }
+      ]
+    },
+    {
+      area: 'Área 6 · Consolidar',
+      title: 'Escenarios de respuesta',
+      description: 'Aquí defines los 6 escenarios posibles del método Sinapsis.',
+      type: 'choice',
+      prompt: 'Which is a correct professional answer?',
+      subprompt: 'Cierre del sistema de respuesta.',
+      image: '',
+      correct: 'I am a technician',
+      options: [
+        { text: 'I am a technician', note: 'Correcto' },
+        { text: 'Water teacher', note: 'Incorrecto' },
+        { text: 'House blue', note: 'Incorrecto' },
+        { text: 'Good afternoon water', note: 'Incorrecto' }
+      ]
+    }
+  ],
+  'es-en': [
+    {
+      area: 'Área 1 · Observar',
+      title: 'Presentación del oficio',
+      description: 'Observa el concepto del trabajo.',
+      type: 'choice',
+      prompt: '¿A qué te dedicas?',
+      subprompt: 'Selecciona la respuesta correcta.',
+      image: '',
+      correct: 'Soy electricista',
+      options: [
+        { text: 'Soy electricista', note: 'Correcto' },
+        { text: 'Agua azul', note: 'Incorrecto' },
+        { text: 'Buenas noches', note: 'No responde' },
+        { text: 'Casa mesa', note: 'Sin sentido' }
+      ]
+    }
+  ]
+};
 
     const builderSets = {
       'en-es': {
