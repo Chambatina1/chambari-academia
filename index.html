@@ -3,1288 +3,1197 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Chambari Academia | Método Sinapsis</title>
+  <title>Sinapsis | Ciudadanía Estadounidense Neuronal</title>
+  <meta name="theme-color" content="#e9ddd2" />
+  <meta name="description" content="Método Sinapsis: desbloqueo cognitivo, captación de nuevos bloques y reacción verbal coherente." />
+
   <style>
-    :root {
-      --bg: #fff8ef;
-      --card: #ffffff;
-      --primary: #f59e0b;
-      --primary-dark: #d97706;
-      --secondary: #0f172a;
-      --muted: #64748b;
-      --line: #e5e7eb;
-      --success: #16a34a;
-      --danger: #dc2626;
-      --accent: #0ea5e9;
-      --shadow: 0 18px 45px rgba(15, 23, 42, 0.08);
-      --radius: 24px;
+    :root{
+      --bg:#f7f1eb;
+      --bg-soft:#fcf8f4;
+      --card:#fffdfb;
+      --line:#e8ddd3;
+      --text:#1f2937;
+      --muted:#6b7280;
+      --accent:#d89f7c;
+      --accent-2:#b48b78;
+      --accent-3:#d8c2b0;
+      --dark:#2e2a28;
+      --success:#2f7d60;
+      --shadow:0 18px 45px rgba(80,56,40,.10);
+      --radius-xl:28px;
+      --radius-lg:22px;
+      --radius-md:16px;
+      --max:1220px;
     }
 
-    * { box-sizing: border-box; }
-
-    html { scroll-behavior: smooth; }
-
-    body {
-      margin: 0;
-      font-family: Arial, Helvetica, sans-serif;
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      font-family:Arial, Helvetica, sans-serif;
+      color:var(--text);
       background:
-        radial-gradient(circle at top left, rgba(245,158,11,0.12), transparent 25%),
-        radial-gradient(circle at top right, rgba(14,165,233,0.10), transparent 20%),
-        var(--bg);
-      color: var(--secondary);
+        radial-gradient(circle at top left, rgba(216,159,124,.18), transparent 22%),
+        radial-gradient(circle at top right, rgba(180,139,120,.12), transparent 18%),
+        linear-gradient(180deg, #faf5f0 0%, var(--bg) 100%);
+      overflow-x:hidden;
+    }
+
+    .container{
+      width:min(var(--max), calc(100% - 28px));
+      margin:0 auto;
+    }
+
+    .topbar{
+      position:sticky;
+      top:0;
+      z-index:100;
+      backdrop-filter:blur(16px);
+      background:rgba(247,241,235,.78);
+      border-bottom:1px solid rgba(232,221,211,.8);
+    }
+
+    .topbar-inner{
+      width:min(var(--max), calc(100% - 28px));
+      margin:0 auto;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:14px;
+      padding:14px 0;
+      flex-wrap:wrap;
+    }
+
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:14px;
+      min-width:0;
+    }
+
+    .brand-logo{
+      width:54px;
+      height:54px;
+      border-radius:18px;
+      background:linear-gradient(135deg, #e7b08e, #c9987c);
+      color:#fff;
+      display:grid;
+      place-items:center;
+      font-size:18px;
+      font-weight:700;
+      box-shadow:var(--shadow);
+      flex:0 0 auto;
+    }
+
+    .brand h1{
+      margin:0;
+      font-size:clamp(22px, 2.9vw, 32px);
+      line-height:1;
+      letter-spacing:.2px;
+    }
+
+    .brand p{
+      margin:5px 0 0;
+      color:var(--muted);
+      font-size:14px;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      max-width:100%;
+    }
+
+    .nav{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+
+    .nav a, .btn{
+      text-decoration:none;
+      color:var(--dark);
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.68);
+      padding:12px 16px;
+      border-radius:999px;
+      font-weight:700;
+      font-size:14px;
+      transition:.22s ease;
+      cursor:pointer;
+      box-shadow:0 10px 22px rgba(80,56,40,.05);
+    }
+
+    .btn.primary{
+      background:linear-gradient(135deg, var(--accent), var(--accent-2));
+      color:#fff;
+      border-color:transparent;
+    }
+
+    .nav a:hover, .btn:hover{
+      transform:translateY(-1px);
+      box-shadow:0 14px 28px rgba(80,56,40,.09);
+    }
+
+    .hero{
+      padding:34px 0 22px;
+    }
+
+    .hero-grid{
+      display:grid;
+      grid-template-columns:1.12fr .88fr;
+      gap:18px;
+      align-items:stretch;
+    }
+
+    .card{
+      background:rgba(255,253,251,.9);
+      border:1px solid rgba(232,221,211,.84);
+      border-radius:var(--radius-xl);
+      box-shadow:var(--shadow);
+    }
+
+    .hero-copy{
+      padding:34px;
+      position:relative;
+      overflow:hidden;
+      background:linear-gradient(145deg, rgba(255,255,255,.94), rgba(249,241,234,.96));
+    }
+
+    .hero-copy::after{
+      content:"";
+      position:absolute;
+      right:-55px;
+      top:-55px;
+      width:220px;
+      height:220px;
+      background:radial-gradient(circle, rgba(216,159,124,.18), transparent 62%);
+      border-radius:50%;
+    }
+
+    .eyebrow{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      background:#fff;
+      border:1px solid #ecd9cb;
+      color:#9f6f58;
+      padding:8px 14px;
+      border-radius:999px;
+      font-weight:700;
+      font-size:13px;
+      margin-bottom:16px;
+      position:relative;
+      z-index:1;
+    }
+
+    .hero-copy h2{
+      margin:0 0 14px;
+      font-size:clamp(34px, 5vw, 62px);
+      line-height:1.02;
+      letter-spacing:-1px;
+      position:relative;
+      z-index:1;
+    }
+
+    .hero-copy h2 span{
+      color:#a96f52;
+      display:block;
+    }
+
+    .hero-copy p{
+      margin:0;
+      color:#4b5563;
+      font-size:18px;
+      line-height:1.7;
+      max-width:800px;
+      position:relative;
+      z-index:1;
+    }
+
+    .hero-actions{
+      display:flex;
+      flex-wrap:wrap;
+      gap:12px;
+      margin-top:22px;
+      position:relative;
+      z-index:1;
+    }
+
+    .hero-side{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:16px;
     }
 
-    .app {
-      width: min(1180px, calc(100% - 28px));
-      margin: 0 auto;
-      padding: 18px 0 40px;
+    .metric{
+      padding:22px;
+      border-radius:26px;
+      color:#fff;
+      min-height:152px;
+      display:flex;
+      flex-direction:column;
+      justify-content:space-between;
+      position:relative;
+      overflow:hidden;
     }
 
-    .topbar {
-      position: sticky;
-      top: 0;
-      z-index: 30;
-      backdrop-filter: blur(12px);
-      background: rgba(255, 248, 239, 0.85);
-      border-bottom: 1px solid rgba(229,231,235,0.7);
+    .metric::after{
+      content:"";
+      position:absolute;
+      right:-18px;
+      bottom:-18px;
+      width:90px;
+      height:90px;
+      border-radius:50%;
+      background:rgba(255,255,255,.12);
     }
 
-    .topbar-inner {
-      width: min(1180px, calc(100% - 28px));
-      margin: 0 auto;
-      display: flex;
-      gap: 12px;
-      align-items: center;
-      justify-content: space-between;
-      padding: 12px 0;
-      flex-wrap: wrap;
+    .m1{background:linear-gradient(135deg,#c88a6f,#e0ae8b)}
+    .m2{background:linear-gradient(135deg,#59514d,#2f2a28)}
+    .m3{background:linear-gradient(135deg,#93a59e,#58786a)}
+    .m4{background:linear-gradient(135deg,#d4b6a4,#a98b79)}
+
+    .metric small{
+      opacity:.86;
+      font-size:13px;
+      letter-spacing:.2px;
+    }
+
+    .metric strong{
+      font-size:32px;
+      line-height:1;
     }
 
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 12px;
+    .section{
+      padding:20px 0 6px;
     }
 
-    .brand-badge {
-      width: 54px;
-      height: 54px;
-      border-radius: 16px;
-      display: grid;
-      place-items: center;
-      background: linear-gradient(135deg, var(--primary), #fdba74);
-      color: #fff;
-      font-weight: 700;
-      font-size: 18px;
-      box-shadow: var(--shadow);
+    .section-head{
+      display:flex;
+      justify-content:space-between;
+      align-items:end;
+      gap:20px;
+      flex-wrap:wrap;
+      margin:0 0 14px;
     }
 
-    .brand h1 {
-      margin: 0;
-      font-size: clamp(22px, 3vw, 30px);
+    .section-head h3{
+      margin:0;
+      font-size:clamp(28px, 3.2vw, 40px);
+      line-height:1.06;
+      letter-spacing:-.5px;
     }
 
-    .brand p {
-      margin: 2px 0 0;
-      color: var(--muted);
-      font-size: 14px;
+    .section-head p{
+      margin:8px 0 0;
+      color:var(--muted);
+      font-size:16px;
+      max-width:760px;
+      line-height:1.6;
     }
 
-    .toolbar {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      align-items: center;
+    .definition-grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:18px;
     }
 
-    .pill, button, select, input {
-      font: inherit;
+    .definition-card{
+      padding:28px;
     }
 
-    .pill {
-      background: #fff;
-      border: 1px solid var(--line);
-      border-radius: 999px;
-      padding: 10px 14px;
-      color: var(--secondary);
+    .definition-card h4{
+      margin:0 0 12px;
+      font-size:24px;
     }
 
-    .controls {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      align-items: center;
+    .definition-card p{
+      margin:0;
+      line-height:1.7;
+      color:#4b5563;
+      font-size:16px;
     }
 
-    button, .btn {
-      border: none;
-      border-radius: 16px;
-      padding: 12px 16px;
-      cursor: pointer;
-      transition: transform .15s ease, box-shadow .15s ease, background .2s ease;
-      box-shadow: 0 8px 18px rgba(15,23,42,.06);
-      font-weight: 700;
+    .quote{
+      margin-top:18px;
+      padding:18px 20px;
+      border-left:4px solid var(--accent);
+      background:#fff7f1;
+      border-radius:18px;
+      color:#7c553d;
+      font-weight:700;
+      line-height:1.6;
     }
 
-    button:hover, .btn:hover { transform: translateY(-1px); }
+    .split-2{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:18px;
+    }
 
-    .btn-primary {
-      background: var(--primary);
-      color: #fff;
-    }
-
-    .btn-primary:hover { background: var(--primary-dark); }
-
-    .btn-secondary {
-      background: #fff;
-      color: var(--secondary);
-      border: 1px solid var(--line);
-    }
-
-    .hero {
-      display: grid;
-      grid-template-columns: 1.2fr .8fr;
-      gap: 18px;
-      margin-top: 18px;
-    }
-
-    .card {
-      background: var(--card);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      padding: 22px;
-      border: 1px solid rgba(229,231,235,0.7);
-    }
-
-    .hero-left {
-      background: linear-gradient(145deg, #fff 0%, #fff8eb 100%);
-      position: relative;
-      overflow: hidden;
+    .phase-card{
+      padding:28px;
+      position:relative;
+      overflow:hidden;
     }
-
-    .hero-left::after {
-      content: "";
-      position: absolute;
-      right: -40px;
-      top: -40px;
-      width: 180px;
-      height: 180px;
-      background: rgba(245, 158, 11, 0.12);
-      border-radius: 50%;
-    }
-
-    .eyebrow {
-      display: inline-flex;
-      gap: 8px;
-      align-items: center;
-      padding: 8px 12px;
-      border-radius: 999px;
-      background: #fff;
-      border: 1px solid #fde68a;
-      color: var(--primary-dark);
-      font-weight: 700;
-      margin-bottom: 14px;
-      position: relative;
-      z-index: 1;
-    }
-
-    .hero h2 {
-      margin: 0 0 12px;
-      font-size: clamp(30px, 4vw, 48px);
-      line-height: 1.05;
-      position: relative;
-      z-index: 1;
-    }
-
-    .hero p {
-      color: #334155;
-      font-size: 17px;
-      line-height: 1.6;
-      position: relative;
-      z-index: 1;
+
+    .phase-number{
+      width:52px;
+      height:52px;
+      border-radius:16px;
+      display:grid;
+      place-items:center;
+      background:#fff4ec;
+      color:#9d694f;
+      font-weight:700;
+      border:1px solid #edd7c8;
+      margin-bottom:14px;
     }
 
-    .hero-actions {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      margin-top: 18px;
-      position: relative;
-      z-index: 1;
+    .phase-card h4{
+      margin:0 0 10px;
+      font-size:25px;
     }
 
-    .hero-visual {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-      align-content: start;
+    .phase-card p{
+      margin:0;
+      color:#4b5563;
+      line-height:1.7;
+      font-size:16px;
     }
 
-    .stat {
-      border-radius: 22px;
-      padding: 18px;
-      color: #fff;
-      min-height: 130px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
+    .mini-list{
+      display:grid;
+      gap:10px;
+      margin-top:18px;
     }
-
-    .s1 { background: linear-gradient(135deg, #f59e0b, #fb923c); }
-    .s2 { background: linear-gradient(135deg, #0f172a, #334155); }
-    .s3 { background: linear-gradient(135deg, #16a34a, #22c55e); }
-    .s4 { background: linear-gradient(135deg, #0ea5e9, #38bdf8); }
-
-    .stat span { opacity: .85; font-size: 13px; }
-    .stat strong { font-size: 30px; }
-
-    .section-title {
-      display: flex;
-      justify-content: space-between;
-      align-items: end;
-      gap: 12px;
-      margin: 28px 0 14px;
-      flex-wrap: wrap;
-    }
-
-    .section-title h3 {
-      margin: 0;
-      font-size: 28px;
-    }
 
-    .section-title p {
-      margin: 6px 0 0;
-      color: var(--muted);
-    }
+    .mini-item{
+      background:#fff;
+      border:1px solid var(--line);
+      border-radius:16px;
+      padding:14px 16px;
+      color:#4b5563;
+      line-height:1.55;
+    }
 
-    .grid-6 {
-      display: grid;
-      grid-template-columns: repeat(6, 1fr);
-      gap: 12px;
+    .scenario-grid{
+      display:grid;
+      grid-template-columns:repeat(6, 1fr);
+      gap:14px;
     }
 
-    .sinapsis-card {
-      padding: 16px;
-      border-radius: 22px;
-      background: #fff;
-      border: 1px solid var(--line);
-      box-shadow: var(--shadow);
-      min-height: 175px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
+    .scenario{
+      padding:18px;
+      border-radius:22px;
+      background:rgba(255,253,251,.9);
+      border:1px solid var(--line);
+      box-shadow:var(--shadow);
+      min-height:195px;
+      transition:.22s ease;
+      transform:translateY(0);
     }
 
-    .sinapsis-card .num {
-      width: 42px;
-      height: 42px;
-      border-radius: 12px;
-      display: grid;
-      place-items: center;
-      background: #fff7ed;
-      color: var(--primary-dark);
-      font-weight: 700;
-      border: 1px solid #fed7aa;
-    }
-
-    .sinapsis-card h4 { margin: 12px 0 8px; font-size: 18px; }
-    .sinapsis-card p { margin: 0; color: var(--muted); line-height: 1.45; font-size: 14px; }
+    .scenario:hover{
+      transform:translateY(-4px);
+    }
 
-    .lesson-layout {
-      display: grid;
-      grid-template-columns: 340px 1fr;
-      gap: 18px;
-      margin-top: 12px;
+    .scenario .icon{
+      width:44px;
+      height:44px;
+      border-radius:14px;
+      display:grid;
+      place-items:center;
+      background:#fff4ec;
+      color:#9d694f;
+      font-weight:700;
+      margin-bottom:12px;
     }
 
-    .sidebar .progress-wrap {
-      margin: 14px 0 20px;
+    .scenario h4{
+      margin:0 0 8px;
+      font-size:18px;
     }
 
-    .progress-bar {
-      height: 14px;
-      background: #f1f5f9;
-      border-radius: 999px;
-      overflow: hidden;
-      border: 1px solid var(--line);
+    .scenario p{
+      margin:0;
+      color:var(--muted);
+      line-height:1.5;
+      font-size:14px;
     }
 
-    .progress-fill {
-      height: 100%;
-      width: 0;
-      background: linear-gradient(90deg, var(--primary), #fdba74);
-      transition: width .35s ease;
-      border-radius: 999px;
+    .accordion{
+      display:grid;
+      gap:14px;
     }
 
-    .path {
-      display: grid;
-      gap: 12px;
+    .module{
+      overflow:hidden;
+      border-radius:24px;
+      border:1px solid var(--line);
+      background:rgba(255,253,251,.9);
+      box-shadow:var(--shadow);
     }
 
-    .path-item {
-      display: grid;
-      grid-template-columns: 54px 1fr;
-      gap: 12px;
-      align-items: center;
-      padding: 12px;
-      border-radius: 20px;
-      border: 1px solid var(--line);
-      background: #fff;
-      cursor: pointer;
-      transition: .2s ease;
+    .module-head{
+      width:100%;
+      border:0;
+      background:transparent;
+      padding:22px;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:14px;
+      cursor:pointer;
+      text-align:left;
     }
 
-    .path-item.active {
-      border-color: #fdba74;
-      background: #fffaf2;
-      box-shadow: 0 10px 24px rgba(245,158,11,.12);
+    .module-left{
+      display:flex;
+      align-items:flex-start;
+      gap:14px;
+      min-width:0;
     }
 
-    .path-icon {
-      width: 54px;
-      height: 54px;
-      border-radius: 16px;
-      display: grid;
-      place-items: center;
-      font-size: 24px;
-      background: #fff7ed;
+    .module-badge{
+      width:50px;
+      height:50px;
+      border-radius:16px;
+      display:grid;
+      place-items:center;
+      background:#fff4ec;
+      color:#9d694f;
+      font-weight:700;
+      flex:0 0 auto;
     }
 
-    .path-item small {
-      color: var(--muted);
-      display: block;
-      margin-top: 4px;
+    .module-head h4{
+      margin:0;
+      font-size:21px;
     }
 
-    .lesson-main {
-      display: grid;
-      gap: 18px;
+    .module-head p{
+      margin:6px 0 0;
+      color:var(--muted);
+      line-height:1.55;
+      font-size:15px;
     }
 
-    .lesson-header {
-      display: flex;
-      justify-content: space-between;
-      gap: 12px;
-      align-items: flex-start;
-      flex-wrap: wrap;
+    .module-toggle{
+      flex:0 0 auto;
+      width:42px;
+      height:42px;
+      border-radius:14px;
+      border:1px solid var(--line);
+      display:grid;
+      place-items:center;
+      background:#fff;
+      font-size:22px;
+      color:#8a6c5d;
+      transition:.22s ease;
     }
 
-    .lesson-header h4 {
-      margin: 0 0 6px;
-      font-size: 26px;
+    .module.active .module-toggle{
+      transform:rotate(45deg);
     }
 
-    .badge {
-      display: inline-flex;
-      gap: 8px;
-      align-items: center;
-      background: #eff6ff;
-      color: #1d4ed8;
-      border: 1px solid #bfdbfe;
-      padding: 8px 12px;
-      border-radius: 999px;
-      font-size: 13px;
-      font-weight: 700;
+    .module-body{
+      max-height:0;
+      overflow:hidden;
+      transition:max-height .35s ease;
+      border-top:1px solid transparent;
     }
 
-    .question-box {
-      display: grid;
-      gap: 16px;
+    .module.active .module-body{
+      border-top:1px solid var(--line);
     }
 
-    .image-box {
-      width: 100%;
-      min-height: 220px;
-      border-radius: 24px;
-      overflow: hidden;
-      border: 1px solid var(--line);
-      background: #f8fafc;
-      display: grid;
-      place-items: center;
-      position: relative;
+    .module-content{
+      padding:0 22px 22px;
+      display:grid;
+      grid-template-columns:1.05fr .95fr;
+      gap:16px;
     }
 
-    .image-box img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
+    .module-panel{
+      background:#fff;
+      border:1px solid var(--line);
+      border-radius:20px;
+      padding:18px;
     }
 
-    .image-fallback {
-      padding: 18px;
-      text-align: center;
-      color: var(--muted);
-      line-height: 1.5;
+    .module-panel h5{
+      margin:0 0 10px;
+      font-size:18px;
     }
 
-    .prompt {
-      font-size: clamp(22px, 3vw, 34px);
-      font-weight: 700;
-      line-height: 1.2;
+    .module-panel p, .module-panel li{
+      color:#4b5563;
+      line-height:1.6;
+      font-size:15px;
     }
 
-    .subprompt {
-      color: var(--muted);
-      line-height: 1.6;
-      font-size: 15px;
+    .module-panel ul{
+      padding-left:18px;
+      margin:0;
     }
 
-    .options {
-      display: grid;
-      gap: 12px;
+    .exercise-box{
+      display:grid;
+      gap:14px;
     }
 
-    .option {
-      width: 100%;
-      text-align: left;
-      background: #fff;
-      color: var(--secondary);
-      border: 2px solid var(--line);
-      padding: 16px;
-      border-radius: 18px;
-      box-shadow: none;
-      font-weight: 700;
+    .exercise-prompt{
+      background:#fcf6f1;
+      border:1px solid #ecdccf;
+      border-radius:16px;
+      padding:16px;
+      font-weight:700;
+      line-height:1.6;
+      color:#6e4f3d;
     }
 
-    .option small {
-      display: block;
-      margin-top: 4px;
-      color: var(--muted);
-      font-weight: 400;
+    .exercise-input{
+      width:100%;
+      border:2px solid var(--line);
+      background:#fff;
+      border-radius:16px;
+      padding:15px 16px;
+      font:inherit;
+      outline:none;
+      font-size:16px;
     }
 
-    .option:hover { border-color: #fdba74; }
-    .option.correct { border-color: var(--success); background: #f0fdf4; }
-    .option.wrong { border-color: var(--danger); background: #fef2f2; }
+    .exercise-input:focus{
+      border-color:#d8b19a;
+    }
 
-    .typing-zone {
-      display: grid;
-      gap: 12px;
+    .actions{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
     }
 
-    .typing-zone input {
-      width: 100%;
-      border: 2px solid var(--line);
-      border-radius: 18px;
-      padding: 16px;
-      outline: none;
-      font-size: 18px;
-      background: #fff;
+    .feedback{
+      min-height:56px;
+      display:flex;
+      align-items:center;
+      padding:14px 16px;
+      border-radius:16px;
+      border:1px dashed #cdb8aa;
+      background:#fffaf7;
+      line-height:1.55;
+      color:#6b4f3f;
+      font-weight:700;
     }
 
-    .typing-zone input:focus { border-color: #fdba74; }
+    .feedback.ok{
+      background:#eff9f4;
+      border:1px solid #b7dec9;
+      color:#225c45;
+    }
 
-    .result-box {
-      min-height: 56px;
-      border-radius: 18px;
-      padding: 14px 16px;
-      background: #f8fafc;
-      border: 1px dashed #cbd5e1;
-      display: flex;
-      align-items: center;
-      color: #334155;
-      font-weight: 700;
+    .feedback.no{
+      background:#fff0ef;
+      border:1px solid #efc0bc;
+      color:#8a3831;
     }
 
-    .result-box.success { background: #f0fdf4; border-style: solid; border-color: #86efac; color: #166534; }
-    .result-box.error { background: #fef2f2; border-style: solid; border-color: #fca5a5; color: #991b1b; }
+    .bank-grid{
+      display:grid;
+      grid-template-columns:1fr 1fr 1fr 1fr;
+      gap:14px;
+    }
 
-    .mini-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 18px;
-      margin-top: 10px;
+    .bank-card{
+      padding:20px;
+      border-radius:22px;
+      background:rgba(255,253,251,.92);
+      border:1px solid var(--line);
+      box-shadow:var(--shadow);
     }
 
-    .tool-box h4, .library-card h4 {
-      margin: 0 0 8px;
-      font-size: 22px;
+    .bank-card h4{
+      margin:0 0 8px;
+      font-size:18px;
     }
 
-    .tool-box p, .library-card p {
-      color: var(--muted);
-      line-height: 1.6;
+    .bank-card p{
+      margin:0;
+      color:var(--muted);
+      line-height:1.55;
+      font-size:14px;
     }
 
-    .sentence-builder {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      margin: 14px 0;
+    .pdf-zone{
+      padding:28px;
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:18px;
     }
 
-    .word-chip {
-      padding: 12px 16px;
-      border-radius: 999px;
-      background: #fff;
-      border: 1px solid var(--line);
-      cursor: pointer;
-      font-weight: 700;
-      user-select: none;
+    .pdf-box{
+      background:#fff;
+      border:1px dashed #cfb9aa;
+      border-radius:22px;
+      padding:24px;
+      min-height:210px;
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
     }
 
-    .builder-output {
-      min-height: 64px;
-      padding: 14px 16px;
-      border-radius: 18px;
-      border: 2px dashed #cbd5e1;
-      background: #f8fafc;
-      font-size: 20px;
-      font-weight: 700;
+    .pdf-box h4{
+      margin:0 0 10px;
+      font-size:21px;
     }
 
-    .library {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 16px;
+    .pdf-box p{
+      margin:0;
+      color:var(--muted);
+      line-height:1.7;
     }
 
-    .library-card {
-      overflow: hidden;
-      padding: 0;
+    .floating{
+      position:fixed;
+      right:16px;
+      bottom:16px;
+      z-index:110;
+      width:58px;
+      height:58px;
+      border-radius:18px;
+      border:0;
+      background:linear-gradient(135deg, var(--accent), var(--accent-2));
+      color:#fff;
+      box-shadow:0 16px 30px rgba(80,56,40,.18);
+      font-size:22px;
+      cursor:pointer;
     }
 
-    .library-card img {
-      width: 100%;
-      height: 180px;
-      object-fit: cover;
-      display: block;
+    .reveal{
+      opacity:0;
+      transform:translateY(22px);
+      transition:opacity .5s ease, transform .5s ease;
     }
 
-    .library-card .body {
-      padding: 18px;
+    .reveal.show{
+      opacity:1;
+      transform:translateY(0);
     }
 
-    .footer-note {
-      margin-top: 24px;
-      color: var(--muted);
-      text-align: center;
-      font-size: 14px;
-      line-height: 1.7;
+    footer{
+      padding:34px 0 44px;
+      color:var(--muted);
+      text-align:center;
+      line-height:1.7;
+      font-size:14px;
     }
+
+    @media (max-width:1100px){
+      .hero-grid,
+      .definition-grid,
+      .split-2,
+      .pdf-zone,
+      .module-content{
+        grid-template-columns:1fr;
+      }
 
-    @media (max-width: 1040px) {
-      .grid-6 { grid-template-columns: repeat(3, 1fr); }
-      .lesson-layout { grid-template-columns: 1fr; }
-      .hero { grid-template-columns: 1fr; }
-      .mini-grid, .library { grid-template-columns: 1fr; }
+      .scenario-grid{
+        grid-template-columns:repeat(3, 1fr);
+      }
+
+      .bank-grid{
+        grid-template-columns:repeat(2, 1fr);
+      }
     }
 
-    @media (max-width: 680px) {
-      .grid-6 { grid-template-columns: repeat(2, 1fr); }
-      .hero-visual { grid-template-columns: 1fr 1fr; }
-      .topbar-inner, .lesson-header { align-items: stretch; }
-      .brand { align-items: flex-start; }
-      .hero h2 { font-size: 32px; }
-      .prompt { font-size: 26px; }
+    @media (max-width:700px){
+      .hero-copy{padding:24px}
+      .metric{min-height:136px}
+      .hero-side{grid-template-columns:1fr 1fr}
+      .scenario-grid{grid-template-columns:1fr 1fr}
+      .bank-grid{grid-template-columns:1fr}
+      .module-head{padding:18px}
+      .module-content{padding:0 18px 18px}
     }
+
+    @media (max-width:520px){
+      .hero-side,
+      .scenario-grid{
+        grid-template-columns:1fr;
+      }
 
-    @media (max-width: 480px) {
-      .grid-6, .hero-visual { grid-template-columns: 1fr; }
+      .brand p{
+        white-space:normal;
+      }
     }
   </style>
 </head>
 <body>
+
   <header class="topbar">
     <div class="topbar-inner">
       <div class="brand">
-        <div class="brand-badge">CH</div>
+        <div class="brand-logo">SI</div>
         <div>
-          <h1>Chambari Academia</h1>
-          <p>Método Sinapsis · Inglés y Español en 6 áreas de dominio</p>
+          <h1>Sinapsis</h1>
+          <p>Ciudadanía estadounidense neuronal · aprendizaje, reacción e intención</p>
         </div>
       </div>
 
-      <div class="toolbar">
-        <div class="pill" id="scorePill">Puntos: 0</div>
-        <div class="pill" id="streakPill">Racha: 0</div>
-        <div class="controls">
-          <select id="learningMode" class="pill" aria-label="Modo de aprendizaje">
-            <option value="en-es">Enseñar inglés con apoyo en español</option>
-            <option value="es-en">Enseñar español con apoyo en inglés</option>
-          </select>
-          <button class="btn-secondary" id="resetProgress">Reiniciar</button>
-          <button class="btn-primary" onclick="document.getElementById('ruta').scrollIntoView()">Comenzar</button>
-        </div>
-      </div>
+      <nav class="nav">
+        <a href="#metodo">Método</a>
+        <a href="#escenarios">Escenarios</a>
+        <a href="#modulos">Módulos</a>
+        <a href="#banco">Banco cognitivo</a>
+        <a href="#pdfs">PDF</a>
+        <button class="btn primary" onclick="document.getElementById('modulos').scrollIntoView()">Entrar</button>
+      </nav>
     </div>
   </header>
 
-  <main class="app">
-    <section class="hero">
-      <div class="card hero-left">
-        <div class="eyebrow">Método propio · Sinapsis 6X</div>
-        <h2>Aprender un idioma no es repetir. Es dominar sus 6 campos esenciales.</h2>
-        <p>
-          Esta página está diseñada para enseñar inglés y español con un sistema dinámico, visual e interactivo.
-          El método <strong>Sinapsis</strong> organiza cada lección en 6 áreas de dominio para que el alumno vea,
-          relacione, responda, construya, use y consolide el idioma con lógica real.
-        </p>
-        <div class="hero-actions">
-          <button class="btn-primary" onclick="document.getElementById('sinapsis').scrollIntoView()">Ver el método</button>
-          <button class="btn-secondary" onclick="document.getElementById('biblioteca').scrollIntoView()">Ver material visual</button>
-        </div>
-      </div>
+  <main class="container">
+    <section class="hero reveal show">
+      <div class="hero-grid">
+        <article class="card hero-copy">
+          <div class="eyebrow">Método propio · desbloqueo + captación cognitiva</div>
+          <h2>
+            No es solo aprender inglés.
+            <span>Es aprender intención, cultura y reacción verbal coherente.</span>
+          </h2>
+          <p>
+            Sinapsis utiliza el campo cognitivo ganado, destraba conocimiento congelado y activa
+            bloques previamente aprendidos de una manera fluida. Al mismo tiempo, incorpora una
+            metodología para captar nuevos bloques cognitivos y convertirlos en respuestas listas
+            para la vida real.
+          </p>
 
-      <div class="hero-visual">
-        <div class="stat s1">
-          <span>Lecciones activas</span>
-          <strong>12</strong>
-          <span>inglés y español</span>
-        </div>
-        <div class="stat s2">
-          <span>Áreas del método</span>
-          <strong>6</strong>
-          <span>Sinapsis total</span>
-        </div>
-        <div class="stat s3">
-          <span>Ejercicios vivos</span>
-          <strong>24</strong>
-          <span>con respuesta inmediata</span>
-        </div>
-        <div class="stat s4">
-          <span>Uso ideal</span>
-          <strong>Clases</strong>
-          <span>pantalla, celular y laptop</span>
-        </div>
-      </div>
-    </section>
-
-    <section id="sinapsis">
-      <div class="section-title">
-        <div>
-          <h3>Las 6 áreas del método Sinapsis</h3>
-          <p>Cada tema del idioma se recorre en una secuencia completa para generar comprensión y uso real.</p>
-        </div>
-      </div>
-
-      <div class="grid-6">
-        <article class="sinapsis-card">
-          <div class="num">1</div>
-          <div>
-            <h4>Observar</h4>
-            <p>El alumno ve la palabra, imagen, gesto o escena. Aquí nace la asociación visual y emocional.</p>
+          <div class="hero-actions">
+            <button class="btn primary" onclick="document.getElementById('metodo').scrollIntoView()">Ver definición</button>
+            <button class="btn" onclick="document.getElementById('modulos').scrollIntoView()">Abrir módulos</button>
           </div>
         </article>
-        <article class="sinapsis-card">
-          <div class="num">2</div>
-          <div>
-            <h4>Relacionar</h4>
-            <p>Conecta la idea con su equivalente en el otro idioma, el contexto y su significado inmediato.</p>
-          </div>
-        </article>
-        <article class="sinapsis-card">
-          <div class="num">3</div>
-          <div>
-            <h4>Responder</h4>
-            <p>El estudiante elige, compara o contesta. Aquí comienzan las 6 posibles respuestas guiadas.</p>
-          </div>
-        </article>
-        <article class="sinapsis-card">
-          <div class="num">4</div>
-          <div>
-            <h4>Construir</h4>
-            <p>Forma frases, ordena ideas y estructura el idioma para pasar de memoria a producción.</p>
-          </div>
-        </article>
-        <article class="sinapsis-card">
-          <div class="num">5</div>
-          <div>
-            <h4>Aplicar</h4>
-            <p>Usa la expresión en diálogo, vida diaria, trabajo, escuela o conversación práctica.</p>
-          </div>
-        </article>
-        <article class="sinapsis-card">
-          <div class="num">6</div>
-          <div>
-            <h4>Consolidar</h4>
-            <p>Corrige, repite, compara y afirma el conocimiento para hacerlo más estable y natural.</p>
-          </div>
-        </article>
-      </div>
-    </section>
 
-    <section id="ruta">
-      <div class="section-title">
-        <div>
-          <h3>Ruta interactiva de clase</h3>
-          <p>Inspirada en aprendizaje por progreso, pero adaptada al método Sinapsis de Chambari Academia.</p>
-        </div>
-      </div>
-
-      <div class="lesson-layout">
-        <aside class="card sidebar">
-          <div class="badge">Ruta Sinapsis activa</div>
-          <div class="progress-wrap">
-            <p><strong>Progreso de la clase</strong></p>
-            <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
-            <p id="progressText">0% completado</p>
+        <aside class="hero-side">
+          <div class="metric m1">
+            <small>Base del sistema</small>
+            <strong>Desbloqueo</strong>
+            <small>activar lo que ya existe</small>
           </div>
-
-          <div class="path" id="pathList"></div>
+          <div class="metric m2">
+            <small>Aporte diferencial</small>
+            <strong>Captación</strong>
+            <small>nuevos bloques con estructura</small>
+          </div>
+          <div class="metric m3">
+            <small>Objetivo real</small>
+            <strong>Reacción</strong>
+            <small>respuesta coherente y fluida</small>
+          </div>
+          <div class="metric m4">
+            <small>Resultado</small>
+            <strong>Cultura</strong>
+            <small>idioma con intención social real</small>
+          </div>
         </aside>
-
-        <section class="lesson-main">
-          <div class="card">
-            <div class="lesson-header">
-              <div>
-                <div class="badge" id="lessonBadge">Área 1 · Observar</div>
-                <h4 id="lessonTitle">Lección interactiva</h4>
-                <p id="lessonDescription" class="subprompt"></p>
-              </div>
-              <button class="btn-secondary" id="nextStepTop">Siguiente área</button>
-            </div>
-          </div>
-
-          <div class="card question-box">
-            <div class="image-box" id="imageBox"></div>
-            <div class="prompt" id="promptText"></div>
-            <div class="subprompt" id="subpromptText"></div>
-            <div class="options" id="optionsBox"></div>
-            <div class="typing-zone" id="typingZone" style="display:none;">
-              <input type="text" id="typingInput" placeholder="Escribe tu respuesta aquí" />
-              <div style="display:flex; gap:10px; flex-wrap:wrap;">
-                <button class="btn-primary" id="checkTyping">Comprobar</button>
-                <button class="btn-secondary" id="showAnswer">Mostrar respuesta</button>
-              </div>
-            </div>
-            <div class="result-box" id="resultBox">Aquí aparecerá la retroalimentación de la actividad.</div>
-            <div style="display:flex; gap:10px; flex-wrap:wrap;">
-              <button class="btn-primary" id="nextStepBottom">Continuar</button>
-              <button class="btn-secondary" id="speakBtn">Escuchar texto</button>
-            </div>
-          </div>
-        </section>
       </div>
     </section>
 
-    <section>
-      <div class="section-title">
+    <section class="section reveal" id="metodo">
+      <div class="section-head">
         <div>
-          <h3>Herramientas de codificación educativa</h3>
-          <p>Estas partes hacen la clase más viva y convierten la página en un laboratorio de idioma.</p>
+          <h3>Qué es realmente Sinapsis</h3>
+          <p>
+            Sinapsis no trata el idioma como una lista de palabras. Lo trata como un sistema de
+            bloques cognitivos que deben poder activarse, relacionarse y ejecutarse correctamente
+            según el escenario humano.
+          </p>
         </div>
       </div>
 
-      <div class="mini-grid">
-        <div class="card tool-box">
-          <h4>Constructor de oraciones</h4>
-          <p>El alumno toca palabras, arma la frase y refuerza estructura, orden y lógica.</p>
-          <div class="sentence-builder" id="builderWords"></div>
-          <div class="builder-output" id="builderOutput">Toca las palabras para construir la oración.</div>
-          <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:12px;">
-            <button class="btn-primary" id="checkBuilder">Verificar</button>
-            <button class="btn-secondary" id="resetBuilder">Limpiar</button>
+      <div class="definition-grid">
+        <article class="card definition-card">
+          <h4>Definición central</h4>
+          <p>
+            Sinapsis es un método cognitivo dual. Primero destraba el conocimiento que ya existe
+            en el banco mental del alumno. Después introduce nuevos bloques de aprendizaje con una
+            estructura funcional para que no se congelen, sino que queden listos para usarse con
+            fluidez, coherencia e intención.
+          </p>
+          <div class="quote">
+            Si ya lo sabes, Sinapsis te enseña a usarlo. Si aún no lo dominas, Sinapsis te enseña a captarlo bien.
           </div>
-          <div class="result-box" id="builderResult" style="margin-top:12px;">Resultado del constructor.</div>
-        </div>
+        </article>
 
-        <div class="card tool-box">
-          <h4>Traductor guiado de aula</h4>
-          <p>No es un traductor abierto. Está pensado para enseñar equivalencias útiles en clase.</p>
-          <div class="typing-zone">
-            <input type="text" id="microTranslatorInput" placeholder="Ejemplo: buenos días / good morning" />
-            <div style="display:flex; gap:10px; flex-wrap:wrap;">
-              <button class="btn-primary" id="translateBtn">Buscar equivalencia</button>
-              <button class="btn-secondary" id="swapModeBtn">Cambiar dirección</button>
-            </div>
+        <article class="card definition-card">
+          <h4>Tu idea bien formulada</h4>
+          <p>
+            El alumno muchas veces no está vacío. Tiene un banco cognitivo. El problema es que ese
+            conocimiento está disperso, congelado o desorganizado. Sinapsis sirve para destrabarlo,
+            conectarlo y ponerlo en acción. Pero además, enseña a captar nuevos bloques cognitivos
+            con contexto, intención, forma verbal, variantes y reacción esperada.
+          </p>
+          <div class="quote">
+            No memoriza frases sueltas. Construye respuestas listas para reaccionar en la realidad.
           </div>
-          <div class="result-box" id="translatorResult" style="margin-top:12px;">La equivalencia aparecerá aquí.</div>
-        </div>
+        </article>
       </div>
     </section>
 
-    <section id="biblioteca">
-      <div class="section-title">
+    <section class="section reveal">
+      <div class="section-head">
         <div>
-          <h3>Biblioteca visual para tus clases</h3>
-          <p>Reemplaza estas imágenes por tus propias fotos, materiales, escenas o tarjetas educativas.</p>
+          <h3>Las 2 fases del método</h3>
+          <p>
+            Esta es la estructura que hace que Sinapsis se sienta distinto: no solo activa lo viejo,
+            también registra bien lo nuevo.
+          </p>
         </div>
       </div>
 
-      <div class="library">
-        <article class="card library-card">
-          <img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=900&q=80" alt="Clase interactiva" />
-          <div class="body">
-            <h4>Conversación y aula</h4>
-            <p>Úsala para practicar saludos, presentaciones, preguntas personales y respuestas cortas.</p>
+      <div class="split-2">
+        <article class="card phase-card">
+          <div class="phase-number">1</div>
+          <h4>Fase de activación</h4>
+          <p>
+            Aquí el alumno reconoce el escenario, busca dentro de su banco mental, conecta bloques
+            previos y responde de forma más natural. Es el proceso de destrabar el conocimiento
+            congelado.
+          </p>
+
+          <div class="mini-list">
+            <div class="mini-item"><strong>Reconoce:</strong> entiende qué está ocurriendo.</div>
+            <div class="mini-item"><strong>Conecta:</strong> junta bloques ya conocidos.</div>
+            <div class="mini-item"><strong>Reacciona:</strong> responde con coherencia verbal.</div>
           </div>
         </article>
 
-        <article class="card library-card">
-          <img src="https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&w=900&q=80" alt="Aprendizaje visual" />
-          <div class="body">
-            <h4>Aprendizaje visual</h4>
-            <p>Perfecta para sustantivos, acciones, emociones, colores, objetos y lugares comunes.</p>
-          </div>
-        </article>
+        <article class="card phase-card">
+          <div class="phase-number">2</div>
+          <h4>Fase de captación</h4>
+          <p>
+            Aquí cada nuevo conocimiento entra con una estructura completa. No se guarda como una
+            palabra muerta, sino como un bloque listo para vida real.
+          </p>
 
-        <article class="card library-card">
-          <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=900&q=80" alt="Trabajo colaborativo" />
-          <div class="body">
-            <h4>Trabajo colaborativo</h4>
-            <p>Ideal para juegos por equipos, retos, competencias sanas y repaso dinámico.</p>
+          <div class="mini-list">
+            <div class="mini-item"><strong>Contexto:</strong> cuándo se usa.</div>
+            <div class="mini-item"><strong>Intención:</strong> qué busca lograr.</div>
+            <div class="mini-item"><strong>Forma verbal:</strong> cómo se expresa.</div>
+            <div class="mini-item"><strong>Variantes:</strong> otras maneras de decirlo.</div>
+            <div class="mini-item"><strong>Reacción:</strong> qué provoca en el otro.</div>
           </div>
         </article>
       </div>
     </section>
 
-    <p class="footer-note">
-      Chambari Academia · Página demostrativa del método Sinapsis.
-      Puedes ampliarla con más unidades, audios, nuevos campos semánticos, ciudadanía, negocios, niños, camioneros o práctica profesional.
-    </p>
+    <section class="section reveal" id="escenarios">
+      <div class="section-head">
+        <div>
+          <h3>Los 6 escenarios de reacción</h3>
+          <p>
+            Puedes ajustar los nombres después, pero esta estructura ya te deja un sistema visual
+            y pedagógico funcionando.
+          </p>
+        </div>
+      </div>
+
+      <div class="scenario-grid">
+        <article class="scenario">
+          <div class="icon">1</div>
+          <h4>Observa</h4>
+          <p>El alumno capta la escena, el gesto, el tono y el entorno antes de responder.</p>
+        </article>
+        <article class="scenario">
+          <div class="icon">2</div>
+          <h4>Identifica</h4>
+          <p>Reconoce qué bloque verbal o cultural necesita activar según el momento.</p>
+        </article>
+        <article class="scenario">
+          <div class="icon">3</div>
+          <h4>Relaciona</h4>
+          <p>Conecta lo que ya sabe con el nuevo estímulo para evitar una respuesta rota.</p>
+        </article>
+        <article class="scenario">
+          <div class="icon">4</div>
+          <h4>Formula</h4>
+          <p>Organiza mentalmente la estructura verbal más coherente y útil.</p>
+        </article>
+        <article class="scenario">
+          <div class="icon">5</div>
+          <h4>Reacciona</h4>
+          <p>Ejecuta la respuesta con intención adecuada, no como traducción mecánica.</p>
+        </article>
+        <article class="scenario">
+          <div class="icon">6</div>
+          <h4>Consolida</h4>
+          <p>Refuerza lo aprendido para que quede activo y disponible para futuras situaciones.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="section reveal" id="modulos">
+      <div class="section-head">
+        <div>
+          <h3>Módulos interactivos de clase</h3>
+          <p>
+            Cada módulo despliega teoría, intención, ejercicio y aplicación. Más adelante aquí se
+            pueden conectar los PDF reales que tú subas al servidor.
+          </p>
+        </div>
+      </div>
+
+      <div class="accordion" id="accordion"></div>
+    </section>
+
+    <section class="section reveal" id="banco">
+      <div class="section-head">
+        <div>
+          <h3>Banco cognitivo funcional</h3>
+          <p>
+            Esta sección explica visualmente que el alumno no aprende bloques muertos, sino bloques
+            completos que luego puede activar.
+          </p>
+        </div>
+      </div>
+
+      <div class="bank-grid">
+        <article class="bank-card">
+          <h4>Bloque verbal</h4>
+          <p>La frase o estructura base que el estudiante necesita dominar.</p>
+        </article>
+        <article class="bank-card">
+          <h4>Bloque cultural</h4>
+          <p>La intención social real del lugar donde vive o interactúa.</p>
+        </article>
+        <article class="bank-card">
+          <h4>Bloque reactivo</h4>
+          <p>La forma en que el alumno responde cuando surge el escenario.</p>
+        </article>
+        <article class="bank-card">
+          <h4>Bloque consolidado</h4>
+          <p>Lo que ya no está congelado y puede salir con más fluidez.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="section reveal" id="pdfs">
+      <div class="section-head">
+        <div>
+          <h3>Zona lista para integrar tus PDF</h3>
+          <p>
+            Ahora mismo queda preparada visualmente. Después, cuando me subas el contenido, se
+            conecta a módulos reales o a visor interno.
+          </p>
+        </div>
+      </div>
+
+      <div class="card pdf-zone">
+        <div class="pdf-box">
+          <h4>Módulos teóricos</h4>
+          <p>
+            Aquí puedes conectar PDF de ciudadanía, cultura estadounidense, inglés práctico,
+            intención verbal o cualquier bloque de entrenamiento cognitivo.
+          </p>
+        </div>
+        <div class="pdf-box">
+          <h4>Material descargable</h4>
+          <p>
+            Esta caja puede convertirse después en visor de PDF, biblioteca o sistema por niveles
+            para celular y computadora.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      Sinapsis · estructura inicial premium para web y app.<br />
+      Lista para crecer con tus clases, módulos, PDF y metodología real.
+    </footer>
   </main>
 
+  <button class="floating" title="Ir arriba" onclick="window.scrollTo({top:0, behavior:'smooth'})">↑</button>
+
   <script>
-    const state = {
-      mode: 'en-es',
-      currentStep: 0,
-      score: 0,
-      streak: 0,
-      builderWords: [],
-      builderCorrect: '',
-      dictionary: {
-        'good morning': 'buenos días',
-        'good afternoon': 'buenas tardes',
-        'good night': 'buenas noches',
-        'hello': 'hola',
-        'water': 'agua',
-        'house': 'casa',
-        'school': 'escuela',
-        'book': 'libro',
-        'teacher': 'maestro',
-        'student': 'estudiante',
-        'how are you': '¿cómo estás?',
-        'my name is': 'me llamo',
-        'buenos días': 'good morning',
-        'buenas tardes': 'good afternoon',
-        'buenas noches': 'good night',
-        'hola': 'hello',
-        'agua': 'water',
-        'casa': 'house',
-        'escuela': 'school',
-        'libro': 'book',
-        'maestro': 'teacher',
-        'estudiante': 'student',
-        '¿cómo estás?': 'how are you',
-        'me llamo': 'my name is'
-      }
-    };
-
-    const lessons = {
-  'en-es': [
-    {
-      area: 'Área 1 · Observar',
-      title: 'Presentación del oficio',
-      description: 'El alumno observa el concepto del oficio y su contexto.',
-      type: 'choice',
-      prompt: 'What do you do?',
-      subprompt: 'Observa la idea del oficio y selecciona la respuesta correcta.',
-      image: '',
-      correct: 'I am a teacher',
-      options: [
-        { text: 'I am a teacher', note: 'Soy maestro' },
-        { text: 'Blue table', note: 'Incorrecto' },
-        { text: 'Good night', note: 'No responde' },
-        { text: 'Water house', note: 'Sin sentido' }
-      ]
-    },
-    {
-      area: 'Área 2 · Relacionar',
-      title: 'Relaciona oficio y significado',
-      description: 'El alumno conecta profesión con su traducción.',
-      type: 'choice',
-      prompt: 'Teacher = ?',
-      subprompt: 'Relaciona correctamente el oficio.',
-      image: '',
-      correct: 'Maestro',
-      options: [
-        { text: 'Maestro', note: 'Correcto' },
-        { text: 'Casa', note: 'Incorrecto' },
-        { text: 'Agua', note: 'Incorrecto' },
-        { text: 'Mesa', note: 'Incorrecto' }
-      ]
-    },
-    {
-      area: 'Área 3 · Responder',
-      title: 'Responde según escenario',
-      description: 'Aquí entran los 6 escenarios de respuesta.',
-      type: 'choice',
-      prompt: 'Someone asks: "What do you do?"',
-      subprompt: 'Selecciona la mejor respuesta según el escenario.',
-      image: '',
-      correct: 'I work as a driver',
-      options: [
-        { text: 'I work as a driver', note: 'Respuesta directa' },
-        { text: 'I like water', note: 'No responde' },
-        { text: 'Blue teacher', note: 'Incorrecto' },
-        { text: 'Good afternoon house', note: 'Sin sentido' }
-      ]
-    },
-    {
-      area: 'Área 4 · Construir',
-      title: 'Construye tu respuesta',
-      description: 'El alumno crea su propia presentación.',
-      type: 'typing',
-      prompt: 'Write: "Soy mecánico" in English',
-      subprompt: 'Respuesta esperada: I am a mechanic',
-      image: '',
-      answer: ['i am a mechanic']
-    },
-    {
-      area: 'Área 5 · Aplicar',
-      title: 'Aplicar en contexto real',
-      description: 'Uso del idioma en conversación real.',
-      type: 'choice',
-      prompt: 'You meet a client. What do you say?',
-      subprompt: 'Escenario profesional.',
-      image: '',
-      correct: 'I am an electrician',
-      options: [
-        { text: 'I am an electrician', note: 'Correcto' },
-        { text: 'Water table', note: 'Incorrecto' },
-        { text: 'Good night teacher', note: 'No aplica' },
-        { text: 'Blue car', note: 'Sin sentido' }
-      ]
-    },
-    {
-      area: 'Área 6 · Consolidar',
-      title: 'Escenarios de respuesta',
-      description: 'Aquí defines los 6 escenarios posibles del método Sinapsis.',
-      type: 'choice',
-      prompt: 'Which is a correct professional answer?',
-      subprompt: 'Cierre del sistema de respuesta.',
-      image: '',
-      correct: 'I am a technician',
-      options: [
-        { text: 'I am a technician', note: 'Correcto' },
-        { text: 'Water teacher', note: 'Incorrecto' },
-        { text: 'House blue', note: 'Incorrecto' },
-        { text: 'Good afternoon water', note: 'Incorrecto' }
-      ]
-    }
-  ],
-  'es-en': [
-    {
-      area: 'Área 1 · Observar',
-      title: 'Presentación del oficio',
-      description: 'Observa el concepto del trabajo.',
-      type: 'choice',
-      prompt: '¿A qué te dedicas?',
-      subprompt: 'Selecciona la respuesta correcta.',
-      image: '',
-      correct: 'Soy electricista',
-      options: [
-        { text: 'Soy electricista', note: 'Correcto' },
-        { text: 'Agua azul', note: 'Incorrecto' },
-        { text: 'Buenas noches', note: 'No responde' },
-        { text: 'Casa mesa', note: 'Sin sentido' }
-      ]
-    }
-  ]
-};
-
-    const builderSets = {
-      'en-es': {
-        words: ['My', 'name', 'is', 'Maria'],
-        correct: 'My name is Maria'
+    const modules = [
+      {
+        title: "Módulo 1 · Destrabar conocimiento congelado",
+        subtitle: "Introducción al banco cognitivo y a la activación de bloques previos.",
+        theory:
+          "Este módulo enseña que el alumno muchas veces sí sabe, pero no logra reaccionar. El objetivo es que reconozca que ya posee un banco cognitivo y aprenda a activarlo de manera ordenada.",
+        points: [
+          "Diferencia entre no saber y no poder usar lo que ya se sabe.",
+          "Reconocimiento del campo cognitivo ganado.",
+          "Desbloqueo de bloques previos según el escenario."
+        ],
+        prompt:
+          "Completa la idea: Si el alumno ya sabe algo pero no logra usarlo, el problema no siempre es falta de conocimiento sino __________.",
+        answers: ["bloqueo", "congelamiento", "conocimiento congelado", "bloqueo cognitivo"],
+        tip:
+          "Aquí comienzas a enseñar que Sinapsis no parte de cero. Parte de reorganizar lo existente."
       },
-      'es-en': {
-        words: ['Me', 'llamo', 'María'],
-        correct: 'Me llamo María'
+      {
+        title: "Módulo 2 · Captación de nuevos bloques",
+        subtitle: "Cómo se registra lo nuevo para que no se vuelva un conocimiento muerto.",
+        theory:
+          "Cada nuevo bloque debe guardarse con estructura completa. No se aprende una frase por aprenderla. Se aprende con contexto, intención, forma verbal, variantes y reacción esperada.",
+        points: [
+          "Contexto: cuándo se usa.",
+          "Intención: qué busca lograr.",
+          "Forma verbal: cómo se dice.",
+          "Reacción esperada: qué provoca."
+        ],
+        prompt:
+          "Escribe una palabra clave que también debe acompañar a un nuevo bloque cognitivo además de la frase. Ejemplo: contexto, intención, reacción...",
+        answers: ["contexto", "intención", "reacción", "forma verbal", "variantes"],
+        tip:
+          "Este módulo convierte el método en un sistema completo y no solo en una técnica de desbloqueo."
+      },
+      {
+        title: "Módulo 3 · Reacción verbal coherente",
+        subtitle: "No basta con decir algo. Debe decirse con lógica, tiempo y tono correctos.",
+        theory:
+          "Sinapsis busca que la respuesta salga coherente con el entorno, con el papel social del hablante y con la intención cultural del lugar donde vive.",
+        points: [
+          "Responder no es traducir literalmente.",
+          "Hablar con coherencia es entender el entorno.",
+          "La intención cambia la forma correcta de reaccionar."
+        ],
+        prompt:
+          "Completa: Hablar bien en un entorno no es solo saber palabras. Es entender su __________ cultural y verbal.",
+        answers: ["intención", "lógica", "intencion"],
+        tip:
+          "Aquí se conecta fuerte con tu idea de ciudadanía estadounidense neuronal."
+      },
+      {
+        title: "Módulo 4 · Ciudadanía estadounidense neuronal",
+        subtitle: "El idioma como cultura de reacción, no solo como gramática.",
+        theory:
+          "Este módulo plantea que vivir en Estados Unidos exige comprender formas de reaccionar, responder, preguntar, presentarse y actuar verbalmente dentro de una cultura específica.",
+        points: [
+          "No es solo inglés, es entorno.",
+          "No es solo gramática, es conducta verbal.",
+          "No es solo repetir, es reaccionar con sentido social."
+        ],
+        prompt:
+          "Escribe la palabra que completa esta idea: No es solo aprender inglés, es aprender la __________ del lugar donde vives.",
+        answers: ["cultura", "intención cultural", "logica cultural", "lógica cultural"],
+        tip:
+          "Aquí está tu mayor diferenciador comercial y filosófico."
       }
-    };
+    ];
 
-    const scorePill = document.getElementById('scorePill');
-    const streakPill = document.getElementById('streakPill');
-    const learningMode = document.getElementById('learningMode');
-    const pathList = document.getElementById('pathList');
-    const progressFill = document.getElementById('progressFill');
-    const progressText = document.getElementById('progressText');
-    const lessonBadge = document.getElementById('lessonBadge');
-    const lessonTitle = document.getElementById('lessonTitle');
-    const lessonDescription = document.getElementById('lessonDescription');
-    const imageBox = document.getElementById('imageBox');
-    const promptText = document.getElementById('promptText');
-    const subpromptText = document.getElementById('subpromptText');
-    const optionsBox = document.getElementById('optionsBox');
-    const typingZone = document.getElementById('typingZone');
-    const typingInput = document.getElementById('typingInput');
-    const resultBox = document.getElementById('resultBox');
-    const checkTyping = document.getElementById('checkTyping');
-    const showAnswer = document.getElementById('showAnswer');
-    const nextStepTop = document.getElementById('nextStepTop');
-    const nextStepBottom = document.getElementById('nextStepBottom');
-    const speakBtn = document.getElementById('speakBtn');
-    const builderWords = document.getElementById('builderWords');
-    const builderOutput = document.getElementById('builderOutput');
-    const builderResult = document.getElementById('builderResult');
-    const checkBuilder = document.getElementById('checkBuilder');
-    const resetBuilder = document.getElementById('resetBuilder');
-    const microTranslatorInput = document.getElementById('microTranslatorInput');
-    const translatorResult = document.getElementById('translatorResult');
-    const translateBtn = document.getElementById('translateBtn');
-    const swapModeBtn = document.getElementById('swapModeBtn');
-    const resetProgress = document.getElementById('resetProgress');
+    const accordion = document.getElementById("accordion");
 
-    function normalize(text) {
+    function normalizeText(text){
       return text
         .toLowerCase()
-        .normalize('NFD')
-        .replace(/[\u0300-\u036f]/g, '')
-        .replace(/[¿?¡!.,]/g, '')
-        .replace(/\s+/g, ' ')
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .replace(/[¿?¡!.,;]/g, "")
+        .replace(/\s+/g, " ")
         .trim();
     }
 
-    function getCurrentLessons() {
-      return lessons[state.mode];
-    }
+    function createModule(module, index){
+      const wrapper = document.createElement("article");
+      wrapper.className = "module";
 
-    function renderPath() {
-      const data = getCurrentLessons();
-      pathList.innerHTML = '';
-      data.forEach((item, index) => {
-        const el = document.createElement('div');
-        el.className = `path-item ${index === state.currentStep ? 'active' : ''}`;
-        el.innerHTML = `
-          <div class="path-icon">${index + 1}</div>
-          <div>
-            <strong>${item.area.replace('Área ', '').replace('·', '-')}</strong>
-            <small>${item.title}</small>
+      wrapper.innerHTML = `
+        <button class="module-head" type="button">
+          <div class="module-left">
+            <div class="module-badge">${index + 1}</div>
+            <div>
+              <h4>${module.title}</h4>
+              <p>${module.subtitle}</p>
+            </div>
           </div>
-        `;
-        el.addEventListener('click', () => {
-          state.currentStep = index;
-          renderAll();
-        });
-        pathList.appendChild(el);
-      });
-    }
+          <div class="module-toggle">+</div>
+        </button>
 
-    function renderProgress() {
-      const total = getCurrentLessons().length;
-      const percent = Math.round((state.currentStep / total) * 100);
-      progressFill.style.width = `${percent}%`;
-      progressText.textContent = `${percent}% completado`;
-      scorePill.textContent = `Puntos: ${state.score}`;
-      streakPill.textContent = `Racha: ${state.streak}`;
-    }
+        <div class="module-body">
+          <div class="module-content">
+            <div class="module-panel">
+              <h5>Base conceptual</h5>
+              <p>${module.theory}</p>
+              <div style="height:12px"></div>
+              <h5>Puntos clave</h5>
+              <ul>
+                ${module.points.map(item => `<li>${item}</li>`).join("")}
+              </ul>
+              <div class="quote" style="margin-top:16px">${module.tip}</div>
+            </div>
 
-    function renderImage(src) {
-      if (src) {
-        imageBox.innerHTML = `<img src="${src}" alt="Imagen educativa" />`;
-      } else {
-        imageBox.innerHTML = `
-          <div class="image-fallback">
-            <strong>Zona visual lista para tus imágenes</strong><br>
-            Puedes poner aquí fotos de objetos, escenas, clientes, alumnos, lugares, familia, trabajo o ciudadanía.
+            <div class="module-panel">
+              <div class="exercise-box">
+                <h5>Práctica breve</h5>
+                <div class="exercise-prompt">${module.prompt}</div>
+                <input class="exercise-input" type="text" placeholder="Escribe tu respuesta aquí" />
+                <div class="actions">
+                  <button class="btn primary check-btn" type="button">Comprobar</button>
+                  <button class="btn reveal-btn" type="button">Mostrar idea guía</button>
+                </div>
+                <div class="feedback">Aquí verás la retroalimentación del ejercicio.</div>
+              </div>
+            </div>
           </div>
-        `;
-      }
-    }
+        </div>
+      `;
 
-    function clearResult(message = 'Aquí aparecerá la retroalimentación de la actividad.') {
-      resultBox.className = 'result-box';
-      resultBox.textContent = message;
-    }
+      const head = wrapper.querySelector(".module-head");
+      const body = wrapper.querySelector(".module-body");
+      const input = wrapper.querySelector(".exercise-input");
+      const checkBtn = wrapper.querySelector(".check-btn");
+      const revealBtn = wrapper.querySelector(".reveal-btn");
+      const feedback = wrapper.querySelector(".feedback");
 
-    function awardPoint() {
-      state.score += 10;
-      state.streak += 1;
-      renderProgress();
-    }
-
-    function failPoint() {
-      state.streak = 0;
-      renderProgress();
-    }
-
-    function renderLesson() {
-      const lesson = getCurrentLessons()[state.currentStep];
-      lessonBadge.textContent = lesson.area;
-      lessonTitle.textContent = lesson.title;
-      lessonDescription.textContent = lesson.description;
-      promptText.textContent = lesson.prompt;
-      subpromptText.textContent = lesson.subprompt;
-      renderImage(lesson.image);
-      optionsBox.innerHTML = '';
-      typingInput.value = '';
-      clearResult();
-
-      if (lesson.type === 'choice') {
-        typingZone.style.display = 'none';
-        lesson.options.forEach(option => {
-          const btn = document.createElement('button');
-          btn.className = 'option';
-          btn.innerHTML = `${option.text}<small>${option.note || ''}</small>`;
-          btn.addEventListener('click', () => {
-            const alreadyAnswered = optionsBox.querySelector('.correct, .wrong');
-            if (alreadyAnswered) return;
-
-            if (option.text === lesson.correct) {
-              btn.classList.add('correct');
-              resultBox.className = 'result-box success';
-              resultBox.textContent = 'Correcto. Esta respuesta sí corresponde con la lógica del método Sinapsis.';
-              awardPoint();
-            } else {
-              btn.classList.add('wrong');
-              failPoint();
-              resultBox.className = 'result-box error';
-              resultBox.textContent = `No es la mejor opción. Respuesta correcta: ${lesson.correct}`;
-              [...optionsBox.children].forEach(child => {
-                if (child.textContent.includes(lesson.correct)) {
-                  child.classList.add('correct');
-                }
-              });
-            }
-          });
-          optionsBox.appendChild(btn);
+      head.addEventListener("click", () => {
+        const active = wrapper.classList.contains("active");
+        document.querySelectorAll(".module").forEach(m => {
+          m.classList.remove("active");
+          m.querySelector(".module-body").style.maxHeight = null;
         });
-      } else {
-        typingZone.style.display = 'grid';
-      }
-    }
 
-    function renderBuilder() {
-      const set = builderSets[state.mode];
-      state.builderWords = [];
-      state.builderCorrect = set.correct;
-      builderWords.innerHTML = '';
-      builderOutput.textContent = 'Toca las palabras para construir la oración.';
-      builderResult.className = 'result-box';
-      builderResult.textContent = 'Resultado del constructor.';
-
-      const shuffled = [...set.words].sort(() => Math.random() - 0.5);
-      shuffled.forEach(word => {
-        const chip = document.createElement('div');
-        chip.className = 'word-chip';
-        chip.textContent = word;
-        chip.addEventListener('click', () => {
-          state.builderWords.push(word);
-          builderOutput.textContent = state.builderWords.join(' ');
-          chip.style.opacity = '0.4';
-          chip.style.pointerEvents = 'none';
-        });
-        builderWords.appendChild(chip);
+        if(!active){
+          wrapper.classList.add("active");
+          body.style.maxHeight = body.scrollHeight + "px";
+        }
       });
+
+      checkBtn.addEventListener("click", () => {
+        const value = normalizeText(input.value);
+        const valid = module.answers.some(ans => normalizeText(ans) === value);
+
+        if(valid){
+          feedback.className = "feedback ok";
+          feedback.textContent = "Correcto. La idea central de este módulo está siendo comprendida.";
+        }else{
+          feedback.className = "feedback no";
+          feedback.textContent = "Todavía no. Piensa en la palabra conceptual central de este bloque.";
+        }
+      });
+
+      revealBtn.addEventListener("click", () => {
+        feedback.className = "feedback";
+        feedback.textContent = "Idea guía: " + module.answers[0];
+      });
+
+      accordion.appendChild(wrapper);
     }
 
-    function renderAll() {
-      renderPath();
-      renderProgress();
-      renderLesson();
-      renderBuilder();
-    }
+    modules.forEach(createModule);
 
-    function goNext() {
-      const total = getCurrentLessons().length;
-      if (state.currentStep < total - 1) {
-        state.currentStep += 1;
-        renderAll();
-        window.scrollTo({ top: document.getElementById('ruta').offsetTop - 70, behavior: 'smooth' });
-      } else {
-        resultBox.className = 'result-box success';
-        resultBox.textContent = 'Secuencia completada. Ya puedes duplicar esta ruta y crear nuevas unidades con tu método Sinapsis.';
-      }
-    }
+    const reveals = document.querySelectorAll(".reveal");
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if(entry.isIntersecting){
+          entry.target.classList.add("show");
+        }
+      });
+    }, { threshold: .12 });
 
-    nextStepTop.addEventListener('click', goNext);
-    nextStepBottom.addEventListener('click', goNext);
-
-    checkTyping.addEventListener('click', () => {
-      const lesson = getCurrentLessons()[state.currentStep];
-      const value = normalize(typingInput.value);
-      const valid = lesson.answer.some(ans => normalize(ans) === value);
-      if (valid) {
-        resultBox.className = 'result-box success';
-        resultBox.textContent = 'Muy bien. La estructura escrita es válida.';
-        awardPoint();
-      } else {
-        resultBox.className = 'result-box error';
-        resultBox.textContent = `Aún no. Respuesta esperada: ${lesson.answer[0]}`;
-        failPoint();
-      }
-    });
-
-    showAnswer.addEventListener('click', () => {
-      const lesson = getCurrentLessons()[state.currentStep];
-      typingInput.value = lesson.answer[0];
-      resultBox.className = 'result-box';
-      resultBox.textContent = `Respuesta modelo: ${lesson.answer[0]}`;
-    });
-
-    speakBtn.addEventListener('click', () => {
-      const lesson = getCurrentLessons()[state.currentStep];
-      const text = `${lesson.prompt}. ${lesson.subprompt}`;
-      if ('speechSynthesis' in window) {
-        const utter = new SpeechSynthesisUtterance(text);
-        utter.lang = state.mode === 'en-es' ? 'en-US' : 'es-ES';
-        speechSynthesis.cancel();
-        speechSynthesis.speak(utter);
-      } else {
-        resultBox.className = 'result-box error';
-        resultBox.textContent = 'Tu navegador no permite lectura en voz en este momento.';
-      }
-    });
-
-    checkBuilder.addEventListener('click', () => {
-      const built = normalize(builderOutput.textContent);
-      const correct = normalize(state.builderCorrect);
-      if (built === correct) {
-        builderResult.className = 'result-box success';
-        builderResult.textContent = 'Oración correcta. La estructura quedó bien formada.';
-        state.score += 10;
-        renderProgress();
-      } else {
-        builderResult.className = 'result-box error';
-        builderResult.textContent = `Aún no. Modelo correcto: ${state.builderCorrect}`;
-      }
-    });
-
-    resetBuilder.addEventListener('click', renderBuilder);
-
-    translateBtn.addEventListener('click', () => {
-      const value = microTranslatorInput.value.trim().toLowerCase();
-      if (!value) {
-        translatorResult.className = 'result-box error';
-        translatorResult.textContent = 'Escribe una palabra o frase corta.';
-        return;
-      }
-
-      const result = state.dictionary[value];
-      if (result) {
-        translatorResult.className = 'result-box success';
-        translatorResult.textContent = `Equivalencia guiada: ${result}`;
-      } else {
-        translatorResult.className = 'result-box';
-        translatorResult.textContent = 'No está en el diccionario base. Puedes ampliar este bloque con tus propias frases.';
-      }
-    });
-
-    swapModeBtn.addEventListener('click', () => {
-      state.mode = state.mode === 'en-es' ? 'es-en' : 'en-es';
-      learningMode.value = state.mode;
-      state.currentStep = 0;
-      renderAll();
-    });
-
-    learningMode.addEventListener('change', (e) => {
-      state.mode = e.target.value;
-      state.currentStep = 0;
-      renderAll();
-    });
-
-    resetProgress.addEventListener('click', () => {
-      state.currentStep = 0;
-      state.score = 0;
-      state.streak = 0;
-      renderAll();
-    });
-
-    renderAll();
+    reveals.forEach(el => observer.observe(el));
   </script>
 </body>
 </html>
