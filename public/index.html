@@ -3,27 +3,20 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Chamberí Academia</title>
+  <title>Chambari Academy</title>
   <style>
-    *{
-      box-sizing:border-box;
-      margin:0;
-      padding:0;
-    }
-
+    *{box-sizing:border-box;margin:0;padding:0}
     body{
-      font-family: Arial, Helvetica, sans-serif;
-      background: linear-gradient(180deg, #f8fafc 0%, #eef2f7 100%);
-      color:#111827;
+      font-family:Arial,Helvetica,sans-serif;
+      background:linear-gradient(180deg,#f8fbff 0%, #eef7f7 100%);
+      color:#1f2937;
       min-height:100vh;
     }
-
     .wrap{
       max-width:1100px;
       margin:0 auto;
       padding:24px 18px 60px;
     }
-
     .topbar{
       display:flex;
       justify-content:space-between;
@@ -32,49 +25,43 @@
       margin-bottom:28px;
       flex-wrap:wrap;
     }
-
     .brand{
       display:flex;
       align-items:center;
       gap:12px;
     }
-
     .logo{
-      width:50px;
-      height:50px;
-      border-radius:14px;
-      background:linear-gradient(135deg,#f59e0b,#fb923c);
+      width:58px;
+      height:58px;
+      border-radius:18px;
+      background:linear-gradient(135deg,#7dd3fc,#a7f3d0);
       display:flex;
       align-items:center;
       justify-content:center;
-      color:white;
-      font-weight:bold;
-      font-size:20px;
-      box-shadow:0 10px 25px rgba(245,158,11,.25);
+      color:#0f172a;
+      font-weight:700;
+      font-size:22px;
+      box-shadow:0 10px 25px rgba(0,0,0,.08);
     }
-
     .brand-text h1{
-      font-size:24px;
+      font-size:26px;
       line-height:1.1;
-      color:#111827;
+      color:#0f172a;
     }
-
     .brand-text p{
       font-size:14px;
-      color:#6b7280;
+      color:#64748b;
       margin-top:4px;
     }
-
     .status{
-      background:white;
+      background:#ffffff;
       padding:10px 14px;
       border-radius:14px;
-      border:1px solid #e5e7eb;
+      border:1px solid #dbeafe;
       font-size:14px;
-      color:#374151;
+      color:#334155;
       box-shadow:0 8px 20px rgba(0,0,0,.04);
     }
-
     .hero{
       display:grid;
       grid-template-columns:1.1fr .9fr;
@@ -82,43 +69,32 @@
       align-items:center;
       margin-bottom:30px;
     }
-
-    .hero-card, .side-card, .section-card{
+    .hero-card,.side-card,.section-card{
       background:white;
-      border:1px solid #e5e7eb;
+      border:1px solid #e2e8f0;
       border-radius:24px;
       box-shadow:0 12px 35px rgba(0,0,0,.05);
     }
-
-    .hero-card{
-      padding:34px 28px;
-    }
-
+    .hero-card{padding:34px 28px}
     .hero-card h2{
       font-size:40px;
       line-height:1.05;
       margin-bottom:16px;
-      color:#111827;
+      color:#0f172a;
     }
-
-    .hero-card h2 span{
-      color:#f59e0b;
-    }
-
+    .hero-card h2 span{color:#0ea5a4}
     .hero-card p{
       font-size:18px;
       line-height:1.6;
-      color:#4b5563;
+      color:#475569;
       max-width:650px;
     }
-
     .hero-actions{
       display:flex;
       flex-wrap:wrap;
       gap:12px;
       margin-top:22px;
     }
-
     .btn{
       display:inline-flex;
       align-items:center;
@@ -132,82 +108,60 @@
       cursor:pointer;
       font-size:15px;
     }
-
     .btn-main{
-      background:#f59e0b;
-      color:white;
-      box-shadow:0 10px 20px rgba(245,158,11,.25);
+      background:#38bdf8;
+      color:#082f49;
+      box-shadow:0 10px 20px rgba(56,189,248,.22);
     }
-
-    .btn-main:hover{
-      transform:translateY(-1px);
-      background:#ea8c00;
-    }
-
+    .btn-main:hover{transform:translateY(-1px);background:#7dd3fc}
     .btn-soft{
-      background:#fff7ed;
-      color:#9a3412;
-      border:1px solid #fed7aa;
+      background:#ecfeff;
+      color:#0f766e;
+      border:1px solid #a7f3d0;
     }
-
-    .btn-soft:hover{
-      transform:translateY(-1px);
-      background:#ffedd5;
-    }
-
-    .side-card{
-      padding:24px;
-    }
-
+    .btn-soft:hover{transform:translateY(-1px);background:#cffafe}
+    .side-card{padding:24px}
     .side-card h3{
       font-size:20px;
       margin-bottom:10px;
-      color:#111827;
+      color:#0f172a;
     }
-
     .side-card p{
-      color:#6b7280;
+      color:#64748b;
       line-height:1.6;
       margin-bottom:18px;
     }
-
     .mini-steps{
       display:grid;
       gap:12px;
     }
-
     .mini-step{
-      background:#f9fafb;
-      border:1px solid #eceff3;
+      background:#f8fafc;
+      border:1px solid #e2e8f0;
       border-radius:16px;
       padding:14px;
     }
-
     .mini-step strong{
       display:block;
-      color:#111827;
+      color:#0f172a;
       margin-bottom:5px;
     }
-
     .mini-step span{
       font-size:14px;
-      color:#6b7280;
+      color:#64748b;
       line-height:1.5;
     }
-
     .menu-grid{
       display:grid;
-      grid-template-columns:repeat(4, 1fr);
+      grid-template-columns:repeat(4,1fr);
       gap:16px;
       margin-bottom:28px;
     }
-
     .menu-card{
       background:white;
-      border:1px solid #e5e7eb;
+      border:1px solid #e2e8f0;
       border-radius:22px;
       padding:22px 18px;
-      text-decoration:none;
       color:inherit;
       box-shadow:0 10px 25px rgba(0,0,0,.04);
       transition:.2s ease;
@@ -215,20 +169,19 @@
       display:flex;
       flex-direction:column;
       justify-content:space-between;
+      cursor:pointer;
     }
-
     .menu-card:hover{
       transform:translateY(-3px);
-      border-color:#f59e0b;
-      box-shadow:0 14px 30px rgba(245,158,11,.10);
+      border-color:#7dd3fc;
+      box-shadow:0 14px 30px rgba(56,189,248,.10);
     }
-
     .menu-icon{
       width:48px;
       height:48px;
       border-radius:14px;
-      background:#fff7ed;
-      color:#f59e0b;
+      background:#ecfeff;
+      color:#0891b2;
       display:flex;
       align-items:center;
       justify-content:center;
@@ -236,118 +189,152 @@
       margin-bottom:14px;
       font-weight:bold;
     }
-
     .menu-card h3{
       font-size:20px;
       margin-bottom:8px;
-      color:#111827;
+      color:#0f172a;
     }
-
     .menu-card p{
       font-size:15px;
       line-height:1.6;
-      color:#6b7280;
+      color:#64748b;
     }
-
     .section-grid{
       display:grid;
       grid-template-columns:1fr 1fr;
       gap:20px;
     }
-
-    .section-card{
-      padding:24px;
-    }
-
+    .section-card{padding:24px}
     .section-card h3{
       font-size:22px;
       margin-bottom:10px;
-      color:#111827;
+      color:#0f172a;
     }
-
     .section-card p{
-      color:#6b7280;
+      color:#64748b;
       line-height:1.7;
       margin-bottom:16px;
     }
-
     .tag-list{
       display:flex;
       flex-wrap:wrap;
       gap:10px;
       margin-top:8px;
     }
-
     .tag{
-      background:#f3f4f6;
-      color:#374151;
+      background:#f1f5f9;
+      color:#334155;
       padding:10px 14px;
       border-radius:999px;
       font-size:14px;
     }
-
+    .panel{
+      margin-top:28px;
+      background:white;
+      border:1px solid #e2e8f0;
+      border-radius:24px;
+      box-shadow:0 12px 35px rgba(0,0,0,.05);
+      padding:24px;
+    }
+    .panel.hidden{display:none}
+    .panel h3{
+      font-size:28px;
+      margin-bottom:10px;
+      color:#0f172a;
+    }
+    .panel p{
+      color:#64748b;
+      line-height:1.7;
+      margin-bottom:16px;
+    }
     .pdf-box{
-      background:#f9fafb;
-      border:2px dashed #d1d5db;
+      background:#f8fafc;
+      border:2px dashed #cbd5e1;
       border-radius:18px;
       padding:22px;
       text-align:center;
-      color:#6b7280;
+      color:#64748b;
       margin-top:8px;
     }
-
     .pdf-box strong{
       display:block;
-      color:#111827;
+      color:#0f172a;
       margin-bottom:8px;
       font-size:16px;
     }
-
+    .question{
+      background:#f8fafc;
+      border:1px solid #e2e8f0;
+      padding:16px;
+      border-radius:16px;
+      margin-bottom:14px;
+    }
+    .question label{
+      display:block;
+      font-weight:700;
+      margin-bottom:10px;
+      color:#0f172a;
+    }
+    .question select,.question input,.question textarea{
+      width:100%;
+      padding:12px 14px;
+      border:1px solid #cbd5e1;
+      border-radius:12px;
+      font-size:15px;
+      outline:none;
+      background:#fff;
+    }
+    .result{
+      margin-top:16px;
+      padding:16px;
+      border-radius:16px;
+      background:#ecfeff;
+      border:1px solid #a5f3fc;
+      color:#155e75;
+      display:none;
+    }
+    .module-list{
+      display:grid;
+      gap:14px;
+    }
+    .module-item{
+      border:1px solid #e2e8f0;
+      border-radius:16px;
+      padding:16px;
+      background:#f8fafc;
+    }
+    .module-item h4{
+      color:#0f172a;
+      margin-bottom:6px;
+      font-size:18px;
+    }
+    .module-item small{
+      display:block;
+      color:#0891b2;
+      margin-bottom:8px;
+    }
+    .module-item p{
+      margin:0;
+      color:#64748b;
+    }
     footer{
       margin-top:34px;
       text-align:center;
-      color:#9ca3af;
+      color:#94a3b8;
       font-size:14px;
     }
-
-    @media (max-width: 950px){
-      .hero{
-        grid-template-columns:1fr;
-      }
-
-      .menu-grid{
-        grid-template-columns:repeat(2, 1fr);
-      }
-
-      .section-grid{
-        grid-template-columns:1fr;
-      }
-
-      .hero-card h2{
-        font-size:32px;
-      }
+    @media (max-width:950px){
+      .hero{grid-template-columns:1fr}
+      .menu-grid{grid-template-columns:repeat(2,1fr)}
+      .section-grid{grid-template-columns:1fr}
+      .hero-card h2{font-size:32px}
     }
-
-    @media (max-width: 640px){
-      .menu-grid{
-        grid-template-columns:1fr;
-      }
-
-      .hero-card{
-        padding:26px 20px;
-      }
-
-      .hero-card h2{
-        font-size:28px;
-      }
-
-      .hero-card p{
-        font-size:16px;
-      }
-
-      .btn{
-        width:100%;
-      }
+    @media (max-width:640px){
+      .menu-grid{grid-template-columns:1fr}
+      .hero-card{padding:26px 20px}
+      .hero-card h2{font-size:28px}
+      .hero-card p{font-size:16px}
+      .btn{width:100%}
     }
   </style>
 </head>
@@ -357,93 +344,88 @@
       <div class="brand">
         <div class="logo">C</div>
         <div class="brand-text">
-          <h1>Chamberí Academia</h1>
-          <p>Aprender inglés con orden, claridad y práctica.</p>
+          <h1>Chambari Academy</h1>
+          <p>Aprender inglés con claridad, orden y práctica.</p>
         </div>
       </div>
-
-      <div class="status">Clase del día disponible</div>
+      <div class="status">Servidor activo · clase disponible</div>
     </div>
 
     <section class="hero">
       <div class="hero-card">
-        <h2>Aprende inglés de forma <span>simple</span>.</h2>
+        <h2>Aprende inglés de forma <span>clara</span>.</h2>
         <p>
-          Estás aquí para avanzar sin presión. Entra al diagnóstico, ve a tus módulos,
-          revisa tus PDF o abre la pizarra de hoy. Todo está pensado para que aprendas
-          paso a paso, sin sentirte cargado.
+          Estás aquí porque quieres aprender sin complicarte. Entra al diagnóstico,
+          revisa tus módulos, abre tus PDF o mira la pizarra del día. Todo está
+          pensado para avanzar paso a paso.
         </p>
-
         <div class="hero-actions">
-          <a href="#diagnostico" class="btn btn-main">Empezar diagnóstico</a>
-          <a href="#modulos" class="btn btn-soft">Ir a módulos</a>
+          <button class="btn btn-main" onclick="showPanel('diagnostico')">Empezar diagnóstico</button>
+          <button class="btn btn-soft" onclick="showPanel('modulos')">Ir a módulos</button>
         </div>
       </div>
 
       <div class="side-card">
         <h3>Tu ruta hoy</h3>
-        <p>No necesitas hacerlo todo de una vez. Solo sigue este orden.</p>
-
+        <p>No necesitas hacerlo todo. Solo sigue este orden.</p>
         <div class="mini-steps">
           <div class="mini-step">
             <strong>1. Descubre tu nivel</strong>
-            <span>Haz un diagnóstico corto para saber por dónde empezar.</span>
+            <span>Haz un diagnóstico corto para saber cómo empezar.</span>
           </div>
           <div class="mini-step">
             <strong>2. Entra al módulo</strong>
-            <span>Aprende con contenido directo, claro y útil.</span>
+            <span>Aprende con ideas simples y útiles.</span>
           </div>
           <div class="mini-step">
-            <strong>3. Ve el PDF o la pizarra</strong>
-            <span>Repasa la clase del día y entiende mejor.</span>
+            <strong>3. Mira el PDF o la pizarra</strong>
+            <span>Repasa la clase de hoy con calma.</span>
           </div>
         </div>
       </div>
     </section>
 
     <section class="menu-grid">
-      <a href="/modulos" class="menu-card" id="modulos">
+      <div class="menu-card" onclick="showPanel('modulos')">
         <div>
           <div class="menu-icon">M</div>
           <h3>Módulos</h3>
-          <p>Entra a tus clases por tema. Todo organizado de lo fácil a lo más complejo.</p>
+          <p>Entra a tus clases por tema. Todo ordenado de lo simple a lo complejo.</p>
         </div>
-      </a>
+      </div>
 
-      <a href="/pdfs" class="menu-card">
+      <div class="menu-card" onclick="showPanel('pdfs')">
         <div>
           <div class="menu-icon">P</div>
           <h3>PDF</h3>
-          <p>Abre tus documentos de estudio en un espacio simple y limpio.</p>
+          <p>Abre tus documentos de estudio en un espacio limpio.</p>
         </div>
-      </a>
+      </div>
 
-      <a href="/pizarra" class="menu-card">
+      <div class="menu-card" onclick="showPanel('pizarra')">
         <div>
           <div class="menu-icon">D</div>
           <h3>Pizarra del día</h3>
-          <p>Ve la clase actual, las palabras clave y los puntos más importantes.</p>
+          <p>Ve la clase actual y los puntos clave.</p>
         </div>
-      </a>
+      </div>
 
-      <a href="/diagnostico" class="menu-card" id="diagnostico">
+      <div class="menu-card" onclick="showPanel('diagnostico')">
         <div>
           <div class="menu-icon">+</div>
           <h3>Diagnóstico</h3>
-          <p>Empieza aquí si eres nuevo. Es rápido y te orienta mejor.</p>
+          <p>Empieza aquí si eres nuevo. Es corto y útil.</p>
         </div>
-      </a>
+      </div>
     </section>
 
     <section class="section-grid">
       <div class="section-card">
         <h3>Un método claro</h3>
         <p>
-          Aquí no vas a encontrar explicaciones pesadas. Vas a ver ideas cortas,
-          ejemplos útiles y una ruta que te ayude a entender el inglés sin sentir
-          que todo es difícil.
+          Aquí no vas a encontrar textos pesados. Vas a ver ideas simples,
+          ejemplos útiles y una ruta que te ayude a entender mejor.
         </p>
-
         <div class="tag-list">
           <span class="tag">Simple</span>
           <span class="tag">Directo</span>
@@ -455,20 +437,174 @@
       <div class="section-card">
         <h3>Espacio abierto para PDF</h3>
         <p>
-          Este bloque puede quedar listo para pegar o mostrar el PDF de cada clase
-          sin recargar la pantalla del estudiante.
+          Este bloque queda listo para pegar el PDF de cada clase sin cargar demasiado la pantalla.
         </p>
-
         <div class="pdf-box">
           <strong>Aquí va el PDF del día</strong>
-          Puedes insertar el visor o el enlace del documento actual.
+          Puedes pegar un enlace, un visor o un documento más adelante.
         </div>
       </div>
     </section>
 
+    <section id="panel-modulos" class="panel hidden">
+      <h3>Módulos</h3>
+      <p>Estos son tus módulos activos.</p>
+      <div id="module-list" class="module-list">
+        <p>Cargando módulos...</p>
+      </div>
+    </section>
+
+    <section id="panel-pdfs" class="panel hidden">
+      <h3>PDF</h3>
+      <p>Aquí puedes dejar el PDF de la clase actual o un enlace al material.</p>
+      <div class="pdf-box">
+        <strong>Espacio para PDF</strong>
+        Ejemplo: pegar aquí un enlace de Google Drive, un PDF o un visor embebido.
+      </div>
+    </section>
+
+    <section id="panel-pizarra" class="panel hidden">
+      <h3>Pizarra del día</h3>
+      <p>Este espacio es para escribir la idea central, palabras nuevas o ejercicios del día.</p>
+      <div class="pdf-box">
+        <strong>Clase del día</strong>
+        Aquí puedes colocar el resumen de hoy, ejemplos o instrucciones breves.
+      </div>
+    </section>
+
+    <section id="panel-diagnostico" class="panel hidden">
+      <h3>Diagnóstico</h3>
+      <p>Responde estas preguntas. Es una forma simple de saber por dónde empezar.</p>
+
+      <div class="question">
+        <label for="usuario">Tu nombre</label>
+        <input type="text" id="usuario" placeholder="Escribe tu nombre" />
+      </div>
+
+      <div class="question">
+        <label for="q1">¿Entiendes frases básicas en inglés?</label>
+        <select id="q1">
+          <option value="">Selecciona</option>
+          <option value="2">Sí, bastante</option>
+          <option value="1">Un poco</option>
+          <option value="0">Casi nada</option>
+        </select>
+      </div>
+
+      <div class="question">
+        <label for="q2">¿Puedes responder preguntas simples?</label>
+        <select id="q2">
+          <option value="">Selecciona</option>
+          <option value="2">Sí</option>
+          <option value="1">A veces</option>
+          <option value="0">No</option>
+        </select>
+      </div>
+
+      <div class="question">
+        <label for="q3">¿Cuál es tu mayor dificultad?</label>
+        <textarea id="q3" rows="4" placeholder="Ejemplo: entiendo algunas cosas, pero me cuesta responder"></textarea>
+      </div>
+
+      <button class="btn btn-main" onclick="evaluarDiagnostico()">Ver resultado</button>
+      <div id="diagnostico-resultado" class="result"></div>
+    </section>
+
     <footer>
-      Chamberí Academia · aprendizaje claro y útil
+      Chambari Academy · aprendizaje claro y útil
     </footer>
   </div>
+
+  <script>
+    function showPanel(name) {
+      const panels = ["modulos", "pdfs", "pizarra", "diagnostico"];
+      panels.forEach((panel) => {
+        document.getElementById("panel-" + panel).classList.add("hidden");
+      });
+      document.getElementById("panel-" + name).classList.remove("hidden");
+
+      if (name === "modulos") {
+        cargarModulos();
+      }
+
+      window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
+    }
+
+    async function cargarModulos() {
+      const container = document.getElementById("module-list");
+      container.innerHTML = "<p>Cargando módulos...</p>";
+
+      try {
+        const res = await fetch("/api/modulos");
+        const json = await res.json();
+
+        if (!json.ok || !json.data || !json.data.length) {
+          container.innerHTML = "<p>No hay módulos disponibles.</p>";
+          return;
+        }
+
+        container.innerHTML = json.data.map(modulo => `
+          <div class="module-item">
+            <h4>${modulo.titulo}</h4>
+            <small>${modulo.subtitulo}</small>
+            <p>${modulo.descripcion}</p>
+          </div>
+        `).join("");
+      } catch (error) {
+        container.innerHTML = "<p>No se pudieron cargar los módulos.</p>";
+      }
+    }
+
+    async function evaluarDiagnostico() {
+      const usuario = document.getElementById("usuario").value.trim();
+      const q1 = Number(document.getElementById("q1").value);
+      const q2 = Number(document.getElementById("q2").value);
+      const q3 = document.getElementById("q3").value.trim();
+      const result = document.getElementById("diagnostico-resultado");
+
+      if (!usuario) {
+        result.style.display = "block";
+        result.innerHTML = "Escribe tu nombre para continuar.";
+        return;
+      }
+
+      if (document.getElementById("q1").value === "" || document.getElementById("q2").value === "") {
+        result.style.display = "block";
+        result.innerHTML = "Completa las preguntas del diagnóstico.";
+        return;
+      }
+
+      const total = q1 + q2;
+      let mensaje = "";
+
+      if (total <= 1) {
+        mensaje = "Tu punto de partida es básico. Lo mejor es comenzar con los módulos iniciales y avanzar con calma.";
+      } else if (total <= 3) {
+        mensaje = "Tienes una base inicial. Ya puedes empezar con práctica guiada y respuestas cortas.";
+      } else {
+        mensaje = "Tienes buena base. Puedes avanzar a módulos de reacción verbal y práctica más activa.";
+      }
+
+      result.style.display = "block";
+      result.innerHTML = `<strong>${usuario}</strong>, ${mensaje}`;
+
+      try {
+        await fetch("/api/progreso", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            usuario,
+            moduloId: 1,
+            avance: total,
+            respuesta: q3 || "Diagnóstico inicial"
+          })
+        });
+      } catch (error) {
+        console.log("No se pudo guardar el diagnóstico.");
+      }
+    }
+  </script>
 </body>
 </html>
