@@ -1,1 +1,474 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Chamberí Academia</title>
+  <style>
+    *{
+      box-sizing:border-box;
+      margin:0;
+      padding:0;
+    }
 
+    body{
+      font-family: Arial, Helvetica, sans-serif;
+      background: linear-gradient(180deg, #f8fafc 0%, #eef2f7 100%);
+      color:#111827;
+      min-height:100vh;
+    }
+
+    .wrap{
+      max-width:1100px;
+      margin:0 auto;
+      padding:24px 18px 60px;
+    }
+
+    .topbar{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+      margin-bottom:28px;
+      flex-wrap:wrap;
+    }
+
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:12px;
+    }
+
+    .logo{
+      width:50px;
+      height:50px;
+      border-radius:14px;
+      background:linear-gradient(135deg,#f59e0b,#fb923c);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      color:white;
+      font-weight:bold;
+      font-size:20px;
+      box-shadow:0 10px 25px rgba(245,158,11,.25);
+    }
+
+    .brand-text h1{
+      font-size:24px;
+      line-height:1.1;
+      color:#111827;
+    }
+
+    .brand-text p{
+      font-size:14px;
+      color:#6b7280;
+      margin-top:4px;
+    }
+
+    .status{
+      background:white;
+      padding:10px 14px;
+      border-radius:14px;
+      border:1px solid #e5e7eb;
+      font-size:14px;
+      color:#374151;
+      box-shadow:0 8px 20px rgba(0,0,0,.04);
+    }
+
+    .hero{
+      display:grid;
+      grid-template-columns:1.1fr .9fr;
+      gap:24px;
+      align-items:center;
+      margin-bottom:30px;
+    }
+
+    .hero-card, .side-card, .section-card{
+      background:white;
+      border:1px solid #e5e7eb;
+      border-radius:24px;
+      box-shadow:0 12px 35px rgba(0,0,0,.05);
+    }
+
+    .hero-card{
+      padding:34px 28px;
+    }
+
+    .hero-card h2{
+      font-size:40px;
+      line-height:1.05;
+      margin-bottom:16px;
+      color:#111827;
+    }
+
+    .hero-card h2 span{
+      color:#f59e0b;
+    }
+
+    .hero-card p{
+      font-size:18px;
+      line-height:1.6;
+      color:#4b5563;
+      max-width:650px;
+    }
+
+    .hero-actions{
+      display:flex;
+      flex-wrap:wrap;
+      gap:12px;
+      margin-top:22px;
+    }
+
+    .btn{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      text-decoration:none;
+      padding:14px 18px;
+      border-radius:14px;
+      font-weight:700;
+      transition:.2s ease;
+      border:none;
+      cursor:pointer;
+      font-size:15px;
+    }
+
+    .btn-main{
+      background:#f59e0b;
+      color:white;
+      box-shadow:0 10px 20px rgba(245,158,11,.25);
+    }
+
+    .btn-main:hover{
+      transform:translateY(-1px);
+      background:#ea8c00;
+    }
+
+    .btn-soft{
+      background:#fff7ed;
+      color:#9a3412;
+      border:1px solid #fed7aa;
+    }
+
+    .btn-soft:hover{
+      transform:translateY(-1px);
+      background:#ffedd5;
+    }
+
+    .side-card{
+      padding:24px;
+    }
+
+    .side-card h3{
+      font-size:20px;
+      margin-bottom:10px;
+      color:#111827;
+    }
+
+    .side-card p{
+      color:#6b7280;
+      line-height:1.6;
+      margin-bottom:18px;
+    }
+
+    .mini-steps{
+      display:grid;
+      gap:12px;
+    }
+
+    .mini-step{
+      background:#f9fafb;
+      border:1px solid #eceff3;
+      border-radius:16px;
+      padding:14px;
+    }
+
+    .mini-step strong{
+      display:block;
+      color:#111827;
+      margin-bottom:5px;
+    }
+
+    .mini-step span{
+      font-size:14px;
+      color:#6b7280;
+      line-height:1.5;
+    }
+
+    .menu-grid{
+      display:grid;
+      grid-template-columns:repeat(4, 1fr);
+      gap:16px;
+      margin-bottom:28px;
+    }
+
+    .menu-card{
+      background:white;
+      border:1px solid #e5e7eb;
+      border-radius:22px;
+      padding:22px 18px;
+      text-decoration:none;
+      color:inherit;
+      box-shadow:0 10px 25px rgba(0,0,0,.04);
+      transition:.2s ease;
+      min-height:180px;
+      display:flex;
+      flex-direction:column;
+      justify-content:space-between;
+    }
+
+    .menu-card:hover{
+      transform:translateY(-3px);
+      border-color:#f59e0b;
+      box-shadow:0 14px 30px rgba(245,158,11,.10);
+    }
+
+    .menu-icon{
+      width:48px;
+      height:48px;
+      border-radius:14px;
+      background:#fff7ed;
+      color:#f59e0b;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:22px;
+      margin-bottom:14px;
+      font-weight:bold;
+    }
+
+    .menu-card h3{
+      font-size:20px;
+      margin-bottom:8px;
+      color:#111827;
+    }
+
+    .menu-card p{
+      font-size:15px;
+      line-height:1.6;
+      color:#6b7280;
+    }
+
+    .section-grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:20px;
+    }
+
+    .section-card{
+      padding:24px;
+    }
+
+    .section-card h3{
+      font-size:22px;
+      margin-bottom:10px;
+      color:#111827;
+    }
+
+    .section-card p{
+      color:#6b7280;
+      line-height:1.7;
+      margin-bottom:16px;
+    }
+
+    .tag-list{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin-top:8px;
+    }
+
+    .tag{
+      background:#f3f4f6;
+      color:#374151;
+      padding:10px 14px;
+      border-radius:999px;
+      font-size:14px;
+    }
+
+    .pdf-box{
+      background:#f9fafb;
+      border:2px dashed #d1d5db;
+      border-radius:18px;
+      padding:22px;
+      text-align:center;
+      color:#6b7280;
+      margin-top:8px;
+    }
+
+    .pdf-box strong{
+      display:block;
+      color:#111827;
+      margin-bottom:8px;
+      font-size:16px;
+    }
+
+    footer{
+      margin-top:34px;
+      text-align:center;
+      color:#9ca3af;
+      font-size:14px;
+    }
+
+    @media (max-width: 950px){
+      .hero{
+        grid-template-columns:1fr;
+      }
+
+      .menu-grid{
+        grid-template-columns:repeat(2, 1fr);
+      }
+
+      .section-grid{
+        grid-template-columns:1fr;
+      }
+
+      .hero-card h2{
+        font-size:32px;
+      }
+    }
+
+    @media (max-width: 640px){
+      .menu-grid{
+        grid-template-columns:1fr;
+      }
+
+      .hero-card{
+        padding:26px 20px;
+      }
+
+      .hero-card h2{
+        font-size:28px;
+      }
+
+      .hero-card p{
+        font-size:16px;
+      }
+
+      .btn{
+        width:100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="topbar">
+      <div class="brand">
+        <div class="logo">C</div>
+        <div class="brand-text">
+          <h1>Chamberí Academia</h1>
+          <p>Aprender inglés con orden, claridad y práctica.</p>
+        </div>
+      </div>
+
+      <div class="status">Clase del día disponible</div>
+    </div>
+
+    <section class="hero">
+      <div class="hero-card">
+        <h2>Aprende inglés de forma <span>simple</span>.</h2>
+        <p>
+          Estás aquí para avanzar sin presión. Entra al diagnóstico, ve a tus módulos,
+          revisa tus PDF o abre la pizarra de hoy. Todo está pensado para que aprendas
+          paso a paso, sin sentirte cargado.
+        </p>
+
+        <div class="hero-actions">
+          <a href="#diagnostico" class="btn btn-main">Empezar diagnóstico</a>
+          <a href="#modulos" class="btn btn-soft">Ir a módulos</a>
+        </div>
+      </div>
+
+      <div class="side-card">
+        <h3>Tu ruta hoy</h3>
+        <p>No necesitas hacerlo todo de una vez. Solo sigue este orden.</p>
+
+        <div class="mini-steps">
+          <div class="mini-step">
+            <strong>1. Descubre tu nivel</strong>
+            <span>Haz un diagnóstico corto para saber por dónde empezar.</span>
+          </div>
+          <div class="mini-step">
+            <strong>2. Entra al módulo</strong>
+            <span>Aprende con contenido directo, claro y útil.</span>
+          </div>
+          <div class="mini-step">
+            <strong>3. Ve el PDF o la pizarra</strong>
+            <span>Repasa la clase del día y entiende mejor.</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="menu-grid">
+      <a href="/modulos" class="menu-card" id="modulos">
+        <div>
+          <div class="menu-icon">M</div>
+          <h3>Módulos</h3>
+          <p>Entra a tus clases por tema. Todo organizado de lo fácil a lo más complejo.</p>
+        </div>
+      </a>
+
+      <a href="/pdfs" class="menu-card">
+        <div>
+          <div class="menu-icon">P</div>
+          <h3>PDF</h3>
+          <p>Abre tus documentos de estudio en un espacio simple y limpio.</p>
+        </div>
+      </a>
+
+      <a href="/pizarra" class="menu-card">
+        <div>
+          <div class="menu-icon">D</div>
+          <h3>Pizarra del día</h3>
+          <p>Ve la clase actual, las palabras clave y los puntos más importantes.</p>
+        </div>
+      </a>
+
+      <a href="/diagnostico" class="menu-card" id="diagnostico">
+        <div>
+          <div class="menu-icon">+</div>
+          <h3>Diagnóstico</h3>
+          <p>Empieza aquí si eres nuevo. Es rápido y te orienta mejor.</p>
+        </div>
+      </a>
+    </section>
+
+    <section class="section-grid">
+      <div class="section-card">
+        <h3>Un método claro</h3>
+        <p>
+          Aquí no vas a encontrar explicaciones pesadas. Vas a ver ideas cortas,
+          ejemplos útiles y una ruta que te ayude a entender el inglés sin sentir
+          que todo es difícil.
+        </p>
+
+        <div class="tag-list">
+          <span class="tag">Simple</span>
+          <span class="tag">Directo</span>
+          <span class="tag">Paso a paso</span>
+          <span class="tag">Sin presión</span>
+        </div>
+      </div>
+
+      <div class="section-card">
+        <h3>Espacio abierto para PDF</h3>
+        <p>
+          Este bloque puede quedar listo para pegar o mostrar el PDF de cada clase
+          sin recargar la pantalla del estudiante.
+        </p>
+
+        <div class="pdf-box">
+          <strong>Aquí va el PDF del día</strong>
+          Puedes insertar el visor o el enlace del documento actual.
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      Chamberí Academia · aprendizaje claro y útil
+    </footer>
+  </div>
+</body>
+</html>
