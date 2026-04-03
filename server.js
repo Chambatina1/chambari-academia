@@ -1,25 +1,14 @@
 const express = require("express");
 const path = require("path");
-const cors = require("cors");
-require("dotenv").config();
 
 const app = express();
 const PORT = process.env.PORT || 10000;
 
-// =========================
-// CONFIGURACIÓN GENERAL
-// =========================
 app.disable("x-powered-by");
-app.use(cors());
-app.use(express.json({ limit: "2mb" }));
+app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, "public")));
 
-// =========================
-// BASE TEMPORAL EN MEMORIA
-// =========================
-// Esto es suficiente por ahora.
-// Más adelante lo cambias por PostgreSQL si quieres usuarios reales.
 const db = {
   progreso: [],
   modulos: [
@@ -28,8 +17,7 @@ const db = {
       slug: "destrabar-conocimiento",
       titulo: "Destrabar conocimiento congelado",
       subtitulo: "Activación del banco cognitivo previo",
-      descripcion:
-        "El alumno reconoce que muchas veces sí sabe, pero no logra reaccionar. Aquí se organiza y destraba lo ya aprendido.",
+      descripcion: "El alumno reconoce que muchas veces sí sabe, pero no logra reaccionar.",
       activo: true,
       orden: 1
     },
@@ -38,8 +26,7 @@ const db = {
       slug: "captacion-de-bloques",
       titulo: "Captación de nuevos bloques",
       subtitulo: "Ingreso estructurado de conocimiento nuevo",
-      descripcion:
-        "Cada nuevo bloque se registra con contexto, intención, forma verbal, variantes y reacción esperada.",
+      descripcion: "Cada nuevo bloque se registra con contexto, intención y reacción esperada.",
       activo: true,
       orden: 2
     },
@@ -48,8 +35,7 @@ const db = {
       slug: "reaccion-verbal-coherente",
       titulo: "Reacción verbal coherente",
       subtitulo: "Responder con lógica e intención",
-      descripcion:
-        "No basta con saber palabras. Hay que reaccionar de forma correcta según el escenario humano y cultural.",
+      descripcion: "No basta con saber palabras. Hay que reaccionar bien según el escenario.",
       activo: true,
       orden: 3
     },
@@ -58,31 +44,13 @@ const db = {
       slug: "ciudadania-neuronal",
       titulo: "Ciudadanía estadounidense neuronal",
       subtitulo: "Idioma, cultura e intención social",
-      descripcion:
-        "Aprender el entorno de reacción verbal del lugar donde vives, no solo la gramática.",
+      descripcion: "Aprender el entorno de reacción verbal del lugar donde vives.",
       activo: true,
       orden: 4
-    }
-  ],
-  biblioteca: [
-    {
-      id: 1,
-      nombre: "Ciudadanía neuronal",
-      tipo: "pdf",
-      estado: "pendiente"
-    },
-    {
-      id: 2,
-      nombre: "Bloques cognitivos funcionales",
-      tipo: "pdf",
-      estado: "pendiente"
     }
   ]
 };
 
-// =========================
-// FUNCIONES AUXILIARES
-// =========================
 function cleanText(value) {
   return String(value || "").trim();
 }
@@ -94,11 +62,6 @@ function sendError(res, status, message) {
   });
 }
 
-// =========================
-// RUTAS API
-// =========================
-
-// Estado del servidor
 app.get("/api/status", (req, res) => {
   res.status(200).json({
     ok: true,
@@ -109,7 +72,6 @@ app.get("/api/status", (req, res) => {
   });
 });
 
-// Obtener todos los módulos activos
 app.get("/api/modulos", (req, res) => {
   const activos = db.modulos
     .filter((m) => m.activo)
@@ -122,31 +84,6 @@ app.get("/api/modulos", (req, res) => {
   });
 });
 
-// Obtener un módulo por ID
-app.get("/api/modulos/:id", (req, res) => {
-  const id = Number(req.params.id);
-  const modulo = db.modulos.find((m) => m.id === id);
-
-  if (!modulo) {
-    return sendError(res, 404, "Módulo no encontrado");
-  }
-
-  res.status(200).json({
-    ok: true,
-    data: modulo
-  });
-});
-
-// Obtener biblioteca
-app.get("/api/biblioteca", (req, res) => {
-  res.status(200).json({
-    ok: true,
-    total: db.biblioteca.length,
-    data: db.biblioteca
-  });
-});
-
-// Guardar progreso
 app.post("/api/progreso", (req, res) => {
   try {
     const usuario = cleanText(req.body.usuario);
@@ -192,7 +129,6 @@ app.post("/api/progreso", (req, res) => {
   }
 });
 
-// Ver todo el progreso
 app.get("/api/progreso", (req, res) => {
   res.status(200).json({
     ok: true,
@@ -201,50 +137,10 @@ app.get("/api/progreso", (req, res) => {
   });
 });
 
-// Ver progreso por usuario
-app.get("/api/progreso/usuario/:nombre", (req, res) => {
-  try {
-    const nombre = cleanText(req.params.nombre).toLowerCase();
-
-    const resultados = db.progreso.filter(
-      (item) => item.usuario.toLowerCase() === nombre
-    );
-
-    res.status(200).json({
-      ok: true,
-      usuario: nombre,
-      total: resultados.length,
-      data: resultados
-    });
-  } catch (error) {
-    console.error("Error en /api/progreso/usuario/:nombre:", error);
-    res.status(500).json({
-      ok: false,
-      error: "Error interno al consultar progreso"
-    });
-  }
-});
-
-// Reinicio manual de progreso en memoria
-app.delete("/api/progreso", (req, res) => {
-  db.progreso.length = 0;
-
-  res.status(200).json({
-    ok: true,
-    mensaje: "Progreso temporal reiniciado"
-  });
-});
-
-// =========================
-// RUTA PRINCIPAL WEB
-// =========================
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
-// =========================
-// MANEJO DE RUTAS NO API
-// =========================
 app.get("*", (req, res) => {
   if (req.path.startsWith("/api")) {
     return sendError(res, 404, "Ruta API no encontrada");
@@ -253,9 +149,6 @@ app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
-// =========================
-// INICIO DEL SERVIDOR
-// =========================
 app.listen(PORT, () => {
   console.log(`Servidor Sinapsis activo en puerto ${PORT}`);
 });
