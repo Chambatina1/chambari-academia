@@ -7,7 +7,7 @@
 
 <style>
 body {
-  font-family: Arial, sans-serif;
+  font-family: Arial;
   background: #0f0f0f;
   color: white;
   margin: 0;
@@ -38,10 +38,6 @@ button {
   font-size: 16px;
 }
 
-button:hover {
-  opacity: 0.95;
-}
-
 .module {
   background: #222;
   padding: 14px;
@@ -58,35 +54,16 @@ button:hover {
 
 iframe {
   width: 100%;
-  height: 300px;
-  border: none;
+  height: 250px;
   border-radius: 8px;
   margin-top: 10px;
+  border: none;
 }
 
 a {
   color: #ffb347;
-  font-weight: bold;
-  text-decoration: none;
-  display: inline-block;
-  margin-top: 12px;
-}
-
-.estado {
-  padding: 14px;
-  border-radius: 8px;
+  display: block;
   margin-top: 10px;
-  background: #1a1a1a;
-}
-
-.error {
-  background: #3a1010;
-  color: #ffd6d6;
-}
-
-.ok {
-  background: #102a10;
-  color: #d8ffd8;
 }
 </style>
 </head>
@@ -104,106 +81,98 @@ a {
 <script>
 const API = "https://chambari-academia.onrender.com";
 
-function mostrarMensaje(texto, tipo = "") {
-  const cont = document.getElementById("contenido");
-  cont.innerHTML = `<div class="estado ${tipo}">${texto}</div>`;
-}
-
-async function verModulos() {
+// ===== CONVERTIR YOUTUBE (ROBUSTO) =====
+function convertirYoutube(url) {
   try {
-    mostrarMensaje("Cargando módulos...");
+    if (!url) return "";
 
-    const res = await fetch(API + "/api/modules");
-
-    if (!res.ok) {
-      throw new Error("El servidor respondió con estado " + res.status);
+    if (url.includes("youtu.be/")) {
+      const id = url.split("youtu.be/")[1].split("?")[0].split("&")[0];
+      return "https://www.youtube.com/embed/" + id;
     }
 
+    if (url.includes("youtube.com/watch")) {
+      const id = url.split("v=")[1].split("&")[0];
+      return "https://www.youtube.com/embed/" + id;
+    }
+
+    if (url.includes("youtube.com/embed/")) {
+      return url;
+    }
+
+    return "";
+  } catch {
+    return "";
+  }
+}
+
+// ===== VER MÓDULOS =====
+async function verModulos() {
+  try {
+    const res = await fetch(API + "/api/modules");
     const data = await res.json();
 
     const cont = document.getElementById("contenido");
     cont.innerHTML = "";
-
-    if (!data.modules || data.modules.length === 0) {
-      cont.innerHTML = `<div class="estado">No hay módulos disponibles todavía.</div>`;
-      return;
-    }
 
     data.modules.forEach(m => {
       const div = document.createElement("div");
       div.className = "module";
+
       div.innerHTML = `
-        <strong>${m.titulo || "Módulo sin título"}</strong><br>
+        <strong>${m.titulo}</strong><br>
         <button onclick="verClases(${m.id})">Entrar</button>
       `;
+
       cont.appendChild(div);
     });
 
   } catch (err) {
-    mostrarMensaje(
-      "No se pudieron cargar los módulos. Posible causa: backend apagado, ruta incorrecta o bloqueo CORS.<br><br>Detalle: " + err.message,
-      "error"
-    );
-    console.error("Error en verModulos:", err);
+    document.getElementById("contenido").innerHTML = "Error cargando módulos";
   }
 }
 
+// ===== VER CLASES =====
 async function verClases(id) {
   try {
-    mostrarMensaje("Cargando clases...");
-
     const res = await fetch(API + "/api/lessons/" + id);
-
-    if (!res.ok) {
-      throw new Error("El servidor respondió con estado " + res.status);
-    }
-
     const data = await res.json();
 
     const cont = document.getElementById("contenido");
     cont.innerHTML = "";
 
-    if (!data.lessons || data.lessons.length === 0) {
-      cont.innerHTML = `<div class="estado">Este módulo no tiene clases todavía.</div>`;
-      return;
-    }
-
     data.lessons.forEach(l => {
       const div = document.createElement("div");
       div.className = "lesson";
+
       div.innerHTML = `
-        <strong>${l.titulo || "Clase sin título"}</strong><br>
-        <button onclick="abrir('${(l.youtube_url || "").replace(/'/g, "\\'")}','${(l.pdf_url || "").replace(/'/g, "\\'")}')">
+        <strong>${l.titulo}</strong><br>
+        <button onclick="abrir('${(l.youtube_url || "").replace(/'/g,"\\'")}','${(l.pdf_url || "").replace(/'/g,"\\'")}')">
           Abrir
         </button>
       `;
+
       cont.appendChild(div);
     });
 
   } catch (err) {
-    mostrarMensaje(
-      "No se pudieron cargar las clases.<br><br>Detalle: " + err.message,
-      "error"
-    );
-    console.error("Error en verClases:", err);
+    document.getElementById("contenido").innerHTML = "Error cargando clases";
   }
 }
 
-function convertirYoutubeAEmbed(url) {
-  if (!url) return "";
-  return url.replace("watch?v=", "embed/");
-}
-
+// ===== ABRIR CLASE =====
 function abrir(youtube, pdf) {
   const cont = document.getElementById("contenido");
 
-  const video = youtube
-    ? `<iframe src="${convertirYoutubeAEmbed(youtube)}" allowfullscreen></iframe>`
-    : `<div class="estado">Esta clase no tiene video.</div>`;
+  const videoURL = convertirYoutube(youtube);
+
+  const video = videoURL
+    ? `<iframe src="${videoURL}" allowfullscreen></iframe>`
+    : `<div>Esta clase no tiene video.</div>`;
 
   const pdfLink = pdf
     ? `<a href="${pdf}" target="_blank">Abrir PDF</a>`
-    : `<div class="estado">Esta clase no tiene PDF.</div>`;
+    : `<div>Esta clase no tiene PDF.</div>`;
 
   cont.innerHTML = `
     <div class="card">
