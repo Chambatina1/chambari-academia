@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>Chambari</title>
 
-  <meta name="theme-color" content="#f3ede6" />
+  <meta name="theme-color" content="#f4ede5" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="default" />
   <meta name="apple-mobile-web-app-title" content="Chambari" />
@@ -14,11 +14,7 @@
   <link rel="apple-touch-icon" href="public/icon-192.png" />
 
   <style>
-    *{
-      box-sizing:border-box;
-      margin:0;
-      padding:0;
-    }
+    *{box-sizing:border-box;margin:0;padding:0}
 
     :root{
       --bg:#f8f4ef;
@@ -38,12 +34,10 @@
       --radius:26px;
     }
 
-    html{
-      scroll-behavior:smooth;
-    }
+    html{scroll-behavior:smooth}
 
     body{
-      font-family: Arial, Helvetica, sans-serif;
+      font-family:Arial, Helvetica, sans-serif;
       color:var(--text);
       min-height:100vh;
       background:
@@ -53,9 +47,9 @@
     }
 
     .app{
-      max-width:1100px;
+      max-width:1120px;
       margin:0 auto;
-      padding:18px 14px 36px;
+      padding:18px 14px 40px;
     }
 
     .topbar{
@@ -111,7 +105,14 @@
       color:var(--muted);
     }
 
-    .app-badge{
+    .top-actions{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+
+    .badge{
       background:rgba(255,255,255,.85);
       border:1px solid var(--line);
       border-radius:999px;
@@ -120,6 +121,19 @@
       font-weight:700;
       color:var(--accent-dark);
       box-shadow:var(--shadow);
+    }
+
+    .install-btn{
+      border:none;
+      border-radius:999px;
+      padding:12px 16px;
+      font-size:14px;
+      font-weight:800;
+      background:linear-gradient(135deg,#d7a17b,#bf8866);
+      color:#fff;
+      box-shadow:0 10px 24px rgba(191,136,102,.22);
+      cursor:pointer;
+      display:none;
     }
 
     .hero{
@@ -138,9 +152,7 @@
       margin-bottom:12px;
     }
 
-    .hero h2 span{
-      color:var(--accent-dark);
-    }
+    .hero h2 span{color:var(--accent-dark)}
 
     .hero p{
       max-width:760px;
@@ -152,7 +164,7 @@
 
     .cards{
       display:grid;
-      grid-template-columns:repeat(3, 1fr);
+      grid-template-columns:repeat(3,1fr);
       gap:18px;
       margin-bottom:20px;
     }
@@ -170,9 +182,7 @@
       padding:0;
     }
 
-    .card-btn:hover{
-      transform:translateY(-4px);
-    }
+    .card-btn:hover{transform:translateY(-4px)}
 
     .card-btn.active{
       outline:2px solid rgba(198,149,116,.28);
@@ -187,21 +197,13 @@
       position:relative;
     }
 
-    .card-image::after{
-      content:"";
-      position:absolute;
-      inset:0;
-      background:linear-gradient(180deg, rgba(255,255,255,0) 35%, rgba(255,255,255,.18) 100%);
-      pointer-events:none;
-    }
-
     .img-diagnostico{
       background:
         radial-gradient(circle at 20% 20%, rgba(255,255,255,.5), transparent 25%),
         linear-gradient(135deg, var(--peach), #f7e9df);
     }
 
-    .img-metodo{
+    .img-ruta{
       background:
         radial-gradient(circle at 80% 25%, rgba(255,255,255,.45), transparent 25%),
         linear-gradient(135deg, var(--blue), #edf2fb);
@@ -213,25 +215,16 @@
         linear-gradient(135deg, var(--green), #edf5ed);
     }
 
-    .art{
-      width:100%;
-      height:100%;
-      position:relative;
-    }
-
-    .shape{
-      position:absolute;
-      border-radius:22px;
-      opacity:.92;
-    }
+    .art{width:100%;height:100%;position:relative}
+    .shape{position:absolute;border-radius:22px;opacity:.92}
 
     .diag-a{width:120px;height:120px;background:rgba(255,255,255,.55);left:10px;top:14px;}
     .diag-b{width:92px;height:92px;background:rgba(245,235,223,.9);right:22px;top:26px;border-radius:50%;}
     .diag-c{width:150px;height:22px;background:rgba(196,137,103,.28);left:18px;bottom:22px;border-radius:999px;}
 
-    .met-a{width:140px;height:85px;background:rgba(255,255,255,.62);left:12px;top:20px;}
-    .met-b{width:66px;height:66px;background:rgba(239,225,186,.85);right:24px;top:36px;border-radius:18px;}
-    .met-c{width:120px;height:20px;background:rgba(122,150,186,.22);left:18px;bottom:24px;border-radius:999px;}
+    .ruta-a{width:140px;height:85px;background:rgba(255,255,255,.62);left:12px;top:20px;}
+    .ruta-b{width:66px;height:66px;background:rgba(239,225,186,.85);right:24px;top:36px;border-radius:18px;}
+    .ruta-c{width:120px;height:20px;background:rgba(122,150,186,.22);left:18px;bottom:24px;border-radius:999px;}
 
     .piz-a{width:150px;height:95px;background:rgba(255,255,255,.6);left:12px;top:24px;}
     .piz-b{width:88px;height:88px;background:rgba(198,149,116,.16);right:22px;top:26px;border-radius:50%;}
@@ -350,6 +343,10 @@
       font-size:15px;
       font-weight:800;
       transition:.2s ease;
+      text-decoration:none;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
     }
 
     .btn-main{
@@ -364,9 +361,7 @@
       border:1px solid #e5d7c8;
     }
 
-    .btn:hover{
-      transform:translateY(-1px);
-    }
+    .btn:hover{transform:translateY(-1px)}
 
     .result{
       display:none;
@@ -379,56 +374,147 @@
       color:#566250;
     }
 
-    .result.show{
-      display:block;
-    }
+    .result.show{display:block}
 
-    .method-grid{
+    .module-grid{
       display:grid;
-      grid-template-columns:repeat(3, 1fr);
+      grid-template-columns:repeat(3,1fr);
       gap:16px;
+      margin-top:6px;
     }
 
-    .method-card{
-      background:linear-gradient(180deg,#fffdfa,#fdf7f1);
-      border:1px solid #eadfd4;
-      border-radius:22px;
+    .module{
+      background:#fffdfa;
+      border:1px solid var(--line);
+      border-radius:24px;
+      overflow:hidden;
+      box-shadow:var(--shadow);
+      transition:.2s ease;
+    }
+
+    .module:hover{transform:translateY(-4px)}
+
+    .module-cover{
+      height:130px;
+      display:flex;
+      align-items:flex-end;
+      padding:16px;
+      font-size:13px;
+      font-weight:700;
+      color:#6d5a50;
+    }
+
+    .cover-1{background:linear-gradient(135deg,var(--peach),#f7e8dd)}
+    .cover-2{background:linear-gradient(135deg,var(--blue),#eef3fb)}
+    .cover-3{background:linear-gradient(135deg,var(--green),#edf5ed)}
+    .cover-4{background:linear-gradient(135deg,var(--gold),#f7f0d8)}
+    .cover-5{background:linear-gradient(135deg,#edd9e8,#f8eef5)}
+    .cover-6{background:linear-gradient(135deg,#dfe6dc,#eff4ee)}
+
+    .module-body{
       padding:18px;
     }
 
-    .method-icon{
-      width:50px;
-      height:50px;
-      border-radius:16px;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      margin-bottom:12px;
-      background:var(--gold);
-      color:#6a5546;
-      font-size:20px;
-      font-weight:800;
+    .module-body h4{
+      font-size:22px;
+      margin-bottom:6px;
     }
 
-    .method-card h4{
-      font-size:21px;
+    .module-meta{
+      font-size:13px;
+      color:var(--accent-dark);
+      font-weight:700;
       margin-bottom:8px;
     }
 
-    .method-card p{
+    .module-body p{
       color:var(--muted);
-      line-height:1.75;
-      font-size:15px;
+      line-height:1.6;
+      margin-bottom:14px;
     }
 
-    .note{
-      margin-top:16px;
-      background:linear-gradient(135deg, rgba(228,235,247,.76), rgba(255,255,255,.92));
-      border:1px solid #dbe4ee;
-      border-radius:20px;
-      padding:18px;
-      color:#5d6873;
-      line-height:1.8;
+    .module-actions{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+
+    .small-btn{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      text-decoration:none;
+      border:none;
+      cursor:pointer;
+      padding:11px 14px;
+      border-radius:12px;
+      font-size:14px;
+      font-weight:800;
+    }
+
+    .open-btn{
+      background:linear-gradient(135deg,#d7a27c,#bf8967);
+      color:white;
+    }
+
+    .view-btn{
+      background:#f5eadc;
+      color:#7a5a49;
+      border:1px solid #e7d7c8;
+    }
+
+    .viewer-card{
+      margin-top:18px;
+      background:#fffdfa;
+      border:1px solid var(--line);
+      border-radius:24px;
+      padding:20px;
+      box-shadow:var(--shadow);
+    }
+
+    .viewer-head{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+      flex-wrap:wrap;
+      margin-bottom:14px;
+    }
+
+    .viewer-head h4{
+      font-size:25px;
+      margin-bottom:4px;
+    }
+
+    .viewer-head p{
+      color:var(--muted);
+      line-height:1.6;
+    }
+
+    .viewer-actions{
+      display:flex;
+      gap:12px;
+      flex-wrap:wrap;
+      margin-bottom:16px;
+    }
+
+    .viewer-link{
+      text-decoration:none;
+      background:linear-gradient(135deg,#d7a27c,#bf8967);
+      color:white;
+      padding:13px 16px;
+      border-radius:14px;
+      font-weight:800;
+    }
+
+    .viewer-frame{
+      width:100%;
+      height:72vh;
+      min-height:480px;
+      border:none;
+      border-radius:18px;
+      background:white;
+      box-shadow:0 8px 20px rgba(0,0,0,.05);
     }
 
     .board-head{
@@ -449,10 +535,7 @@
       outline:none;
     }
 
-    .input{
-      max-width:460px;
-    }
-
+    .input{max-width:460px}
     .textarea{
       min-height:240px;
       resize:vertical;
@@ -490,55 +573,20 @@
     }
 
     @media (max-width: 960px){
-      .cards{
-        grid-template-columns:1fr;
-      }
-
-      .diag-grid{
-        grid-template-columns:1fr;
-      }
-
-      .method-grid{
-        grid-template-columns:1fr 1fr;
-      }
-
-      .hero h2{
-        font-size:34px;
-      }
+      .cards,.module-grid{grid-template-columns:1fr}
+      .diag-grid{grid-template-columns:1fr}
+      .hero h2{font-size:34px}
     }
 
     @media (max-width: 680px){
-      .app{
-        padding:14px 10px 26px;
-      }
-
-      .brand-text h1{
-        font-size:24px;
-      }
-
-      .hero{
-        padding:24px 18px;
-      }
-
-      .hero h2{
-        font-size:30px;
-      }
-
-      .hero p{
-        font-size:16px;
-      }
-
-      .method-grid{
-        grid-template-columns:1fr;
-      }
-
-      .input{
-        max-width:100%;
-      }
-
-      .card-image{
-        height:160px;
-      }
+      .app{padding:14px 10px 26px}
+      .brand-text h1{font-size:24px}
+      .hero{padding:24px 18px}
+      .hero h2{font-size:30px}
+      .hero p{font-size:16px}
+      .input{max-width:100%}
+      .card-image{height:160px}
+      .viewer-frame{min-height:380px;height:58vh}
     }
   </style>
 </head>
@@ -550,21 +598,22 @@
           <img src="public/logo.png" alt="Logo Chambari" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
           <div class="logo-fallback">C</div>
         </div>
-
         <div class="brand-text">
           <h1>Chambari</h1>
-          <p>Versión web y app minimalista.</p>
+          <p>Ruta clara para aprender idiomas.</p>
         </div>
       </div>
 
-      <div class="app-badge">Lista para instalar</div>
+      <div class="top-actions">
+        <div class="badge">Versión app y web</div>
+        <button id="installBtn" class="install-btn">Instalar app</button>
+      </div>
     </div>
 
     <section class="hero">
-      <h2>Tres espacios. <span>Nada de ruido.</span></h2>
+      <h2>Aprender con orden. <span>Sin ruido.</span></h2>
       <p>
-        Una plataforma simple para que estudiantes y profesor encuentren rápido lo que importa:
-        orientación, método y clase del día.
+        Diagnóstico, módulos y pizarra en una sola experiencia. El estudiante ve solo lo que necesita y el profesor organiza todo mejor.
       </p>
     </section>
 
@@ -579,21 +628,21 @@
         </div>
         <div class="card-body">
           <h3>Diagnóstico</h3>
-          <p>Para que el estudiante interiorice su punto de partida con claridad y sin sentirse invadido.</p>
+          <p>Para ubicar el punto de partida y sugerir una ruta inicial.</p>
         </div>
       </button>
 
-      <button class="card-btn" onclick="openPanel('metodo', this)">
-        <div class="card-image img-metodo">
+      <button class="card-btn" onclick="openPanel('ruta', this)">
+        <div class="card-image img-ruta">
           <div class="art">
-            <div class="shape met-a"></div>
-            <div class="shape met-b"></div>
-            <div class="shape met-c"></div>
+            <div class="shape ruta-a"></div>
+            <div class="shape ruta-b"></div>
+            <div class="shape ruta-c"></div>
           </div>
         </div>
         <div class="card-body">
-          <h3>Método</h3>
-          <p>Una explicación limpia de cómo avanzar conectando lo conocido con lo nuevo.</p>
+          <h3>Mi ruta</h3>
+          <p>Los PDF aparecen como módulos visuales, no como archivos sueltos.</p>
         </div>
       </button>
 
@@ -607,7 +656,7 @@
         </div>
         <div class="card-body">
           <h3>Pizarra</h3>
-          <p>Un lugar visual y ordenado para la clase del día, notas y guía para todos.</p>
+          <p>Clase del día, puntos clave y tarea en un solo espacio limpio.</p>
         </div>
       </button>
     </section>
@@ -615,14 +664,13 @@
     <section id="diagnostico" class="panel active">
       <h3>Diagnóstico inicial</h3>
       <p class="intro">
-        Este espacio orienta al estudiante con sensibilidad. No lo encierra en etiquetas rígidas,
-        sino que sugiere desde dónde conviene empezar.
+        Este espacio orienta al estudiante sin rigidez. El resultado recomienda desde dónde conviene empezar.
       </p>
 
       <div class="diag-grid">
         <div class="q-card">
           <h4>1. Cuando lees una frase básica en inglés, tú...</h4>
-          <p>Marca lo que más se parezca a tu realidad actual.</p>
+          <p>Marca la opción que más se acerque a tu realidad.</p>
           <div class="options">
             <div class="option"><input type="radio" name="q1" id="q1a" value="1"><label for="q1a">Entiendo muy poco o casi nada.</label></div>
             <div class="option"><input type="radio" name="q1" id="q1b" value="2"><label for="q1b">Entiendo algunas palabras y partes sueltas.</label></div>
@@ -632,7 +680,7 @@
 
         <div class="q-card">
           <h4>2. Si alguien te hace una pregunta simple, tú...</h4>
-          <p>Piensa en comprensión y capacidad de respuesta.</p>
+          <p>Piensa en comprensión y respuesta.</p>
           <div class="options">
             <div class="option"><input type="radio" name="q2" id="q2a" value="1"><label for="q2a">No sé bien qué me preguntan.</label></div>
             <div class="option"><input type="radio" name="q2" id="q2b" value="2"><label for="q2b">Sospecho de qué se trata, pero me cuesta responder.</label></div>
@@ -642,7 +690,7 @@
 
         <div class="q-card">
           <h4>3. Cuando ves un texto corto, normalmente...</h4>
-          <p>Esto ayuda a recomendar un punto de entrada más natural.</p>
+          <p>Esto ayuda a recomendarte un punto de entrada.</p>
           <div class="options">
             <div class="option"><input type="radio" name="q3" id="q3a" value="1"><label for="q3a">Me siento perdido rápido.</label></div>
             <div class="option"><input type="radio" name="q3" id="q3b" value="2"><label for="q3b">Puedo seguirlo si trae vocabulario familiar.</label></div>
@@ -669,41 +717,34 @@
       <div class="result" id="resultadoDiagnostico"></div>
     </section>
 
-    <section id="metodo" class="panel">
-      <h3>El método</h3>
+    <section id="ruta" class="panel">
+      <h3>Mi ruta</h3>
       <p class="intro">
-        Aquí el estudiante no memoriza piezas aisladas. Primero reconoce, después conecta y luego usa.
+        Aquí los documentos se presentan como módulos. Cada módulo guía, y el PDF queda como apoyo.
       </p>
 
-      <div class="method-grid">
-        <div class="method-card">
-          <div class="method-icon">1</div>
-          <h4>Reconocer</h4>
-          <p>Identificar palabras, ritmos e ideas familiares para crear base y seguridad.</p>
+      <div class="module-grid" id="moduleGrid"></div>
+
+      <div class="viewer-card" id="visor">
+        <div class="viewer-head">
+          <div>
+            <h4 id="viewerTitle">Módulo</h4>
+            <p id="viewerDesc">Selecciona un módulo para visualizar su PDF aquí mismo.</p>
+          </div>
         </div>
 
-        <div class="method-card">
-          <div class="method-icon">2</div>
-          <h4>Conectar</h4>
-          <p>Relacionar lo nuevo con lo ya comprendido para que el aprendizaje se vuelva natural.</p>
+        <div class="viewer-actions">
+          <a id="abrirPDF" class="viewer-link" href="#" target="_blank">Abrir PDF</a>
         </div>
 
-        <div class="method-card">
-          <div class="method-icon">3</div>
-          <h4>Usar</h4>
-          <p>Convertir comprensión en frases, lectura guiada, respuesta y práctica real.</p>
-        </div>
-      </div>
-
-      <div class="note">
-        La meta no es correr. La meta es construir continuidad, detectar patrones y ganar soltura sin saturación.
+        <iframe id="visorPDF" class="viewer-frame" src=""></iframe>
       </div>
     </section>
 
     <section id="pizarra" class="panel">
       <h3>Pizarra de la clase del día</h3>
       <p class="intro">
-        Un espacio simple para que profesor y estudiantes tengan visible la clase actual.
+        Un espacio simple para mostrar título, explicación breve, puntos clave y tarea.
       </p>
 
       <div class="board-head">
@@ -726,11 +767,62 @@
     </section>
 
     <footer>
-      Chambari · experiencia limpia para web y app
+      Chambari · aula del estudiante
     </footer>
   </div>
 
   <script>
+    const modulos = [
+      {
+        id: 1,
+        titulo: "Módulo 1 · Greetings",
+        nivel: "Nivel inicial",
+        descripcion: "Saludos, presentación personal y comprensión básica.",
+        pdf: "modelos/modelo1.pdf",
+        cover: "cover-1"
+      },
+      {
+        id: 2,
+        titulo: "Módulo 2 · Planning the Weekend",
+        nivel: "Nivel inicial",
+        descripcion: "Rutinas, preguntas simples y comprensión contextual.",
+        pdf: "modelos/modelo2.pdf",
+        cover: "cover-2"
+      },
+      {
+        id: 3,
+        titulo: "Módulo 3 · Friends Vocabulary",
+        nivel: "Nivel inicial",
+        descripcion: "Vocabulario útil y frases cortas para uso diario.",
+        pdf: "modelos/modelo3.pdf",
+        cover: "cover-3"
+      },
+      {
+        id: 4,
+        titulo: "Módulo 4 · Let It Be",
+        nivel: "Nivel básico",
+        descripcion: "Comprensión guiada y lectura breve.",
+        pdf: "modelos/modelo4.pdf",
+        cover: "cover-4"
+      },
+      {
+        id: 5,
+        titulo: "Módulo 5 · English Class",
+        nivel: "Nivel básico",
+        descripcion: "Uso práctico, repetición y estructura simple.",
+        pdf: "modelos/modelo5.pdf",
+        cover: "cover-5"
+      },
+      {
+        id: 6,
+        titulo: "Módulo 6 · Present Simple",
+        nivel: "Nivel básico",
+        descripcion: "Presente simple explicado con claridad y ejemplos.",
+        pdf: "modelos/modelo6.pdf",
+        cover: "cover-6"
+      }
+    ];
+
     function openPanel(id, el){
       document.querySelectorAll(".panel").forEach(p => p.classList.remove("active"));
       document.querySelectorAll(".card-btn").forEach(b => b.classList.remove("active"));
@@ -755,11 +847,11 @@
       const box = document.getElementById("resultadoDiagnostico");
 
       if(total <= 5){
-        box.textContent = "Punto de entrada inicial. Conviene empezar con base guiada, vocabulario frecuente, lectura simple y práctica controlada para construir seguridad.";
+        box.textContent = "Punto de entrada inicial. Conviene empezar por los módulos 1 y 2, con enfoque en comprensión básica, vocabulario frecuente y práctica guiada.";
       }else if(total <= 9){
-        box.textContent = "Punto de entrada intermedio guiado. Ya hay reconocimiento funcional; ahora conviene consolidar comprensión, respuesta simple y conexión entre estructuras.";
+        box.textContent = "Punto de entrada intermedio guiado. Conviene avanzar con los módulos 2, 3 y 4 para consolidar comprensión, respuesta simple y conexión entre estructuras.";
       }else{
-        box.textContent = "Punto de entrada funcional. Ya existe una base útil para comprender ideas principales y responder de forma sencilla; ahora toca ganar soltura y precisión.";
+        box.textContent = "Punto de entrada funcional. Conviene trabajar los módulos 4, 5 y 6 para ganar soltura, precisión y uso más natural del idioma.";
       }
 
       box.classList.add("show");
@@ -769,6 +861,37 @@
       document.querySelectorAll('#diagnostico input[type="radio"]').forEach(r => r.checked = false);
       document.getElementById("resultadoDiagnostico").classList.remove("show");
       document.getElementById("resultadoDiagnostico").textContent = "";
+    }
+
+    function renderModulos(){
+      const grid = document.getElementById("moduleGrid");
+
+      grid.innerHTML = modulos.map(modulo => `
+        <div class="module">
+          <div class="module-cover ${modulo.cover}">${modulo.nivel}</div>
+          <div class="module-body">
+            <h4>${modulo.titulo}</h4>
+            <div class="module-meta">${modulo.nivel}</div>
+            <p>${modulo.descripcion}</p>
+            <div class="module-actions">
+              <button class="small-btn view-btn" onclick="verModulo(${modulo.id})">Entrar</button>
+              <a class="small-btn open-btn" href="${modulo.pdf}" target="_blank">PDF</a>
+            </div>
+          </div>
+        </div>
+      `).join("");
+    }
+
+    function verModulo(id){
+      const modulo = modulos.find(m => m.id === id);
+      if(!modulo) return;
+
+      document.getElementById("viewerTitle").textContent = modulo.titulo;
+      document.getElementById("viewerDesc").textContent = modulo.descripcion;
+      document.getElementById("abrirPDF").href = modulo.pdf;
+      document.getElementById("visorPDF").src = modulo.pdf;
+
+      document.getElementById("visor").scrollIntoView({ behavior: "smooth", block: "start" });
     }
 
     function mostrarPizarra(){
@@ -797,8 +920,27 @@
       mostrarPizarra();
     }
 
+    let deferredPrompt = null;
+    const installBtn = document.getElementById("installBtn");
+
+    window.addEventListener("beforeinstallprompt", (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      installBtn.style.display = "inline-flex";
+    });
+
+    installBtn.addEventListener("click", async () => {
+      if (!deferredPrompt) return;
+      deferredPrompt.prompt();
+      await deferredPrompt.userChoice;
+      deferredPrompt = null;
+      installBtn.style.display = "none";
+    });
+
     document.addEventListener("DOMContentLoaded", () => {
+      renderModulos();
       cargarPizarra();
+      if (modulos.length) verModulo(modulos[0].id);
     });
   </script>
 </body>
