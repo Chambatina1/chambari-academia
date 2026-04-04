@@ -1,13 +1,11 @@
 {
   "name": "chambari-academia",
   "version": "1.0.0",
-  "description": "Plataforma de aprendizaje Chambari Academy",
+  "description": "Plataforma web y app de Chambari Academy",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
   },
-  "author": "Chambatina",
-  "license": "ISC",
   "dependencies": {
     "express": "^4.18.2"
   }
