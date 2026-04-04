@@ -7,7 +7,7 @@
 
 <style>
 body {
-  font-family: Arial;
+  font-family: Arial, sans-serif;
   background: #0f0f0f;
   color: white;
   margin: 0;
@@ -16,6 +16,7 @@ body {
 
 h1 {
   color: #ff8a00;
+  margin-top: 0;
 }
 
 .card {
@@ -25,16 +26,28 @@ h1 {
   margin-bottom: 20px;
 }
 
-input, textarea {
+h3 {
+  margin-top: 0;
+  color: #ffffff;
+}
+
+input, textarea, select {
   width: 100%;
-  padding: 10px;
+  padding: 12px;
   margin-top: 10px;
   border-radius: 8px;
   border: none;
+  box-sizing: border-box;
+  font-size: 15px;
+}
+
+input[type="file"] {
+  background: #fff;
+  color: #000;
 }
 
 button {
-  margin-top: 10px;
+  margin-top: 12px;
   padding: 12px;
   width: 100%;
   background: #ff8a00;
@@ -43,6 +56,11 @@ button {
   font-weight: bold;
   border-radius: 8px;
   cursor: pointer;
+  font-size: 16px;
+}
+
+button:hover {
+  opacity: 0.95;
 }
 
 .module {
@@ -50,6 +68,27 @@ button {
   padding: 12px;
   margin-top: 10px;
   border-radius: 8px;
+}
+
+.estado {
+  margin-top: 12px;
+  padding: 12px;
+  border-radius: 8px;
+  background: #111;
+}
+
+.ok {
+  border-left: 4px solid #3ddc84;
+}
+
+.error {
+  border-left: 4px solid #ff4d4f;
+}
+
+.small {
+  font-size: 14px;
+  color: #bbb;
+  margin-top: 6px;
 }
 </style>
 </head>
@@ -61,17 +100,25 @@ button {
 <div class="card">
   <h3>Crear módulo</h3>
   <input id="moduloTitulo" placeholder="Título del módulo">
-  <textarea id="moduloDesc" placeholder="Descripción"></textarea>
+  <textarea id="moduloDesc" placeholder="Descripción del módulo"></textarea>
   <button onclick="crearModulo()">Guardar módulo</button>
+  <div id="estadoModulo"></div>
 </div>
 
 <div class="card">
   <h3>Crear clase</h3>
-  <input id="claseModulo" placeholder="ID del módulo">
+
+  <label for="claseModulo">Selecciona el módulo</label>
+  <select id="claseModulo"></select>
+
   <input id="claseTitulo" placeholder="Título de la clase">
   <input id="claseYoutube" placeholder="Link YouTube (opcional)">
-  <input id="clasePDF" placeholder="Link PDF (opcional)">
+
+  <label for="pdfFile" class="small">Subir PDF (opcional)</label>
+  <input type="file" id="pdfFile" accept=".pdf,application/pdf">
+
   <button onclick="crearClase()">Guardar clase</button>
+  <div id="estadoClase"></div>
 </div>
 
 <div class="card">
@@ -82,65 +129,157 @@ button {
 <script>
 const API = "https://chambari-academia.onrender.com";
 
+// ===== MENSAJES =====
+function ponerEstado(id, texto, tipo = "ok") {
+  document.getElementById(id).innerHTML = `<div class="estado ${tipo}">${texto}</div>`;
+}
+
+// ===== CARGAR MÓDULOS =====
+async function cargarModulos() {
+  try {
+    const res = await fetch(API + "/api/modules");
+    const data = await res.json();
+
+    const lista = document.getElementById("lista");
+    const select = document.getElementById("claseModulo");
+
+    lista.innerHTML = "";
+    select.innerHTML = "";
+
+    if (!data.modules || data.modules.length === 0) {
+      lista.innerHTML = `<div class="module">No hay módulos todavía.</div>`;
+      select.innerHTML = `<option value="">No hay módulos</option>`;
+      return;
+    }
+
+    data.modules.forEach(m => {
+      const div = document.createElement("div");
+      div.className = "module";
+      div.innerHTML = `
+        <strong>ID ${m.id}</strong> - ${m.titulo}
+        <div class="small">${m.descripcion || ""}</div>
+      `;
+      lista.appendChild(div);
+
+      const option = document.createElement("option");
+      option.value = m.id;
+      option.textContent = `ID ${m.id} - ${m.titulo}`;
+      select.appendChild(option);
+    });
+
+  } catch (err) {
+    document.getElementById("lista").innerHTML =
+      `<div class="module">Error cargando módulos.</div>`;
+  }
+}
+
 // ===== CREAR MÓDULO =====
 async function crearModulo() {
-  const titulo = document.getElementById("moduloTitulo").value;
-  const descripcion = document.getElementById("moduloDesc").value;
+  const titulo = document.getElementById("moduloTitulo").value.trim();
+  const descripcion = document.getElementById("moduloDesc").value.trim();
 
-  const res = await fetch(API + "/api/module", {
+  if (!titulo) {
+    ponerEstado("estadoModulo", "Debes escribir el título del módulo.", "error");
+    return;
+  }
+
+  try {
+    const res = await fetch(API + "/api/module", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ titulo, descripcion })
+    });
+
+    const data = await res.json();
+
+    if (!data.ok) {
+      throw new Error(data.error || "No se pudo crear el módulo");
+    }
+
+    document.getElementById("moduloTitulo").value = "";
+    document.getElementById("moduloDesc").value = "";
+
+    ponerEstado("estadoModulo", "Módulo creado correctamente.");
+    cargarModulos();
+
+  } catch (err) {
+    ponerEstado("estadoModulo", "Error creando módulo: " + err.message, "error");
+  }
+}
+
+// ===== SUBIR PDF =====
+async function subirPDF(file) {
+  const formData = new FormData();
+  formData.append("pdf", file);
+
+  const res = await fetch(API + "/api/upload-pdf", {
     method: "POST",
-    headers: {"Content-Type":"application/json"},
-    body: JSON.stringify({ titulo, descripcion })
+    body: formData
   });
 
   const data = await res.json();
 
-  alert("Módulo creado");
-  cargarModulos();
+  if (!data.ok) {
+    throw new Error(data.error || "No se pudo subir el PDF");
+  }
+
+  return data.url;
 }
 
 // ===== CREAR CLASE =====
 async function crearClase() {
   const module_id = document.getElementById("claseModulo").value;
-  const titulo = document.getElementById("claseTitulo").value;
-  const youtube_url = document.getElementById("claseYoutube").value;
-  const pdf_url = document.getElementById("clasePDF").value;
+  const titulo = document.getElementById("claseTitulo").value.trim();
+  const youtube_url = document.getElementById("claseYoutube").value.trim();
+  const fileInput = document.getElementById("pdfFile");
 
-  const res = await fetch(API + "/api/lesson", {
-    method: "POST",
-    headers: {"Content-Type":"application/json"},
-    body: JSON.stringify({
-      module_id,
-      titulo,
-      youtube_url,
-      pdf_url
-    })
-  });
+  if (!module_id) {
+    ponerEstado("estadoClase", "Debes seleccionar un módulo.", "error");
+    return;
+  }
 
-  const data = await res.json();
+  if (!titulo) {
+    ponerEstado("estadoClase", "Debes escribir el título de la clase.", "error");
+    return;
+  }
 
-  alert("Clase creada");
+  try {
+    ponerEstado("estadoClase", "Guardando clase...");
+
+    let pdf_url = "";
+
+    if (fileInput.files.length > 0) {
+      pdf_url = await subirPDF(fileInput.files[0]);
+    }
+
+    const res = await fetch(API + "/api/lesson", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        module_id,
+        titulo,
+        youtube_url,
+        pdf_url
+      })
+    });
+
+    const data = await res.json();
+
+    if (!data.ok) {
+      throw new Error(data.error || "No se pudo crear la clase");
+    }
+
+    document.getElementById("claseTitulo").value = "";
+    document.getElementById("claseYoutube").value = "";
+    document.getElementById("pdfFile").value = "";
+
+    ponerEstado("estadoClase", "Clase creada correctamente.");
+  } catch (err) {
+    ponerEstado("estadoClase", "Error creando clase: " + err.message, "error");
+  }
 }
 
-// ===== CARGAR MÓDULOS =====
-async function cargarModulos() {
-  const res = await fetch(API + "/api/modules");
-  const data = await res.json();
-
-  const lista = document.getElementById("lista");
-  lista.innerHTML = "";
-
-  data.modules.forEach(m => {
-    const div = document.createElement("div");
-    div.className = "module";
-    div.innerHTML = `
-      <strong>ID ${m.id}</strong> - ${m.titulo}
-    `;
-    lista.appendChild(div);
-  });
-}
-
-// cargar al inicio
+// ===== INICIO =====
 cargarModulos();
 </script>
 
