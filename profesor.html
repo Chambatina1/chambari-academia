@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Chambari - Profesor</title>
+<title>Chambari - Panel Profesor</title>
 
 <style>
 body {
@@ -19,15 +19,39 @@ h1 {
   margin-top: 0;
 }
 
+h2, h3 {
+  margin-top: 0;
+}
+
+.grid {
+  display: grid;
+  gap: 20px;
+}
+
 .card {
   background: #1b1b1b;
   padding: 20px;
-  border-radius: 12px;
+  border-radius: 14px;
   margin-bottom: 20px;
 }
 
-h3 {
-  margin-top: 0;
+.stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 14px;
+}
+
+.stat {
+  background: #222;
+  padding: 16px;
+  border-radius: 12px;
+  text-align: center;
+}
+
+.stat strong {
+  display: block;
+  font-size: 28px;
+  color: #ff8a00;
 }
 
 input, textarea, select {
@@ -55,14 +79,30 @@ button {
   font-weight: bold;
   border-radius: 8px;
   cursor: pointer;
-  font-size: 16px;
+  font-size: 15px;
 }
 
-.module {
+button.secundario {
+  background: #333;
+  color: white;
+}
+
+button.eliminar {
+  background: #c62828;
+  color: white;
+}
+
+.item {
   background: #222;
-  padding: 12px;
+  padding: 14px;
+  border-radius: 10px;
   margin-top: 10px;
-  border-radius: 8px;
+}
+
+.small {
+  font-size: 13px;
+  color: #bbb;
+  margin-top: 6px;
 }
 
 .estado {
@@ -73,56 +113,100 @@ button {
 }
 
 .ok {
-  border-left: 4px solid #3ddc84;
+  border-left: 4px solid #2e7d32;
 }
 
 .error {
-  border-left: 4px solid #ff4d4f;
+  border-left: 4px solid #c62828;
 }
 
-.small {
-  font-size: 14px;
-  color: #bbb;
-  margin-top: 6px;
+.acciones {
+  display: grid;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.lesson-box {
+  background: #111;
+  padding: 12px;
+  margin-top: 10px;
+  border-radius: 10px;
+}
+
+.topbar {
+  display: grid;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+@media (min-width: 900px) {
+  .topbar {
+    grid-template-columns: 1fr 1fr;
+  }
 }
 </style>
 </head>
 
 <body>
 
-<h1>Panel Profesor</h1>
+<h1>Panel del Profesor</h1>
 
 <div class="card">
-  <h3>Crear módulo</h3>
-  <input id="moduloTitulo" placeholder="Título del módulo">
-  <textarea id="moduloDesc" placeholder="Descripción del módulo"></textarea>
-  <button onclick="crearModulo()">Guardar módulo</button>
-  <div id="estadoModulo"></div>
+  <h2>Resumen general</h2>
+  <div class="stats">
+    <div class="stat">
+      <strong id="statModulos">0</strong>
+      Módulos
+    </div>
+    <div class="stat">
+      <strong id="statClases">0</strong>
+      Clases
+    </div>
+    <div class="stat">
+      <strong id="statEstudiantes">0</strong>
+      Estudiantes
+    </div>
+  </div>
+  <button class="secundario" onclick="cargarDashboard()">Actualizar panel</button>
+</div>
+
+<div class="topbar">
+  <div class="card">
+    <h3>Crear módulo</h3>
+    <input id="moduloTitulo" placeholder="Título del módulo">
+    <textarea id="moduloDesc" placeholder="Descripción del módulo"></textarea>
+    <button onclick="crearModulo()">Guardar módulo</button>
+    <div id="estadoModulo"></div>
+  </div>
+
+  <div class="card">
+    <h3>Crear clase</h3>
+    <label>Selecciona el módulo</label>
+    <select id="claseModulo"></select>
+
+    <input id="claseTitulo" placeholder="Título de la clase">
+    <input id="claseYoutube" placeholder="Link YouTube (opcional)">
+
+    <label class="small">Subir archivo (PDF, Word, Excel, PowerPoint, TXT, CSV)</label>
+    <input
+      type="file"
+      id="fileInput"
+      accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.csv,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-powerpoint,application/vnd.openxmlformats-officedocument.presentationml.presentation,text/plain,text/csv"
+    >
+
+    <button onclick="crearClase()">Guardar clase</button>
+    <div id="estadoClase"></div>
+  </div>
 </div>
 
 <div class="card">
-  <h3>Crear clase</h3>
-
-  <label for="claseModulo">Selecciona el módulo</label>
-  <select id="claseModulo"></select>
-
-  <input id="claseTitulo" placeholder="Título de la clase">
-  <input id="claseYoutube" placeholder="Link YouTube (opcional)">
-
-  <label for="fileInput" class="small">Subir archivo (PDF, Word, Excel, PowerPoint, TXT, CSV)</label>
-  <input
-    type="file"
-    id="fileInput"
-    accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.csv,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-powerpoint,application/vnd.openxmlformats-officedocument.presentationml.presentation,text/plain,text/csv"
-  >
-
-  <button onclick="crearClase()">Guardar clase</button>
-  <div id="estadoClase"></div>
+  <h2>Módulos y clases</h2>
+  <div id="listaModulos"></div>
 </div>
 
 <div class="card">
-  <h3>Módulos existentes</h3>
-  <div id="lista"></div>
+  <h2>Estudiantes registrados</h2>
+  <div id="listaEstudiantes"></div>
 </div>
 
 <script>
@@ -149,75 +233,12 @@ function limpiarYoutube(url) {
   }
 }
 
-async function cargarModulos() {
-  try {
-    const res = await fetch(API + "/api/modules");
-    const data = await res.json();
-
-    const lista = document.getElementById("lista");
-    const select = document.getElementById("claseModulo");
-
-    lista.innerHTML = "";
-    select.innerHTML = "";
-
-    if (!data.modules || data.modules.length === 0) {
-      lista.innerHTML = `<div class="module">No hay módulos todavía.</div>`;
-      select.innerHTML = `<option value="">No hay módulos</option>`;
-      return;
-    }
-
-    data.modules.forEach(m => {
-      const div = document.createElement("div");
-      div.className = "module";
-      div.innerHTML = `
-        <strong>ID ${m.id}</strong> - ${m.titulo}
-        <div class="small">${m.descripcion || ""}</div>
-      `;
-      lista.appendChild(div);
-
-      const option = document.createElement("option");
-      option.value = m.id;
-      option.textContent = `ID ${m.id} - ${m.titulo}`;
-      select.appendChild(option);
-    });
-
-  } catch (err) {
-    document.getElementById("lista").innerHTML =
-      `<div class="module">Error cargando módulos.</div>`;
-  }
-}
-
-async function crearModulo() {
-  const titulo = document.getElementById("moduloTitulo").value.trim();
-  const descripcion = document.getElementById("moduloDesc").value.trim();
-
-  if (!titulo) {
-    ponerEstado("estadoModulo", "Debes escribir el título del módulo.", "error");
-    return;
-  }
-
-  try {
-    const res = await fetch(API + "/api/module", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ titulo, descripcion })
-    });
-
-    const data = await res.json();
-
-    if (!data.ok) {
-      throw new Error(data.error || "No se pudo crear el módulo");
-    }
-
-    document.getElementById("moduloTitulo").value = "";
-    document.getElementById("moduloDesc").value = "";
-
-    ponerEstado("estadoModulo", "Módulo creado correctamente.");
-    cargarModulos();
-
-  } catch (err) {
-    ponerEstado("estadoModulo", "Error creando módulo: " + err.message, "error");
-  }
+function escapar(texto) {
+  return String(texto || "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
 }
 
 async function subirArchivo(file) {
@@ -241,6 +262,143 @@ async function subirArchivo(file) {
   }
 
   return data;
+}
+
+async function cargarDashboard() {
+  try {
+    const res = await fetch(API + "/api/dashboard");
+    const data = await res.json();
+
+    if (!data.ok) {
+      throw new Error(data.error || "No se pudo cargar el dashboard");
+    }
+
+    document.getElementById("statModulos").textContent = data.resumen.total_modulos || 0;
+    document.getElementById("statClases").textContent = data.resumen.total_clases || 0;
+    document.getElementById("statEstudiantes").textContent = data.resumen.total_estudiantes || 0;
+
+    const select = document.getElementById("claseModulo");
+    select.innerHTML = "";
+
+    if (!data.modules || data.modules.length === 0) {
+      select.innerHTML = `<option value="">No hay módulos</option>`;
+    } else {
+      data.modules.forEach(m => {
+        const option = document.createElement("option");
+        option.value = m.id;
+        option.textContent = `ID ${m.id} - ${m.titulo}`;
+        select.appendChild(option);
+      });
+    }
+
+    renderModulos(data.modules || [], data.lessons || []);
+    renderEstudiantes(data.students || []);
+
+  } catch (err) {
+    document.getElementById("listaModulos").innerHTML = `<div class="item">Error cargando panel: ${escapar(err.message)}</div>`;
+  }
+}
+
+function renderModulos(modulos, clases) {
+  const cont = document.getElementById("listaModulos");
+  cont.innerHTML = "";
+
+  if (!modulos.length) {
+    cont.innerHTML = `<div class="item">No hay módulos todavía.</div>`;
+    return;
+  }
+
+  modulos.forEach(modulo => {
+    const div = document.createElement("div");
+    div.className = "item";
+
+    const clasesDelModulo = clases.filter(c => Number(c.module_id) === Number(modulo.id));
+
+    let clasesHtml = "";
+    if (!clasesDelModulo.length) {
+      clasesHtml = `<div class="lesson-box">Este módulo no tiene clases todavía.</div>`;
+    } else {
+      clasesHtml = clasesDelModulo.map(clase => {
+        const tieneVideo = clase.youtube_url ? "Sí" : "No";
+        const tieneArchivo = clase.file_url ? "Sí" : "No";
+
+        return `
+          <div class="lesson-box">
+            <strong>Clase ID ${clase.id}: ${escapar(clase.titulo)}</strong>
+            <div class="small">Video: ${tieneVideo} | Archivo: ${tieneArchivo}</div>
+            ${clase.file_name ? `<div class="small">Archivo: ${escapar(clase.file_name)}</div>` : ""}
+            <div class="acciones">
+              <button class="eliminar" onclick="eliminarClase(${clase.id}, '${escapar(clase.titulo)}')">Eliminar clase</button>
+            </div>
+          </div>
+        `;
+      }).join("");
+    }
+
+    div.innerHTML = `
+      <strong>Módulo ID ${modulo.id}: ${escapar(modulo.titulo)}</strong>
+      <div class="small">${escapar(modulo.descripcion || "")}</div>
+      <div class="small">Total de clases: ${modulo.total_clases || 0}</div>
+      <div class="acciones">
+        <button class="eliminar" onclick="eliminarModulo(${modulo.id}, '${escapar(modulo.titulo)}')">Eliminar módulo completo</button>
+      </div>
+      ${clasesHtml}
+    `;
+
+    cont.appendChild(div);
+  });
+}
+
+function renderEstudiantes(estudiantes) {
+  const cont = document.getElementById("listaEstudiantes");
+  cont.innerHTML = "";
+
+  if (!estudiantes.length) {
+    cont.innerHTML = `<div class="item">No hay estudiantes registrados todavía.</div>`;
+    return;
+  }
+
+  estudiantes.forEach(est => {
+    const div = document.createElement("div");
+    div.className = "item";
+    div.innerHTML = `
+      <strong>${escapar(est.nombre || "Sin nombre")}</strong>
+      <div class="small">${escapar(est.email || "Sin email")}</div>
+    `;
+    cont.appendChild(div);
+  });
+}
+
+async function crearModulo() {
+  const titulo = document.getElementById("moduloTitulo").value.trim();
+  const descripcion = document.getElementById("moduloDesc").value.trim();
+
+  if (!titulo) {
+    ponerEstado("estadoModulo", "Debes escribir el título del módulo.", "error");
+    return;
+  }
+
+  try {
+    const res = await fetch(API + "/api/module", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ titulo, descripcion })
+    });
+
+    const data = await res.json();
+
+    if (!res.ok || !data.ok) {
+      throw new Error(data?.error || "No se pudo crear el módulo");
+    }
+
+    document.getElementById("moduloTitulo").value = "";
+    document.getElementById("moduloDesc").value = "";
+
+    ponerEstado("estadoModulo", "Módulo creado correctamente.");
+    await cargarDashboard();
+  } catch (err) {
+    ponerEstado("estadoModulo", "Error creando módulo: " + err.message, "error");
+  }
 }
 
 async function crearClase() {
@@ -287,12 +445,7 @@ async function crearClase() {
       })
     });
 
-    let data;
-    try {
-      data = await res.json();
-    } catch {
-      throw new Error("El servidor no devolvió una respuesta válida al crear la clase");
-    }
+    const data = await res.json();
 
     if (!res.ok || !data.ok) {
       throw new Error(data?.error || "No se pudo crear la clase");
@@ -303,12 +456,57 @@ async function crearClase() {
     document.getElementById("fileInput").value = "";
 
     ponerEstado("estadoClase", "Clase creada correctamente.");
+    await cargarDashboard();
   } catch (err) {
     ponerEstado("estadoClase", "Error creando clase: " + err.message, "error");
   }
 }
 
-cargarModulos();
+async function eliminarClase(id, titulo) {
+  const ok = confirm(`¿Seguro que quieres eliminar la clase "${titulo}"?`);
+  if (!ok) return;
+
+  try {
+    const res = await fetch(API + "/api/lesson/" + id, {
+      method: "DELETE"
+    });
+
+    const data = await res.json();
+
+    if (!res.ok || !data.ok) {
+      throw new Error(data?.error || "No se pudo eliminar la clase");
+    }
+
+    await cargarDashboard();
+    alert("Clase eliminada correctamente.");
+  } catch (err) {
+    alert("Error eliminando clase: " + err.message);
+  }
+}
+
+async function eliminarModulo(id, titulo) {
+  const ok = confirm(`¿Seguro que quieres eliminar el módulo "${titulo}" y todas sus clases?`);
+  if (!ok) return;
+
+  try {
+    const res = await fetch(API + "/api/module/" + id, {
+      method: "DELETE"
+    });
+
+    const data = await res.json();
+
+    if (!res.ok || !data.ok) {
+      throw new Error(data?.error || "No se pudo eliminar el módulo");
+    }
+
+    await cargarDashboard();
+    alert("Módulo eliminado correctamente.");
+  } catch (err) {
+    alert("Error eliminando módulo: " + err.message);
+  }
+}
+
+cargarDashboard();
 </script>
 
 </body>
