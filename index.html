@@ -1,125 +1,1028 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Chambari</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Chambari</title>
+  <meta name="theme-color" content="#f6efe7" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="apple-touch-icon" href="public/icon-192.png" />
 
-<link rel="manifest" href="manifest.json">
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    :root{
+      --bg:#f8f4ef;
+      --bg2:#fcfaf7;
+      --card:#fffdfa;
+      --line:#eadfd3;
+      --text:#3f342e;
+      --muted:#7d6d64;
+      --peach:#efd5c5;
+      --cream:#f5eadc;
+      --green:#dfeadf;
+      --blue:#e4ebf7;
+      --gold:#f0dfb6;
+      --accent:#c99573;
+      --accent-dark:#a7795c;
+      --shadow:0 14px 35px rgba(88,63,48,.08);
+      --radius:24px;
+    }
 
-<style>
-body{
-  margin:0;
-  font-family:Arial, sans-serif;
-  background:#f7f7f7;
-  color:#222;
-}
+    html{scroll-behavior:smooth}
+    body{
+      font-family:Arial,Helvetica,sans-serif;
+      background:
+        radial-gradient(circle at top left,#fff1e4 0%,transparent 28%),
+        radial-gradient(circle at top right,#f5efe8 0%,transparent 26%),
+        linear-gradient(180deg,var(--bg2) 0%,var(--bg) 100%);
+      color:var(--text);
+      min-height:100vh;
+    }
 
-.header{
-  display:flex;
-  align-items:center;
-  gap:12px;
-  padding:16px;
-  background:white;
-  border-bottom:1px solid #eee;
-}
+    .app{
+      max-width:1180px;
+      margin:0 auto;
+      padding:16px 12px 34px;
+    }
 
-.logo{
-  width:42px;
-  height:42px;
-  border-radius:10px;
-}
+    .topbar{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+      flex-wrap:wrap;
+      margin-bottom:16px;
+    }
 
-.title{
-  font-size:20px;
-  font-weight:bold;
-}
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:14px;
+    }
 
-.container{
-  padding:16px;
-}
+    .logo-wrap{
+      width:62px;
+      height:62px;
+      border-radius:20px;
+      overflow:hidden;
+      background:linear-gradient(135deg,#e8b995,#d39a73);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      box-shadow:0 10px 24px rgba(201,149,115,.25);
+      flex-shrink:0;
+    }
 
-.select{
-  width:100%;
-  padding:12px;
-  border-radius:10px;
-  border:1px solid #ddd;
-  margin-bottom:14px;
-}
+    .logo-wrap img{
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      display:block;
+    }
 
-.button{
-  display:block;
-  width:100%;
-  padding:14px;
-  background:#111;
-  color:white;
-  border-radius:10px;
-  text-align:center;
-  text-decoration:none;
-  margin-bottom:16px;
-}
+    .logo-fallback{
+      color:white;
+      font-size:28px;
+      font-weight:800;
+      display:none;
+    }
 
-iframe{
-  width:100%;
-  height:75vh;
-  border:none;
-  border-radius:10px;
-  background:white;
-}
+    .brand-text h1{
+      font-size:28px;
+      line-height:1.05;
+      margin-bottom:4px;
+    }
 
-</style>
+    .brand-text p{
+      color:var(--muted);
+      font-size:14px;
+    }
+
+    .chip{
+      background:rgba(255,255,255,.85);
+      border:1px solid var(--line);
+      border-radius:999px;
+      padding:12px 16px;
+      color:var(--accent-dark);
+      box-shadow:var(--shadow);
+      font-size:14px;
+      font-weight:700;
+    }
+
+    .hero{
+      display:grid;
+      grid-template-columns:1.08fr .92fr;
+      gap:18px;
+      margin-bottom:20px;
+    }
+
+    .hero-card,.side-card,.tabs-shell,.viewer-card{
+      background:rgba(255,253,250,.92);
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+    }
+
+    .hero-card{
+      padding:30px 24px;
+      background:
+        linear-gradient(135deg,rgba(239,213,197,.45),rgba(255,255,255,.75)),
+        var(--card);
+    }
+
+    .hero-card h2{
+      font-size:44px;
+      line-height:1.03;
+      margin-bottom:14px;
+      max-width:760px;
+    }
+
+    .hero-card h2 span{color:var(--accent-dark)}
+
+    .hero-card p{
+      font-size:18px;
+      line-height:1.7;
+      color:#65564f;
+      max-width:760px;
+    }
+
+    .hero-actions{
+      display:flex;
+      gap:12px;
+      flex-wrap:wrap;
+      margin-top:20px;
+    }
+
+    .btn{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      text-decoration:none;
+      border:none;
+      cursor:pointer;
+      padding:14px 18px;
+      border-radius:16px;
+      font-size:15px;
+      font-weight:800;
+      transition:.2s ease;
+    }
+
+    .btn-main{
+      background:linear-gradient(135deg,#d7a27c,#bf8967);
+      color:white;
+      box-shadow:0 10px 24px rgba(191,137,103,.22);
+    }
+
+    .btn-soft{
+      background:var(--cream);
+      color:#7a5a49;
+      border:1px solid #e6d7c7;
+    }
+
+    .btn:hover{transform:translateY(-1px)}
+
+    .side-card{
+      padding:22px;
+      background:
+        linear-gradient(180deg,rgba(228,235,247,.58),rgba(255,255,255,.96));
+    }
+
+    .side-card h3{
+      font-size:22px;
+      margin-bottom:10px;
+    }
+
+    .side-card p{
+      color:var(--muted);
+      line-height:1.6;
+      margin-bottom:15px;
+    }
+
+    .steps{
+      display:grid;
+      gap:12px;
+    }
+
+    .step{
+      background:rgba(255,255,255,.8);
+      border:1px solid #ebe3db;
+      border-radius:18px;
+      padding:14px;
+    }
+
+    .step strong{
+      display:block;
+      margin-bottom:5px;
+      color:#564740;
+    }
+
+    .step span{
+      font-size:14px;
+      line-height:1.5;
+      color:var(--muted);
+    }
+
+    .tabs-shell{
+      padding:12px;
+      margin-bottom:18px;
+    }
+
+    .tabs{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+
+    .tab-btn{
+      flex:1;
+      min-width:180px;
+      border:none;
+      background:#fff;
+      border:1px solid var(--line);
+      border-radius:18px;
+      padding:16px;
+      text-align:left;
+      cursor:pointer;
+      transition:.2s ease;
+    }
+
+    .tab-btn:hover{transform:translateY(-2px)}
+
+    .tab-btn.active{
+      background:linear-gradient(135deg,rgba(239,213,197,.9),rgba(245,234,220,.92));
+      border-color:#dfc4b2;
+    }
+
+    .tab-btn strong{
+      display:block;
+      font-size:18px;
+      margin-bottom:6px;
+      color:#4e4038;
+    }
+
+    .tab-btn span{
+      color:var(--muted);
+      font-size:14px;
+      line-height:1.45;
+    }
+
+    .tab-panel{
+      display:none;
+      padding:22px 8px 6px;
+    }
+
+    .tab-panel.active{display:block}
+
+    .panel-title{
+      font-size:28px;
+      margin-bottom:10px;
+      padding:0 8px;
+    }
+
+    .panel-subtitle{
+      color:var(--muted);
+      line-height:1.7;
+      margin-bottom:18px;
+      padding:0 8px;
+      max-width:900px;
+    }
+
+    .diag-grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:16px;
+    }
+
+    .card{
+      background:linear-gradient(180deg,#fffdfa,#fff7f1);
+      border:1px solid #ebdfd5;
+      border-radius:22px;
+      padding:18px;
+    }
+
+    .card h4{
+      font-size:20px;
+      margin-bottom:8px;
+      color:#4a3b34;
+    }
+
+    .card p{
+      font-size:14px;
+      color:var(--muted);
+      line-height:1.6;
+      margin-bottom:12px;
+    }
+
+    .options{
+      display:grid;
+      gap:10px;
+    }
+
+    .option{
+      display:flex;
+      gap:10px;
+      align-items:flex-start;
+      background:#fff;
+      border:1px solid #ece1d8;
+      border-radius:16px;
+      padding:12px;
+    }
+
+    .option input{
+      margin-top:3px;
+      accent-color:#bf8967;
+    }
+
+    .option label{
+      width:100%;
+      cursor:pointer;
+      color:#594c44;
+      line-height:1.45;
+    }
+
+    .diag-actions{
+      display:flex;
+      gap:12px;
+      flex-wrap:wrap;
+      margin-top:16px;
+      padding:0 8px;
+    }
+
+    .result{
+      display:none;
+      margin-top:16px;
+      padding:18px;
+      border-radius:20px;
+      border:1px solid #dae6d5;
+      background:linear-gradient(135deg,rgba(223,234,223,.72),rgba(255,255,255,.92));
+      color:#56624f;
+      line-height:1.7;
+      margin-left:8px;
+      margin-right:8px;
+    }
+
+    .result.show{display:block}
+
+    .method-grid{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:16px;
+    }
+
+    .method-card{
+      background:linear-gradient(180deg,#fffdfa,#fdf7f1);
+      border:1px solid #eadfd4;
+      border-radius:22px;
+      padding:18px;
+    }
+
+    .method-icon{
+      width:48px;
+      height:48px;
+      border-radius:16px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      margin-bottom:12px;
+      font-size:20px;
+      font-weight:800;
+      background:var(--gold);
+      color:#6a5546;
+    }
+
+    .method-card h4{
+      font-size:20px;
+      margin-bottom:8px;
+    }
+
+    .method-card p{
+      color:var(--muted);
+      line-height:1.7;
+      font-size:15px;
+    }
+
+    .method-note{
+      margin-top:16px;
+      background:linear-gradient(135deg,rgba(228,235,247,.75),rgba(255,255,255,.9));
+      border:1px solid #dbe3ec;
+      border-radius:20px;
+      padding:18px;
+      color:#5c6772;
+      line-height:1.75;
+      margin-left:8px;
+      margin-right:8px;
+    }
+
+    .board-head{
+      display:flex;
+      gap:12px;
+      flex-wrap:wrap;
+      align-items:center;
+      margin-bottom:12px;
+      padding:0 8px;
+    }
+
+    .input,.textarea{
+      width:100%;
+      border:1px solid #e8ddd4;
+      border-radius:18px;
+      background:#fffefc;
+      padding:14px 16px;
+      color:#4b3f39;
+      font-size:15px;
+      outline:none;
+    }
+
+    .input{max-width:460px}
+    .textarea{
+      min-height:220px;
+      resize:vertical;
+      line-height:1.7;
+      margin:0 8px;
+      width:calc(100% - 16px);
+    }
+
+    .board-actions{
+      display:flex;
+      gap:12px;
+      flex-wrap:wrap;
+      margin-top:14px;
+      padding:0 8px;
+    }
+
+    .board-preview{
+      margin:18px 8px 0;
+      background:linear-gradient(180deg,rgba(245,234,220,.6),rgba(255,255,255,.93));
+      border:1px solid #eadbc7;
+      border-radius:24px;
+      padding:24px;
+      min-height:220px;
+    }
+
+    .board-preview h4{
+      font-size:24px;
+      color:#634d40;
+      margin-bottom:14px;
+    }
+
+    .board-content{
+      color:#5f5149;
+      line-height:1.85;
+      white-space:pre-wrap;
+      font-size:16px;
+    }
+
+    .library-head{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+      flex-wrap:wrap;
+      margin-bottom:14px;
+    }
+
+    .library-head h3{
+      font-size:28px;
+    }
+
+    .library-head p{
+      color:var(--muted);
+      line-height:1.6;
+    }
+
+    .select{
+      width:100%;
+      max-width:320px;
+      padding:13px 14px;
+      border-radius:14px;
+      border:1px solid #d9cec4;
+      background:#fff;
+      color:var(--text);
+      outline:none;
+    }
+
+    .module-grid{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:16px;
+      margin-top:14px;
+    }
+
+    .module{
+      background:rgba(255,253,250,.95);
+      border:1px solid var(--line);
+      border-radius:24px;
+      overflow:hidden;
+      box-shadow:var(--shadow);
+      transition:.2s ease;
+    }
+
+    .module:hover{
+      transform:translateY(-4px);
+    }
+
+    .module-cover{
+      height:130px;
+      display:flex;
+      align-items:flex-end;
+      padding:16px;
+      font-size:13px;
+      font-weight:700;
+      color:#6d5a50;
+    }
+
+    .cover-1{background:linear-gradient(135deg,var(--peach),#f7e8dd)}
+    .cover-2{background:linear-gradient(135deg,var(--blue),#eef3fb)}
+    .cover-3{background:linear-gradient(135deg,var(--green),#edf5ed)}
+    .cover-4{background:linear-gradient(135deg,var(--gold),#f7f0d8)}
+    .cover-5{background:linear-gradient(135deg,#edd9e8,#f8eef5)}
+    .cover-6{background:linear-gradient(135deg,#dfe6dc,#eff4ee)}
+
+    .module-body{
+      padding:18px;
+    }
+
+    .module-body h4{
+      font-size:22px;
+      margin-bottom:8px;
+    }
+
+    .module-body p{
+      color:var(--muted);
+      line-height:1.6;
+      margin-bottom:14px;
+    }
+
+    .module-actions{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+
+    .small-btn{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      text-decoration:none;
+      border:none;
+      cursor:pointer;
+      padding:11px 14px;
+      border-radius:12px;
+      font-size:14px;
+      font-weight:800;
+    }
+
+    .open-btn{
+      background:linear-gradient(135deg,#d7a27c,#bf8967);
+      color:white;
+    }
+
+    .view-btn{
+      background:#f5eadc;
+      color:#7a5a49;
+      border:1px solid #e7d7c8;
+    }
+
+    .viewer-card{
+      margin-top:18px;
+      padding:22px;
+    }
+
+    .viewer-head{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+      flex-wrap:wrap;
+      margin-bottom:14px;
+    }
+
+    .viewer-head h3{
+      font-size:26px;
+    }
+
+    .viewer-head p{
+      color:var(--muted);
+      line-height:1.6;
+    }
+
+    .viewer-actions{
+      display:flex;
+      gap:12px;
+      flex-wrap:wrap;
+      margin-bottom:16px;
+    }
+
+    .viewer-link{
+      text-decoration:none;
+      background:linear-gradient(135deg,#d7a27c,#bf8967);
+      color:white;
+      padding:13px 16px;
+      border-radius:14px;
+      font-weight:800;
+    }
+
+    .viewer-frame{
+      width:100%;
+      height:72vh;
+      min-height:480px;
+      border:none;
+      border-radius:18px;
+      background:white;
+      box-shadow:0 8px 20px rgba(0,0,0,.05);
+    }
+
+    footer{
+      margin-top:22px;
+      text-align:center;
+      color:#a19086;
+      font-size:14px;
+      padding-bottom:18px;
+    }
+
+    @media (max-width:980px){
+      .hero{grid-template-columns:1fr}
+      .diag-grid{grid-template-columns:1fr}
+      .method-grid{grid-template-columns:1fr 1fr}
+      .module-grid{grid-template-columns:1fr 1fr}
+      .hero-card h2{font-size:36px}
+    }
+
+    @media (max-width:680px){
+      .app{padding:12px 10px 24px}
+      .brand-text h1{font-size:24px}
+      .hero-card{padding:24px 18px}
+      .hero-card h2{font-size:30px}
+      .hero-card p{font-size:16px}
+      .tab-btn{min-width:100%}
+      .method-grid{grid-template-columns:1fr}
+      .module-grid{grid-template-columns:1fr}
+      .viewer-frame{min-height:380px;height:58vh}
+      .input{max-width:100%}
+    }
+  </style>
 </head>
-
 <body>
+  <div class="app">
+    <div class="topbar">
+      <div class="brand">
+        <div class="logo-wrap">
+          <img src="public/logo.png" alt="Logo Chambari" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+          <div class="logo-fallback">C</div>
+        </div>
+        <div class="brand-text">
+          <h1>Chambari</h1>
+          <p>Una experiencia simple para estudiantes y profesor.</p>
+        </div>
+      </div>
+      <div class="chip">Plataforma lista</div>
+    </div>
 
-<div class="header">
-  <img src="public/logo.png" class="logo">
-  <div class="title">Chambari</div>
-</div>
+    <section class="hero">
+      <div class="hero-card">
+        <h2>Una plataforma <span>minimalista</span>, clara y útil.</h2>
+        <p>
+          El estudiante entra, descubre su punto de partida, entiende el método,
+          revisa la pizarra del día y abre sus documentos sin ver nada técnico.
+          Todo en una sola web que también sirve como app.
+        </p>
+        <div class="hero-actions">
+          <a href="#biblioteca" class="btn btn-main">Ver biblioteca</a>
+          <button class="btn btn-soft" onclick="openTab('diagnostico')">Abrir diagnóstico</button>
+        </div>
+      </div>
 
-<div class="container">
+      <div class="side-card">
+        <h3>Tres espacios clave</h3>
+        <p>La navegación queda limpia y centrada en lo que sí aporta valor.</p>
+        <div class="steps">
+          <div class="step">
+            <strong>Diagnóstico</strong>
+            <span>Ubica al estudiante con sensibilidad y claridad.</span>
+          </div>
+          <div class="step">
+            <strong>Método</strong>
+            <span>Explica cómo se organiza el aprendizaje y cómo avanzar.</span>
+          </div>
+          <div class="step">
+            <strong>Pizarra</strong>
+            <span>Permite tener visible la clase del día de forma ordenada.</span>
+          </div>
+        </div>
+      </div>
+    </section>
 
-<select id="pdfSelector" class="select"></select>
+    <section class="tabs-shell">
+      <div class="tabs">
+        <button class="tab-btn active" data-tab="diagnostico" onclick="openTab('diagnostico')">
+          <strong>Diagnóstico</strong>
+          <span>Descubre desde qué punto conviene empezar.</span>
+        </button>
+        <button class="tab-btn" data-tab="metodo" onclick="openTab('metodo')">
+          <strong>El método</strong>
+          <span>Una lógica simple para conectar lo conocido con lo nuevo.</span>
+        </button>
+        <button class="tab-btn" data-tab="pizarra" onclick="openTab('pizarra')">
+          <strong>Pizarra</strong>
+          <span>Clase del día, notas y guía visible para todos.</span>
+        </button>
+      </div>
 
-<a id="openBtn" class="button" target="_blank">Abrir PDF</a>
+      <div class="tab-panel active" id="diagnostico">
+        <h3 class="panel-title">Diagnóstico inicial</h3>
+        <p class="panel-subtitle">
+          Este espacio orienta al estudiante sin hacerlo sentir atrapado en etiquetas rígidas.
+        </p>
 
-<iframe id="viewer"></iframe>
+        <div class="diag-grid">
+          <div class="card">
+            <h4>1. Cuando lees una frase básica en inglés, tú...</h4>
+            <p>Marca lo que más se acerque a tu realidad.</p>
+            <div class="options">
+              <div class="option"><input type="radio" name="q1" id="q1a" value="1"><label for="q1a">Entiendo muy poco o casi nada.</label></div>
+              <div class="option"><input type="radio" name="q1" id="q1b" value="2"><label for="q1b">Entiendo algunas palabras y partes sueltas.</label></div>
+              <div class="option"><input type="radio" name="q1" id="q1c" value="3"><label for="q1c">Entiendo bastante bien la idea general.</label></div>
+            </div>
+          </div>
 
-</div>
+          <div class="card">
+            <h4>2. Si alguien te hace una pregunta simple, tú...</h4>
+            <p>Piensa en comprensión y respuesta.</p>
+            <div class="options">
+              <div class="option"><input type="radio" name="q2" id="q2a" value="1"><label for="q2a">No sé bien qué me preguntan.</label></div>
+              <div class="option"><input type="radio" name="q2" id="q2b" value="2"><label for="q2b">Sospecho de qué se trata, pero me cuesta responder.</label></div>
+              <div class="option"><input type="radio" name="q2" id="q2c" value="3"><label for="q2c">Entiendo y puedo responder algo sencillo.</label></div>
+            </div>
+          </div>
 
-<script>
-const archivos = [
-  "modelo1.pdf",
-  "modelo2.pdf",
-  "modelo3.pdf"
-];
+          <div class="card">
+            <h4>3. Cuando ves un texto corto, normalmente...</h4>
+            <p>Esto ayuda a recomendarte un punto de entrada.</p>
+            <div class="options">
+              <div class="option"><input type="radio" name="q3" id="q3a" value="1"><label for="q3a">Me siento perdido rápido.</label></div>
+              <div class="option"><input type="radio" name="q3" id="q3b" value="2"><label for="q3b">Puedo seguirlo si trae vocabulario familiar.</label></div>
+              <div class="option"><input type="radio" name="q3" id="q3c" value="3"><label for="q3c">Puedo entenderlo y sacar la idea principal.</label></div>
+            </div>
+          </div>
 
-const selector = document.getElementById("pdfSelector");
-const viewer = document.getElementById("viewer");
-const btn = document.getElementById("openBtn");
+          <div class="card">
+            <h4>4. Si tuvieras que hablar de ti, tú...</h4>
+            <p>No busques perfección, solo sinceridad.</p>
+            <div class="options">
+              <div class="option"><input type="radio" name="q4" id="q4a" value="1"><label for="q4a">No sabría cómo empezar.</label></div>
+              <div class="option"><input type="radio" name="q4" id="q4b" value="2"><label for="q4b">Podría decir frases o palabras sueltas.</label></div>
+              <div class="option"><input type="radio" name="q4" id="q4c" value="3"><label for="q4c">Podría presentarme con frases básicas y claras.</label></div>
+            </div>
+          </div>
+        </div>
 
-function cargarLista(){
-  archivos.forEach(a=>{
-    const option = document.createElement("option");
-    option.value = "modelos/" + a;
-    option.textContent = a.replace(".pdf","");
-    selector.appendChild(option);
-  });
+        <div class="diag-actions">
+          <button class="btn btn-main" onclick="evaluarDiagnostico()">Ver orientación</button>
+          <button class="btn btn-soft" onclick="limpiarDiagnostico()">Reiniciar</button>
+        </div>
 
-  cambiarPDF(selector.value);
-}
+        <div class="result" id="resultadoDiagnostico"></div>
+      </div>
 
-function cambiarPDF(ruta){
-  viewer.src = ruta;
-  btn.href = ruta;
-}
+      <div class="tab-panel" id="metodo">
+        <h3 class="panel-title">El método</h3>
+        <p class="panel-subtitle">
+          Aquí el estudiante no memoriza piezas aisladas. Primero reconoce, luego conecta y después usa.
+        </p>
 
-selector.addEventListener("change",()=>{
-  cambiarPDF(selector.value);
-});
+        <div class="method-grid">
+          <div class="method-card">
+            <div class="method-icon">1</div>
+            <h4>Reconocer</h4>
+            <p>Identificar palabras, ritmos e ideas familiares para crear base y seguridad.</p>
+          </div>
 
-cargarLista();
-</script>
+          <div class="method-card">
+            <div class="method-icon">2</div>
+            <h4>Conectar</h4>
+            <p>Relacionar lo nuevo con lo ya comprendido para que el aprendizaje sea natural.</p>
+          </div>
 
+          <div class="method-card">
+            <div class="method-icon">3</div>
+            <h4>Usar</h4>
+            <p>Convertir comprensión en frases, lectura guiada, respuesta y práctica real.</p>
+          </div>
+        </div>
+
+        <div class="method-note">
+          La meta no es correr. La meta es construir continuidad, detectar patrones y ganar soltura sin saturación.
+        </div>
+      </div>
+
+      <div class="tab-panel" id="pizarra">
+        <h3 class="panel-title">Pizarra de la clase del día</h3>
+        <p class="panel-subtitle">
+          Un espacio limpio para que profesor y estudiantes tengan visible la clase actual.
+        </p>
+
+        <div class="board-head">
+          <input id="tituloClase" class="input" type="text" placeholder="Título de la clase del día">
+        </div>
+
+        <textarea id="contenidoClase" class="textarea" placeholder="Escribe aquí la clase del día, vocabulario, ejercicios, frases o tarea..."></textarea>
+
+        <div class="board-actions">
+          <button class="btn btn-main" onclick="guardarPizarra()">Guardar</button>
+          <button class="btn btn-soft" onclick="cargarPizarra()">Cargar</button>
+          <button class="btn btn-soft" onclick="limpiarPizarra()">Limpiar</button>
+          <button class="btn btn-soft" onclick="mostrarPizarra()">Actualizar vista</button>
+        </div>
+
+        <div class="board-preview">
+          <h4 id="vistaTitulo">Clase del día</h4>
+          <div id="vistaContenido" class="board-content">Escribe el contenido y toca “Actualizar vista”.</div>
+        </div>
+      </div>
+    </section>
+
+    <section id="biblioteca">
+      <div class="library-head">
+        <div>
+          <h3>Biblioteca de documentos</h3>
+          <p>Selecciona, abre o visualiza cada PDF dentro de la misma plataforma.</p>
+        </div>
+        <select id="pdfSelector" class="select" onchange="cambiarPDF(this.value)">
+          <option value="modelos/modelo1.pdf">Modelo 1</option>
+          <option value="modelos/modelo2.pdf">Modelo 2</option>
+          <option value="modelos/modelo3.pdf">Modelo 3</option>
+          <option value="modelos/modelo4.pdf">Modelo 4</option>
+          <option value="modelos/modelo5.pdf">Modelo 5</option>
+          <option value="modelos/modelo6.pdf">Modelo 6</option>
+        </select>
+      </div>
+
+      <div class="module-grid">
+        <div class="module">
+          <div class="module-cover cover-1">Comprensión básica y lectura guiada</div>
+          <div class="module-body">
+            <h4>Modelo 1</h4>
+            <p>Inicio guiado con vocabulario funcional y frases sencillas.</p>
+            <div class="module-actions">
+              <a class="small-btn open-btn" href="modelos/modelo1.pdf" target="_blank">Abrir PDF</a>
+              <button class="small-btn view-btn" onclick="cambiarPDF('modelos/modelo1.pdf')">Ver aquí</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="module">
+          <div class="module-cover cover-2">Conversación simple y rutina cotidiana</div>
+          <div class="module-body">
+            <h4>Modelo 2</h4>
+            <p>Diálogo práctico para comprensión y conversación cotidiana.</p>
+            <div class="module-actions">
+              <a class="small-btn open-btn" href="modelos/modelo2.pdf" target="_blank">Abrir PDF</a>
+              <button class="small-btn view-btn" onclick="cambiarPDF('modelos/modelo2.pdf')">Ver aquí</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="module">
+          <div class="module-cover cover-3">Vocabulario y acciones frecuentes</div>
+          <div class="module-body">
+            <h4>Modelo 3</h4>
+            <p>Palabras y expresiones útiles en contextos reales.</p>
+            <div class="module-actions">
+              <a class="small-btn open-btn" href="modelos/modelo3.pdf" target="_blank">Abrir PDF</a>
+              <button class="small-btn view-btn" onclick="cambiarPDF('modelos/modelo3.pdf')">Ver aquí</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="module">
+          <div class="module-cover cover-4">Actividad guiada y comprensión</div>
+          <div class="module-body">
+            <h4>Modelo 4</h4>
+            <p>Lectura, interpretación y práctica de estructuras simples.</p>
+            <div class="module-actions">
+              <a class="small-btn open-btn" href="modelos/modelo4.pdf" target="_blank">Abrir PDF</a>
+              <button class="small-btn view-btn" onclick="cambiarPDF('modelos/modelo4.pdf')">Ver aquí</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="module">
+          <div class="module-cover cover-5">Clase práctica y trabajo contextual</div>
+          <div class="module-body">
+            <h4>Modelo 5</h4>
+            <p>Práctica centrada en uso, repetición y comprensión funcional.</p>
+            <div class="module-actions">
+              <a class="small-btn open-btn" href="modelos/modelo5.pdf" target="_blank">Abrir PDF</a>
+              <button class="small-btn view-btn" onclick="cambiarPDF('modelos/modelo5.pdf')">Ver aquí</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="module">
+          <div class="module-cover cover-6">Gramática clara y presente simple</div>
+          <div class="module-body">
+            <h4>Modelo 6</h4>
+            <p>Explicación del presente simple con ejemplos directos y útiles.</p>
+            <div class="module-actions">
+              <a class="small-btn open-btn" href="modelos/modelo6.pdf" target="_blank">Abrir PDF</a>
+              <button class="small-btn view-btn" onclick="cambiarPDF('modelos/modelo6.pdf')">Ver aquí</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="viewer-card" id="visor">
+        <div class="viewer-head">
+          <div>
+            <h3>Visor de documentos</h3>
+            <p>Abre el documento dentro de la plataforma o en una pestaña aparte.</p>
+          </div>
+        </div>
+
+        <div class="viewer-actions">
+          <a id="abrirPDF" class="viewer-link" href="modelos/modelo1.pdf" target="_blank">Abrir aparte</a>
+        </div>
+
+        <iframe id="visorPDF" class="viewer-frame" src="modelos/modelo1.pdf"></iframe>
+      </div>
+    </section>
+
+    <footer>
+      Chambari · web y app minimalista para profesor y estudiantes
+    </footer>
+  </div>
+
+  <script>
+    function openTab(tabId){
+      document.querySelectorAll(".tab-panel").forEach(p => p.classList.remove("active"));
+      document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+      document.getElementById(tabId).classList.add("active");
+      document.querySelector(`.tab-btn[data-tab="${tabId}"]`).classList.add("active");
+    }
+
+    function evaluarDiagnostico(){
+      const names = ["q1","q2","q3","q4"];
+      let total = 0;
+      for(const n of names){
+        const selected = document.querySelector(`input[name="${n}"]:checked`);
+        if(!selected){
+          alert("Responde todas las preguntas.");
+          return;
+        }
+        total += Number(selected.value);
+      }
+      const box = document.getElementById("resultadoDiagnostico");
+      if(total <= 5){
+        box.textContent = "Punto de entrada inicial. Conviene empezar con base guiada, vocabulario frecuente, lectura simple y práctica controlada para construir seguridad.";
+      }else if(total <= 9){
+        box.textContent = "Punto de entrada intermedio guiado. Ya hay reconocimiento funcional; ahora conviene consolidar comprensión, respuesta simple y conexión entre estructuras.";
+      }else{
+        box.textContent = "Punto de entrada funcional. Ya existe una base útil para comprender ideas principales y responder de forma sencilla; ahora toca ganar soltura y precisión.";
+      }
+      box.classList.add("show");
+    }
+
+    function limpiarDiagnostico(){
+      document.querySelectorAll('input[type="radio"]').forEach(r => r.checked = false);
+      document.getElementById("resultadoDiagnostico").classList.remove("show");
+    }
+
+    function mostrarPizarra(){
+      const titulo = document.getElementById("tituloClase").value.trim();
+      const contenido = document.getElementById("contenidoClase").value.trim();
+      document.getElementById("vistaTitulo").textContent = titulo || "Clase del día";
+      document.getElementById("vistaContenido").textContent = contenido || "Escribe el contenido y toca “Actualizar vista”.";
+    }
+
+    function guardarPizarra(){
+      localStorage.setItem("chambari_titulo_clase", document.getElementById("tituloClase").value);
+      localStorage.setItem("chambari_contenido_clase", document.getElementById("contenidoClase").value);
+      mostrarPizarra();
+      alert("Pizarra guardada en este navegador.");
+    }
+
+    function cargarPizarra(){
+      document.getElementById("tituloClase").value = localStorage.getItem("chambari_titulo_clase") || "";
+      document.getElementById("contenidoClase").value = localStorage.getItem("chambari_contenido_clase") || "";
+      mostrarPizarra();
+    }
+
+    function limpiarPizarra(){
+      document.getElementById("tituloClase").value = "";
+      document.getElementById("contenidoClase").value = "";
+      mostrarPizarra();
+    }
+
+    function cambiarPDF(ruta){
+      document.getElementById("visorPDF").src = ruta;
+      document.getElementById("abrirPDF").href = ruta;
+      document.getElementById("pdfSelector").value = ruta;
+      location.hash = "visor";
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      cargarPizarra();
+    });
+  </script>
 </body>
 </html>
