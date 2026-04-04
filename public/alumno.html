@@ -1,1 +1,188 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chambari - Alumno</title>
 
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial;
+      background: #0f0f0f;
+      color: white;
+    }
+
+    .wrap {
+      max-width: 900px;
+      margin: auto;
+      padding: 20px;
+    }
+
+    h1 {
+      color: #ff8a00;
+    }
+
+    .card {
+      background: #1b1b1b;
+      border-radius: 16px;
+      padding: 20px;
+      margin-bottom: 20px;
+      border: 1px solid #2a2a2a;
+    }
+
+    .btn {
+      display: block;
+      width: 100%;
+      padding: 14px;
+      background: #ff8a00;
+      border: none;
+      color: black;
+      font-weight: bold;
+      border-radius: 10px;
+      margin-top: 10px;
+      cursor: pointer;
+    }
+
+    .module {
+      background: #222;
+      padding: 15px;
+      border-radius: 12px;
+      margin-top: 10px;
+    }
+
+    .lesson {
+      background: #111;
+      padding: 10px;
+      border-radius: 8px;
+      margin-top: 8px;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    iframe {
+      width: 100%;
+      height: 250px;
+      border-radius: 10px;
+      margin-top: 10px;
+    }
+
+    a {
+      color: #ffb45c;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="wrap">
+
+  <h1>Hola 👋</h1>
+
+  <!-- CONTINUAR -->
+  <div class="card">
+    <h2>Continúa tu clase</h2>
+    <button class="btn" onclick="verModulos()">Entrar</button>
+  </div>
+
+  <!-- MODULOS -->
+  <div id="modulos" class="hidden"></div>
+
+  <!-- CLASE -->
+  <div id="clase" class="hidden"></div>
+
+</div>
+
+<script>
+
+// ===== VER MODULOS =====
+async function verModulos() {
+  const cont = document.getElementById("modulos");
+  cont.innerHTML = "Cargando...";
+  cont.classList.remove("hidden");
+
+  const res = await fetch("/api/modules");
+  const data = await res.json();
+
+  cont.innerHTML = "";
+
+  data.modules.forEach(m => {
+    const div = document.createElement("div");
+    div.className = "module";
+
+    div.innerHTML = `
+      <b>${m.titulo}</b><br>
+      ${m.descripcion || ""}<br>
+      <button class="btn" onclick="verClases(${m.id})">
+        Entrar
+      </button>
+    `;
+
+    cont.appendChild(div);
+  });
+}
+
+// ===== VER CLASES =====
+async function verClases(moduleId) {
+  const cont = document.getElementById("modulos");
+  const res = await fetch(`/api/lessons/${moduleId}`);
+  const data = await res.json();
+
+  cont.innerHTML = "";
+
+  data.lessons.forEach(l => {
+    const div = document.createElement("div");
+    div.className = "lesson";
+
+    div.innerHTML = `
+      <b>${l.titulo}</b><br>
+      <button class="btn" onclick="abrirClase('${l.titulo}','${l.youtube_url}','${l.pdf_url}')">
+        Abrir
+      </button>
+    `;
+
+    cont.appendChild(div);
+  });
+}
+
+// ===== ABRIR CLASE =====
+function abrirClase(titulo, youtube, pdf) {
+  const cont = document.getElementById("clase");
+  cont.classList.remove("hidden");
+
+  let videoHTML = "";
+  if (youtube) {
+    const embed = youtube.replace("watch?v=", "embed/");
+    videoHTML = `<iframe src="${embed}" allowfullscreen></iframe>`;
+  }
+
+  let pdfHTML = "";
+  if (pdf) {
+    pdfHTML = `<a href="${pdf}" target="_blank">📄 Abrir PDF</a>`;
+  }
+
+  cont.innerHTML = `
+    <div class="card">
+      <h2>${titulo}</h2>
+
+      ${videoHTML}
+      ${pdfHTML}
+
+      <button class="btn" onclick="practicar()">
+        Practicar ahora
+      </button>
+    </div>
+  `;
+}
+
+// ===== PRACTICA (simulada por ahora) =====
+function practicar() {
+  alert("Aquí irá la práctica interactiva");
+}
+
+</script>
+
+</body>
+</html>
