@@ -1,516 +1,972 @@
 const express = require("express");
 const cors = require("cors");
-const { Pool } = require("pg");
 const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
+const { Pool } = require("pg");
 
 const app = express();
-
-// =============================
-// CONFIG GENERAL
-// =============================
 const PORT = process.env.PORT || 3000;
-const BASE_URL = process.env.BASE_URL || "https://chambari-academia.onrender.com";
 
-// =============================
-// DISCO PERSISTENTE EN RENDER
-// =============================
-const uploadDir = "/var/data/files";
+// =========================
+// CONFIG GENERAL
+// =========================
+app.use(cors());
+app.use(express.json({ limit: "20mb" }));
+app.use(express.urlencoded({ extended: true, limit: "20mb" }));
 
-if (!fs.existsSync(uploadDir)) {
-  fs.mkdirSync(uploadDir, { recursive: true });
-}
+// Servir carpeta public completa
+app.use("/public", express.static(path.join(__dirname, "public")));
+app.use("/files", express.static(path.join(__dirname, "public", "files")));
 
-// =============================
-// MIDDLEWARE
-// =============================
-app.use(cors({ origin: "*" }));
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-
-app.use(express.static(path.join(__dirname, "public")));
-app.use("/files", express.static(uploadDir));
-
-// =============================
+// =========================
 // DB
-// =============================
+// =========================
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
-  ssl: { rejectUnauthorized: false }
+  ssl: process.env.DATABASE_URL
+    ? { rejectUnauthorized: false }
+    : false
 });
 
-// =============================
-// TIPOS DE ARCHIVO
-// =============================
-const allowedExtensions = [
-  ".pdf",
-  ".doc",
-  ".docx",
-  ".xls",
-  ".xlsx",
-  ".ppt",
-  ".pptx",
-  ".txt",
-  ".csv"
-];
+// =========================
+// UTILIDADES
+// =========================
+function normalizeText(value) {
+  return String(value || "").trim();
+}
 
-// =============================
-// MULTER
-// =============================
+function safeFileName(name) {
+  const original = String(name || "archivo").trim();
+  const ext = path.extname(original);
+  const base = path.basename(original, ext)
+    .replace(/[^\w\s-]/g, "")
+    .replace(/\s+/g, "_")
+    .slice(0, 80) || "archivo";
+  return `${Date.now()}_${base}${ext}`;
+}
+
+async function ensureSchema() {
+  const client = await pool.connect();
+  try {
+    await client.query("BEGIN");
+
+    // =========================
+    // TABLA MODULES
+    // =========================
+    await client.query(`
+      CREATE TABLE IF NOT EXISTS modules (
+        id SERIAL PRIMARY KEY,
+        title TEXT NOT NULL,
+        description TEXT DEFAULT '',
+        status TEXT DEFAULT 'published'
+      )
+    `);
+
+    await client.query(`
+      ALTER TABLE modules
+      ADD COLUMN IF NOT EXISTS created_at TIMESTAMP DEFAULT NOW()
+    `);
+
+    await client.query(`
+      ALTER TABLE modules
+      ADD COLUMN IF NOT EXISTS updated_at TIMESTAMP DEFAULT NOW()
+    `);
+
+    // =========================
+    // TABLA LESSONS
+    // =========================
+    await client.query(`
+      CREATE TABLE IF NOT EXISTS lessons (
+        id SERIAL PRIMARY KEY,
+        module_id INTEGER REFERENCES modules(id) ON DELETE CASCADE,
+        title TEXT NOT NULL,
+        description TEXT DEFAULT '',
+        video_url TEXT DEFAULT '',
+        youtube_url TEXT DEFAULT '',
+        tiktok_url TEXT DEFAULT '',
+        audio_url TEXT DEFAULT '',
+        text_content TEXT DEFAULT '',
+        file_url TEXT DEFAULT '',
+        file_name TEXT DEFAULT '',
+        status TEXT DEFAULT 'draft'
+      )
+    `);
+
+    await client.query(`
+      ALTER TABLE lessons
+      ADD COLUMN IF NOT EXISTS created_at TIMESTAMP DEFAULT NOW()
+    `);
+
+    await client.query(`
+      ALTER TABLE lessons
+      ADD COLUMN IF NOT EXISTS updated_at TIMESTAMP DEFAULT NOW()
+    `);
+
+    // compatibilidad si antes usabas "link"
+    await client.query(`
+      ALTER TABLE lessons
+      ADD COLUMN IF NOT EXISTS link TEXT DEFAULT ''
+    `);
+
+    // =========================
+    // TABLA STUDENTS
+    // =========================
+    await client.query(`
+      CREATE TABLE IF NOT EXISTS students (
+        id SERIAL PRIMARY KEY,
+        nombre TEXT NOT NULL,
+        email TEXT UNIQUE NOT NULL,
+        password TEXT NOT NULL
+      )
+    `);
+
+    await client.query(`
+      ALTER TABLE students
+      ADD COLUMN IF NOT EXISTS created_at TIMESTAMP DEFAULT NOW()
+    `);
+
+    await client.query(`
+      ALTER TABLE students
+      ADD COLUMN IF NOT EXISTS updated_at TIMESTAMP DEFAULT NOW()
+    `);
+
+    // =========================
+    // TABLA PROGRESS
+    // =========================
+    await client.query(`
+      CREATE TABLE IF NOT EXISTS progress (
+        id SERIAL PRIMARY KEY,
+        student_id INTEGER REFERENCES students(id) ON DELETE CASCADE,
+        lesson_id INTEGER REFERENCES lessons(id) ON DELETE CASCADE,
+        completed BOOLEAN DEFAULT FALSE,
+        progress_percent INTEGER DEFAULT 0
+      )
+    `);
+
+    await client.query(`
+      ALTER TABLE progress
+      ADD COLUMN IF NOT EXISTS created_at TIMESTAMP DEFAULT NOW()
+    `);
+
+    await client.query(`
+      ALTER TABLE progress
+      ADD COLUMN IF NOT EXISTS updated_at TIMESTAMP DEFAULT NOW()
+    `);
+
+    await client.query(`
+      CREATE UNIQUE INDEX IF NOT EXISTS progress_student_lesson_unique
+      ON progress(student_id, lesson_id)
+    `);
+
+    await client.query("COMMIT");
+    console.log("✅ Esquema verificado correctamente");
+  } catch (error) {
+    await client.query("ROLLBACK");
+    console.error("❌ Error asegurando esquema:", error.message);
+    throw error;
+  } finally {
+    client.release();
+  }
+}
+
+// =========================
+// ARCHIVOS
+// =========================
+const filesDir = path.join(__dirname, "public", "files");
+fs.mkdirSync(filesDir, { recursive: true });
+
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, uploadDir);
+    cb(null, filesDir);
   },
   filename: (req, file, cb) => {
-    const ext = path.extname(file.originalname || "").toLowerCase();
-    const safeName = `${Date.now()}-${Math.round(Math.random() * 1e9)}${ext}`;
-    cb(null, safeName);
+    cb(null, safeFileName(file.originalname));
   }
 });
 
 const upload = multer({
   storage,
-  limits: { fileSize: 30 * 1024 * 1024 },
-  fileFilter: (req, file, cb) => {
-    const ext = path.extname(file.originalname || "").toLowerCase();
-    if (allowedExtensions.includes(ext)) return cb(null, true);
-    cb(new Error("Tipo de archivo no permitido"));
+  limits: {
+    fileSize: 30 * 1024 * 1024 // 30 MB
   }
 });
 
-// =============================
-// INIT DB
-// =============================
-async function initDatabase() {
-  await pool.query(`
-    CREATE TABLE IF NOT EXISTS modules (
-      id SERIAL PRIMARY KEY,
-      titulo TEXT NOT NULL,
-      descripcion TEXT,
-      publicado BOOLEAN DEFAULT true,
-      created_at TIMESTAMP DEFAULT NOW()
-    );
-  `);
-
-  await pool.query(`
-    CREATE TABLE IF NOT EXISTS lessons (
-      id SERIAL PRIMARY KEY,
-      module_id INTEGER NOT NULL REFERENCES modules(id) ON DELETE CASCADE,
-      titulo TEXT NOT NULL,
-      youtube_url TEXT DEFAULT '',
-      file_url TEXT DEFAULT '',
-      file_name TEXT DEFAULT '',
-      file_type TEXT DEFAULT '',
-      publicado BOOLEAN DEFAULT true,
-      created_at TIMESTAMP DEFAULT NOW()
-    );
-  `);
-
-  await pool.query(`
-    CREATE TABLE IF NOT EXISTS students (
-      id SERIAL PRIMARY KEY,
-      nombre TEXT,
-      email TEXT UNIQUE,
-      password TEXT,
-      created_at TIMESTAMP DEFAULT NOW()
-    );
-  `);
-
-  await pool.query(`
-    ALTER TABLE lessons
-    ADD COLUMN IF NOT EXISTS file_url TEXT DEFAULT '';
-  `);
-
-  await pool.query(`
-    ALTER TABLE lessons
-    ADD COLUMN IF NOT EXISTS file_name TEXT DEFAULT '';
-  `);
-
-  await pool.query(`
-    ALTER TABLE lessons
-    ADD COLUMN IF NOT EXISTS file_type TEXT DEFAULT '';
-  `);
-
-  await pool.query(`
-    ALTER TABLE lessons
-    ADD COLUMN IF NOT EXISTS pdf_url TEXT;
-  `);
-
-  await pool.query(`
-    UPDATE lessons
-    SET file_url = COALESCE(NULLIF(file_url, ''), pdf_url),
-        file_type = CASE
-          WHEN COALESCE(file_type, '') = '' AND COALESCE(pdf_url, '') <> '' THEN 'pdf'
-          ELSE file_type
-        END
-    WHERE COALESCE(pdf_url, '') <> '';
-  `);
-}
-
-// =============================
-// HELPERS
-// =============================
-function getFilePathFromUrl(fileUrl) {
-  try {
-    if (!fileUrl) return null;
-    const prefix = `${BASE_URL}/files/`;
-    if (!fileUrl.startsWith(prefix)) return null;
-    const filename = fileUrl.replace(prefix, "");
-    return path.join(uploadDir, filename);
-  } catch {
-    return null;
-  }
-}
-
-// =============================
-// RUTAS BASE
-// =============================
+// =========================
+// RUTAS BASICAS
+// =========================
 app.get("/", (req, res) => {
-  res.send("Chambari Academy backend funcionando");
+  res.json({
+    ok: true,
+    message: "Servidor Chambari Academy activo"
+  });
 });
 
-app.get("/api", (req, res) => {
-  res.json({ ok: true, message: "Chambari Academy API funcionando" });
+app.get("/api/test", (req, res) => {
+  res.json({
+    ok: true,
+    server: "Chambari Academy",
+    time: new Date().toISOString()
+  });
 });
 
 app.get("/api/test-db", async (req, res) => {
   try {
-    const result = await pool.query("SELECT NOW()");
-    res.json({ ok: true, time: result.rows[0] });
-  } catch (err) {
-    console.error("DB ERROR:", err);
-    res.status(500).json({ ok: false, error: err.message });
+    const result = await pool.query("SELECT NOW() AS now");
+    res.json({
+      ok: true,
+      db_time: result.rows[0].now
+    });
+  } catch (error) {
+    console.error("DB TEST ERROR:", error.message);
+    res.status(500).json({
+      ok: false,
+      error: error.message
+    });
   }
 });
 
-app.get("/api/init-db", async (req, res) => {
+// =========================
+// DASHBOARD PROFESOR
+// =========================
+app.get("/api/dashboard", async (req, res) => {
   try {
-    await initDatabase();
-
-    const countModules = await pool.query("SELECT COUNT(*)::int AS total FROM modules");
-    const totalModules = countModules.rows[0].total;
-
-    if (totalModules === 0) {
-      const moduleInsert = await pool.query(`
-        INSERT INTO modules (titulo, descripcion, publicado)
-        VALUES ('Primer módulo', 'Introducción inicial', true)
-        RETURNING id
-      `);
-
-      const moduleId = moduleInsert.rows[0].id;
-
-      await pool.query(
-        `INSERT INTO lessons (module_id, titulo, youtube_url, file_url, file_name, file_type, publicado)
-         VALUES ($1, $2, $3, $4, $5, $6, true)`,
-        [
-          moduleId,
-          "Primera clase",
-          "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-          "",
-          "",
-          ""
-        ]
-      );
-    }
-
-    res.json({ ok: true, message: "Base de datos creada correctamente" });
-  } catch (err) {
-    console.error("INIT DB ERROR:", err);
-    res.status(500).json({ ok: false, error: err.message });
-  }
-});
-
-// =============================
-// SUBIR ARCHIVO
-// =============================
-app.post("/api/upload-file", upload.single("file"), (req, res) => {
-  try {
-    if (!req.file) {
-      return res.status(400).json({ ok: false, error: "No se recibió ningún archivo" });
-    }
-
-    const ext = path.extname(req.file.originalname || "").toLowerCase().replace(".", "");
-    const url = `${BASE_URL}/files/${req.file.filename}`;
+    const [modulesCount, lessonsCount, studentsCount] = await Promise.all([
+      pool.query("SELECT COUNT(*)::int AS total FROM modules"),
+      pool.query("SELECT COUNT(*)::int AS total FROM lessons"),
+      pool.query("SELECT COUNT(*)::int AS total FROM students")
+    ]);
 
     res.json({
       ok: true,
-      url,
-      filename: req.file.filename,
-      originalname: req.file.originalname,
-      filetype: ext
+      modules: modulesCount.rows[0].total,
+      lessons: lessonsCount.rows[0].total,
+      students: studentsCount.rows[0].total
     });
-  } catch (err) {
-    console.error("UPLOAD FILE ERROR:", err);
-    res.status(500).json({ ok: false, error: err.message });
+  } catch (error) {
+    console.error("DASHBOARD ERROR:", error.message);
+    res.status(500).json({
+      ok: false,
+      error: error.message
+    });
   }
 });
 
-// =============================
-// REGISTRO
-// =============================
-app.post("/api/register", async (req, res) => {
-  try {
-    const { nombre, email, password } = req.body;
-
-    if (!nombre || !email || !password) {
-      return res.status(400).json({ ok: false, error: "Faltan datos" });
-    }
-
-    const result = await pool.query(
-      "INSERT INTO students (nombre, email, password) VALUES ($1,$2,$3) RETURNING id, nombre, email",
-      [nombre, email, password]
-    );
-
-    res.json({ ok: true, user: result.rows[0] });
-  } catch (err) {
-    console.error("REGISTER ERROR:", err);
-
-    if (err.code === "23505") {
-      return res.status(400).json({ ok: false, error: "Email ya existe" });
-    }
-
-    res.status(500).json({ ok: false, error: err.message });
-  }
-});
-
-// =============================
-// CREAR MÓDULO
-// =============================
-app.post("/api/module", async (req, res) => {
-  try {
-    const { titulo, descripcion } = req.body;
-
-    if (!titulo || !titulo.trim()) {
-      return res.status(400).json({ ok: false, error: "Título requerido" });
-    }
-
-    const result = await pool.query(
-      "INSERT INTO modules (titulo, descripcion, publicado) VALUES ($1,$2,true) RETURNING *",
-      [titulo.trim(), (descripcion || "").trim()]
-    );
-
-    res.json({ ok: true, module: result.rows[0] });
-  } catch (err) {
-    console.error("MODULE ERROR:", err);
-    res.status(500).json({ ok: false, error: err.message });
-  }
-});
-
-// =============================
-// CREAR CLASE
-// =============================
-app.post("/api/lesson", async (req, res) => {
-  try {
-    const { module_id, titulo, youtube_url, file_url, file_name, file_type } = req.body;
-
-    if (!module_id || !titulo || !String(titulo).trim()) {
-      return res.status(400).json({ ok: false, error: "Datos incompletos" });
-    }
-
-    const result = await pool.query(
-      `INSERT INTO lessons (module_id, titulo, youtube_url, file_url, file_name, file_type, publicado)
-       VALUES ($1,$2,$3,$4,$5,$6,true)
-       RETURNING *`,
-      [
-        Number(module_id),
-        String(titulo).trim(),
-        (youtube_url || "").trim(),
-        (file_url || "").trim(),
-        (file_name || "").trim(),
-        (file_type || "").trim()
-      ]
-    );
-
-    res.json({ ok: true, lesson: result.rows[0] });
-  } catch (err) {
-    console.error("LESSON ERROR:", err);
-    res.status(500).json({ ok: false, error: err.message });
-  }
-});
-
-// =============================
-// VER MÓDULOS
-// =============================
+// =========================
+// MODULOS
+// =========================
 app.get("/api/modules", async (req, res) => {
   try {
-    const result = await pool.query(
-      "SELECT * FROM modules WHERE publicado = true ORDER BY id ASC"
-    );
+    const result = await pool.query(`
+      SELECT
+        id,
+        title,
+        description,
+        status,
+        created_at,
+        updated_at
+      FROM modules
+      ORDER BY id DESC
+    `);
 
-    res.json({ ok: true, modules: result.rows });
-  } catch (err) {
-    console.error("GET MODULES ERROR:", err);
-    res.status(500).json({ ok: false, error: err.message });
+    res.json({
+      ok: true,
+      modules: result.rows
+    });
+  } catch (error) {
+    console.error("GET MODULES ERROR:", error.message);
+    res.status(500).json({
+      ok: false,
+      error: error.message
+    });
   }
 });
 
-// =============================
-// VER CLASES DE MÓDULO
-// =============================
+app.post("/api/modules", async (req, res) => {
+  try {
+    const title = normalizeText(req.body.title);
+    const description = normalizeText(req.body.description);
+    const status = normalizeText(req.body.status || "published");
+
+    if (!title) {
+      return res.status(400).json({
+        ok: false,
+        error: "El título del módulo es obligatorio"
+      });
+    }
+
+    const result = await pool.query(`
+      INSERT INTO modules (title, description, status, created_at, updated_at)
+      VALUES ($1, $2, $3, NOW(), NOW())
+      RETURNING *
+    `, [title, description, status]);
+
+    res.json({
+      ok: true,
+      module: result.rows[0],
+      message: "Módulo creado correctamente"
+    });
+  } catch (error) {
+    console.error("CREATE MODULE ERROR:", error.message);
+    res.status(500).json({
+      ok: false,
+      error: error.message
+    });
+  }
+});
+
+app.put("/api/modules/:id", async (req, res) => {
+  try {
+    const id = Number(req.params.id);
+    const title = normalizeText(req.body.title);
+    const description = normalizeText(req.body.description);
+    const status = normalizeText(req.body.status || "published");
+
+    if (!id) {
+      return res.status(400).json({ ok: false, error: "ID inválido" });
+    }
+
+    if (!title) {
+      return res.status(400).json({ ok: false, error: "El título es obligatorio" });
+    }
+
+    const result = await pool.query(`
+      UPDATE modules
+      SET title = $1,
+          description = $2,
+          status = $3,
+          updated_at = NOW()
+      WHERE id = $4
+      RETURNING *
+    `, [title, description, status, id]);
+
+    if (result.rowCount === 0) {
+      return res.status(404).json({
+        ok: false,
+        error: "Módulo no encontrado"
+      });
+    }
+
+    res.json({
+      ok: true,
+      module: result.rows[0],
+      message: "Módulo actualizado correctamente"
+    });
+  } catch (error) {
+    console.error("UPDATE MODULE ERROR:", error.message);
+    res.status(500).json({
+      ok: false,
+      error: error.message
+    });
+  }
+});
+
+app.delete("/api/modules/:id", async (req, res) => {
+  try {
+    const id = Number(req.params.id);
+
+    if (!id) {
+      return res.status(400).json({ ok: false, error: "ID inválido" });
+    }
+
+    const result = await pool.query(`
+      DELETE FROM modules
+      WHERE id = $1
+      RETURNING id
+    `, [id]);
+
+    if (result.rowCount === 0) {
+      return res.status(404).json({
+        ok: false,
+        error: "Módulo no encontrado"
+      });
+    }
+
+    res.json({
+      ok: true,
+      message: "Módulo eliminado correctamente"
+    });
+  } catch (error) {
+    console.error("DELETE MODULE ERROR:", error.message);
+    res.status(500).json({
+      ok: false,
+      error: error.message
+    });
+  }
+});
+
+// =========================
+// CLASES / LESSONS
+// =========================
 app.get("/api/lessons/:moduleId", async (req, res) => {
   try {
-    const result = await pool.query(
-      `SELECT * FROM lessons
-       WHERE module_id = $1 AND publicado = true
-       ORDER BY id ASC`,
-      [req.params.moduleId]
-    );
+    const moduleId = Number(req.params.moduleId);
 
-    res.json({ ok: true, lessons: result.rows });
-  } catch (err) {
-    console.error("GET LESSONS ERROR:", err);
-    res.status(500).json({ ok: false, error: err.message });
+    if (!moduleId) {
+      return res.status(400).json({
+        ok: false,
+        error: "moduleId inválido"
+      });
+    }
+
+    const result = await pool.query(`
+      SELECT
+        id,
+        module_id,
+        title,
+        description,
+        video_url,
+        youtube_url,
+        tiktok_url,
+        audio_url,
+        text_content,
+        file_url,
+        file_name,
+        status,
+        created_at,
+        updated_at,
+        link
+      FROM lessons
+      WHERE module_id = $1
+      ORDER BY id ASC
+    `, [moduleId]);
+
+    res.json({
+      ok: true,
+      lessons: result.rows
+    });
+  } catch (error) {
+    console.error("GET LESSONS ERROR:", error.message);
+    res.status(500).json({
+      ok: false,
+      error: error.message
+    });
   }
 });
 
-// =============================
-// DASHBOARD PROFESOR
-// =============================
-app.get("/api/dashboard", async (req, res) => {
+app.get("/api/lesson/:id", async (req, res) => {
+  try {
+    const id = Number(req.params.id);
+
+    if (!id) {
+      return res.status(400).json({
+        ok: false,
+        error: "ID inválido"
+      });
+    }
+
+    const result = await pool.query(`
+      SELECT
+        l.*,
+        m.title AS module_title
+      FROM lessons l
+      LEFT JOIN modules m ON m.id = l.module_id
+      WHERE l.id = $1
+      LIMIT 1
+    `, [id]);
+
+    if (result.rowCount === 0) {
+      return res.status(404).json({
+        ok: false,
+        error: "Clase no encontrada"
+      });
+    }
+
+    res.json({
+      ok: true,
+      lesson: result.rows[0]
+    });
+  } catch (error) {
+    console.error("GET LESSON ERROR:", error.message);
+    res.status(500).json({
+      ok: false,
+      error: error.message
+    });
+  }
+});
+
+app.post("/api/lessons", async (req, res) => {
+  try {
+    const moduleId = Number(req.body.module_id || req.body.moduleId);
+    const title = normalizeText(req.body.title);
+    const description = normalizeText(req.body.description);
+    const videoUrl = normalizeText(req.body.video_url || req.body.videoUrl);
+    const youtubeUrl = normalizeText(req.body.youtube_url || req.body.youtubeUrl || req.body.link);
+    const tiktokUrl = normalizeText(req.body.tiktok_url || req.body.tiktokUrl);
+    const audioUrl = normalizeText(req.body.audio_url || req.body.audioUrl);
+    const textContent = normalizeText(req.body.text_content || req.body.textContent);
+    const fileUrl = normalizeText(req.body.file_url || req.body.fileUrl);
+    const fileName = normalizeText(req.body.file_name || req.body.fileName);
+    const status = normalizeText(req.body.status || "draft");
+
+    if (!moduleId) {
+      return res.status(400).json({
+        ok: false,
+        error: "Debes seleccionar un módulo"
+      });
+    }
+
+    if (!title) {
+      return res.status(400).json({
+        ok: false,
+        error: "El título de la clase es obligatorio"
+      });
+    }
+
+    const moduleExists = await pool.query(
+      "SELECT id FROM modules WHERE id = $1 LIMIT 1",
+      [moduleId]
+    );
+
+    if (moduleExists.rowCount === 0) {
+      return res.status(404).json({
+        ok: false,
+        error: "El módulo seleccionado no existe"
+      });
+    }
+
+    const result = await pool.query(`
+      INSERT INTO lessons (
+        module_id,
+        title,
+        description,
+        video_url,
+        youtube_url,
+        tiktok_url,
+        audio_url,
+        text_content,
+        file_url,
+        file_name,
+        status,
+        link,
+        created_at,
+        updated_at
+      )
+      VALUES (
+        $1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,NOW(),NOW()
+      )
+      RETURNING *
+    `, [
+      moduleId,
+      title,
+      description,
+      videoUrl,
+      youtubeUrl,
+      tiktokUrl,
+      audioUrl,
+      textContent,
+      fileUrl,
+      fileName,
+      status,
+      youtubeUrl
+    ]);
+
+    res.json({
+      ok: true,
+      lesson: result.rows[0],
+      message: "Clase creada correctamente"
+    });
+  } catch (error) {
+    console.error("CREATE LESSON ERROR:", error.message);
+    res.status(500).json({
+      ok: false,
+      error: error.message
+    });
+  }
+});
+
+app.put("/api/lessons/:id", async (req, res) => {
+  try {
+    const id = Number(req.params.id);
+    const moduleId = Number(req.body.module_id || req.body.moduleId);
+    const title = normalizeText(req.body.title);
+    const description = normalizeText(req.body.description);
+    const videoUrl = normalizeText(req.body.video_url || req.body.videoUrl);
+    const youtubeUrl = normalizeText(req.body.youtube_url || req.body.youtubeUrl || req.body.link);
+    const tiktokUrl = normalizeText(req.body.tiktok_url || req.body.tiktokUrl);
+    const audioUrl = normalizeText(req.body.audio_url || req.body.audioUrl);
+    const textContent = normalizeText(req.body.text_content || req.body.textContent);
+    const fileUrl = normalizeText(req.body.file_url || req.body.fileUrl);
+    const fileName = normalizeText(req.body.file_name || req.body.fileName);
+    const status = normalizeText(req.body.status || "draft");
+
+    if (!id) {
+      return res.status(400).json({ ok: false, error: "ID inválido" });
+    }
+
+    if (!moduleId) {
+      return res.status(400).json({ ok: false, error: "Debes seleccionar un módulo" });
+    }
+
+    if (!title) {
+      return res.status(400).json({ ok: false, error: "El título es obligatorio" });
+    }
+
+    const result = await pool.query(`
+      UPDATE lessons
+      SET module_id = $1,
+          title = $2,
+          description = $3,
+          video_url = $4,
+          youtube_url = $5,
+          tiktok_url = $6,
+          audio_url = $7,
+          text_content = $8,
+          file_url = $9,
+          file_name = $10,
+          status = $11,
+          link = $12,
+          updated_at = NOW()
+      WHERE id = $13
+      RETURNING *
+    `, [
+      moduleId,
+      title,
+      description,
+      videoUrl,
+      youtubeUrl,
+      tiktokUrl,
+      audioUrl,
+      textContent,
+      fileUrl,
+      fileName,
+      status,
+      youtubeUrl,
+      id
+    ]);
+
+    if (result.rowCount === 0) {
+      return res.status(404).json({
+        ok: false,
+        error: "Clase no encontrada"
+      });
+    }
+
+    res.json({
+      ok: true,
+      lesson: result.rows[0],
+      message: "Clase actualizada correctamente"
+    });
+  } catch (error) {
+    console.error("UPDATE LESSON ERROR:", error.message);
+    res.status(500).json({
+      ok: false,
+      error: error.message
+    });
+  }
+});
+
+app.delete("/api/lessons/:id", async (req, res) => {
+  try {
+    const id = Number(req.params.id);
+
+    if (!id) {
+      return res.status(400).json({ ok: false, error: "ID inválido" });
+    }
+
+    const result = await pool.query(`
+      DELETE FROM lessons
+      WHERE id = $1
+      RETURNING id
+    `, [id]);
+
+    if (result.rowCount === 0) {
+      return res.status(404).json({
+        ok: false,
+        error: "Clase no encontrada"
+      });
+    }
+
+    res.json({
+      ok: true,
+      message: "Clase eliminada correctamente"
+    });
+  } catch (error) {
+    console.error("DELETE LESSON ERROR:", error.message);
+    res.status(500).json({
+      ok: false,
+      error: error.message
+    });
+  }
+});
+
+// =========================
+// SUBIDA DE ARCHIVOS
+// =========================
+app.post("/api/upload-file", upload.single("file"), async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({
+        ok: false,
+        error: "No se recibió ningún archivo"
+      });
+    }
+
+    const fileUrl = `/files/${req.file.filename}`;
+
+    res.json({
+      ok: true,
+      file: {
+        originalName: req.file.originalname,
+        savedName: req.file.filename,
+        size: req.file.size,
+        mimetype: req.file.mimetype,
+        url: fileUrl
+      },
+      message: "Archivo subido correctamente"
+    });
+  } catch (error) {
+    console.error("UPLOAD FILE ERROR:", error.message);
+    res.status(500).json({
+      ok: false,
+      error: error.message
+    });
+  }
+});
+
+// =========================
+// ESTUDIANTES
+// =========================
+app.get("/api/students", async (req, res) => {
+  try {
+    const result = await pool.query(`
+      SELECT
+        s.id,
+        s.nombre,
+        s.email,
+        s.created_at,
+        COALESCE(AVG(p.progress_percent), 0)::int AS progreso_promedio
+      FROM students s
+      LEFT JOIN progress p ON p.student_id = s.id
+      GROUP BY s.id
+      ORDER BY s.id DESC
+    `);
+
+    res.json({
+      ok: true,
+      students: result.rows
+    });
+  } catch (error) {
+    console.error("GET STUDENTS ERROR:", error.message);
+    res.status(500).json({
+      ok: false,
+      error: error.message
+    });
+  }
+});
+
+app.post("/api/register", async (req, res) => {
+  try {
+    const nombre = normalizeText(req.body.nombre);
+    const email = normalizeText(req.body.email).toLowerCase();
+    const password = normalizeText(req.body.password);
+
+    if (!nombre || !email || !password) {
+      return res.status(400).json({
+        ok: false,
+        error: "Faltan datos"
+      });
+    }
+
+    const existing = await pool.query(
+      "SELECT id FROM students WHERE email = $1 LIMIT 1",
+      [email]
+    );
+
+    if (existing.rowCount > 0) {
+      return res.status(400).json({
+        ok: false,
+        error: "Ese correo ya está registrado"
+      });
+    }
+
+    const result = await pool.query(`
+      INSERT INTO students (nombre, email, password, created_at, updated_at)
+      VALUES ($1, $2, $3, NOW(), NOW())
+      RETURNING id, nombre, email, created_at
+    `, [nombre, email, password]);
+
+    res.json({
+      ok: true,
+      student: result.rows[0],
+      message: "Estudiante registrado correctamente"
+    });
+  } catch (error) {
+    console.error("REGISTER ERROR:", error.message);
+    res.status(500).json({
+      ok: false,
+      error: error.message
+    });
+  }
+});
+
+// =========================
+// PROGRESO
+// =========================
+app.post("/api/progress", async (req, res) => {
+  try {
+    const studentId = Number(req.body.student_id || req.body.studentId);
+    const lessonId = Number(req.body.lesson_id || req.body.lessonId);
+    const completed = Boolean(req.body.completed);
+    const progressPercent = Math.max(
+      0,
+      Math.min(100, Number(req.body.progress_percent || req.body.progressPercent || 0))
+    );
+
+    if (!studentId || !lessonId) {
+      return res.status(400).json({
+        ok: false,
+        error: "student_id y lesson_id son obligatorios"
+      });
+    }
+
+    const result = await pool.query(`
+      INSERT INTO progress (
+        student_id,
+        lesson_id,
+        completed,
+        progress_percent,
+        created_at,
+        updated_at
+      )
+      VALUES ($1, $2, $3, $4, NOW(), NOW())
+      ON CONFLICT (student_id, lesson_id)
+      DO UPDATE SET
+        completed = EXCLUDED.completed,
+        progress_percent = EXCLUDED.progress_percent,
+        updated_at = NOW()
+      RETURNING *
+    `, [studentId, lessonId, completed, progressPercent]);
+
+    res.json({
+      ok: true,
+      progress: result.rows[0],
+      message: "Progreso guardado correctamente"
+    });
+  } catch (error) {
+    console.error("SAVE PROGRESS ERROR:", error.message);
+    res.status(500).json({
+      ok: false,
+      error: error.message
+    });
+  }
+});
+
+app.get("/api/progress/:studentId", async (req, res) => {
+  try {
+    const studentId = Number(req.params.studentId);
+
+    if (!studentId) {
+      return res.status(400).json({
+        ok: false,
+        error: "studentId inválido"
+      });
+    }
+
+    const result = await pool.query(`
+      SELECT
+        p.*,
+        l.title AS lesson_title,
+        l.module_id
+      FROM progress p
+      LEFT JOIN lessons l ON l.id = p.lesson_id
+      WHERE p.student_id = $1
+      ORDER BY p.id DESC
+    `, [studentId]);
+
+    res.json({
+      ok: true,
+      progress: result.rows
+    });
+  } catch (error) {
+    console.error("GET PROGRESS ERROR:", error.message);
+    res.status(500).json({
+      ok: false,
+      error: error.message
+    });
+  }
+});
+
+// =========================
+// PANEL PROFESOR COMPLETO
+// =========================
+app.get("/api/profesor/panel", async (req, res) => {
   try {
     const modulesResult = await pool.query(`
       SELECT
         m.id,
-        m.titulo,
-        m.descripcion,
-        m.publicado,
+        m.title,
+        m.description,
+        m.status,
         m.created_at,
-        COUNT(l.id)::int AS total_clases
+        (
+          SELECT COUNT(*)::int
+          FROM lessons l
+          WHERE l.module_id = m.id
+        ) AS total_lessons
       FROM modules m
-      LEFT JOIN lessons l ON l.module_id = m.id AND l.publicado = true
-      WHERE m.publicado = true
-      GROUP BY m.id
-      ORDER BY m.id ASC
-    `);
-
-    const lessonsResult = await pool.query(`
-      SELECT *
-      FROM lessons
-      WHERE publicado = true
-      ORDER BY id DESC
+      ORDER BY m.id DESC
     `);
 
     const studentsResult = await pool.query(`
-      SELECT id, nombre, email, created_at
-      FROM students
-      ORDER BY id DESC
+      SELECT
+        s.id,
+        s.nombre,
+        s.email,
+        s.created_at,
+        COALESCE(AVG(p.progress_percent), 0)::int AS progreso_promedio
+      FROM students s
+      LEFT JOIN progress p ON p.student_id = s.id
+      GROUP BY s.id
+      ORDER BY s.id DESC
     `);
 
     res.json({
       ok: true,
-      resumen: {
-        total_modulos: modulesResult.rows.length,
-        total_clases: lessonsResult.rows.length,
-        total_estudiantes: studentsResult.rows.length
-      },
       modules: modulesResult.rows,
-      lessons: lessonsResult.rows,
       students: studentsResult.rows
     });
-  } catch (err) {
-    console.error("DASHBOARD ERROR:", err);
-    res.status(500).json({ ok: false, error: err.message });
+  } catch (error) {
+    console.error("PANEL PROFESOR ERROR:", error.message);
+    res.status(500).json({
+      ok: false,
+      error: error.message
+    });
   }
 });
 
-// =============================
-// ELIMINAR CLASE
-// =============================
-app.delete("/api/lesson/:id", async (req, res) => {
+// =========================
+// MANEJO DE ERRORES
+// =========================
+app.use((req, res) => {
+  res.status(404).json({
+    ok: false,
+    error: "Ruta no encontrada"
+  });
+});
+
+app.use((error, req, res, next) => {
+  console.error("ERROR GLOBAL:", error);
+  res.status(500).json({
+    ok: false,
+    error: error.message || "Error interno del servidor"
+  });
+});
+
+// =========================
+// INICIO
+// =========================
+async function startServer() {
   try {
-    const lessonId = Number(req.params.id);
+    await ensureSchema();
 
-    const existing = await pool.query(
-      "SELECT * FROM lessons WHERE id = $1",
-      [lessonId]
-    );
-
-    if (existing.rows.length === 0) {
-      return res.status(404).json({ ok: false, error: "Clase no encontrada" });
-    }
-
-    const lesson = existing.rows[0];
-    const filePath = getFilePathFromUrl(lesson.file_url);
-
-    await pool.query("DELETE FROM lessons WHERE id = $1", [lessonId]);
-
-    if (filePath && fs.existsSync(filePath)) {
-      try {
-        fs.unlinkSync(filePath);
-      } catch (e) {
-        console.error("No se pudo borrar archivo físico:", e.message);
-      }
-    }
-
-    res.json({ ok: true, message: "Clase eliminada correctamente" });
-  } catch (err) {
-    console.error("DELETE LESSON ERROR:", err);
-    res.status(500).json({ ok: false, error: err.message });
+    app.listen(PORT, () => {
+      console.log(`✅ Servidor corriendo en puerto ${PORT}`);
+    });
+  } catch (error) {
+    console.error("❌ No se pudo iniciar el servidor:", error.message);
+    process.exit(1);
   }
-});
+}
 
-// =============================
-// ELIMINAR MÓDULO
-// =============================
-app.delete("/api/module/:id", async (req, res) => {
-  try {
-    const moduleId = Number(req.params.id);
-
-    const moduleResult = await pool.query(
-      "SELECT * FROM modules WHERE id = $1",
-      [moduleId]
-    );
-
-    if (moduleResult.rows.length === 0) {
-      return res.status(404).json({ ok: false, error: "Módulo no encontrado" });
-    }
-
-    const lessonsResult = await pool.query(
-      "SELECT * FROM lessons WHERE module_id = $1",
-      [moduleId]
-    );
-
-    for (const lesson of lessonsResult.rows) {
-      const filePath = getFilePathFromUrl(lesson.file_url);
-      if (filePath && fs.existsSync(filePath)) {
-        try {
-          fs.unlinkSync(filePath);
-        } catch (e) {
-          console.error("No se pudo borrar archivo físico:", e.message);
-        }
-      }
-    }
-
-    await pool.query("DELETE FROM modules WHERE id = $1", [moduleId]);
-
-    res.json({ ok: true, message: "Módulo eliminado correctamente" });
-  } catch (err) {
-    console.error("DELETE MODULE ERROR:", err);
-    res.status(500).json({ ok: false, error: err.message });
-  }
-});
-
-// =============================
-// ERROR GENERAL
-// =============================
-app.use((err, req, res, next) => {
-  console.error("ERROR GENERAL:", err);
-
-  if (err instanceof multer.MulterError) {
-    return res.status(400).json({ ok: false, error: err.message });
-  }
-
-  if (err.message === "Tipo de archivo no permitido") {
-    return res.status(400).json({ ok: false, error: err.message });
-  }
-
-  res.status(500).json({ ok: false, error: "Error interno del servidor" });
-});
-
-// =============================
-// START
-// =============================
-app.listen(PORT, () => {
-  console.log("Servidor listo en puerto " + PORT);
-});
+startServer();
