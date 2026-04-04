@@ -28,7 +28,6 @@ h1 {
 
 h3 {
   margin-top: 0;
-  color: #ffffff;
 }
 
 input, textarea, select {
@@ -57,10 +56,6 @@ button {
   border-radius: 8px;
   cursor: pointer;
   font-size: 16px;
-}
-
-button:hover {
-  opacity: 0.95;
 }
 
 .module {
@@ -114,8 +109,12 @@ button:hover {
   <input id="claseTitulo" placeholder="Título de la clase">
   <input id="claseYoutube" placeholder="Link YouTube (opcional)">
 
-  <label for="pdfFile" class="small">Subir PDF (opcional)</label>
-  <input type="file" id="pdfFile" accept=".pdf,application/pdf">
+  <label for="fileInput" class="small">Subir archivo (PDF, Word, Excel, PowerPoint, TXT, CSV)</label>
+  <input
+    type="file"
+    id="fileInput"
+    accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.csv,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-powerpoint,application/vnd.openxmlformats-officedocument.presentationml.presentation,text/plain,text/csv"
+  >
 
   <button onclick="crearClase()">Guardar clase</button>
   <div id="estadoClase"></div>
@@ -129,12 +128,27 @@ button:hover {
 <script>
 const API = "https://chambari-academia.onrender.com";
 
-// ===== MENSAJES =====
 function ponerEstado(id, texto, tipo = "ok") {
   document.getElementById(id).innerHTML = `<div class="estado ${tipo}">${texto}</div>`;
 }
 
-// ===== CARGAR MÓDULOS =====
+function limpiarYoutube(url) {
+  try {
+    if (!url) return "";
+    let texto = url.trim();
+
+    if (!texto.startsWith("http://") && !texto.startsWith("https://")) {
+      if (texto.includes("youtube.com") || texto.includes("youtu.be")) {
+        texto = "https://" + texto.replace(/^\/+/, "");
+      }
+    }
+
+    return texto;
+  } catch {
+    return "";
+  }
+}
+
 async function cargarModulos() {
   try {
     const res = await fetch(API + "/api/modules");
@@ -173,7 +187,6 @@ async function cargarModulos() {
   }
 }
 
-// ===== CREAR MÓDULO =====
 async function crearModulo() {
   const titulo = document.getElementById("moduloTitulo").value.trim();
   const descripcion = document.getElementById("moduloDesc").value.trim();
@@ -207,31 +220,34 @@ async function crearModulo() {
   }
 }
 
-// ===== SUBIR PDF =====
-async function subirPDF(file) {
+async function subirArchivo(file) {
   const formData = new FormData();
-  formData.append("pdf", file);
+  formData.append("file", file);
 
-  const res = await fetch(API + "/api/upload-pdf", {
+  const res = await fetch(API + "/api/upload-file", {
     method: "POST",
     body: formData
   });
 
-  const data = await res.json();
-
-  if (!data.ok) {
-    throw new Error(data.error || "No se pudo subir el PDF");
+  let data;
+  try {
+    data = await res.json();
+  } catch {
+    throw new Error("El servidor no devolvió una respuesta JSON válida");
   }
 
-  return data.url;
+  if (!res.ok || !data.ok) {
+    throw new Error(data?.error || "No se pudo subir el archivo");
+  }
+
+  return data;
 }
 
-// ===== CREAR CLASE =====
 async function crearClase() {
   const module_id = document.getElementById("claseModulo").value;
   const titulo = document.getElementById("claseTitulo").value.trim();
-  const youtube_url = document.getElementById("claseYoutube").value.trim();
-  const fileInput = document.getElementById("pdfFile");
+  const youtube_url = limpiarYoutube(document.getElementById("claseYoutube").value);
+  const fileInput = document.getElementById("fileInput");
 
   if (!module_id) {
     ponerEstado("estadoClase", "Debes seleccionar un módulo.", "error");
@@ -246,10 +262,16 @@ async function crearClase() {
   try {
     ponerEstado("estadoClase", "Guardando clase...");
 
-    let pdf_url = "";
+    let file_url = "";
+    let file_name = "";
+    let file_type = "";
 
     if (fileInput.files.length > 0) {
-      pdf_url = await subirPDF(fileInput.files[0]);
+      const archivo = fileInput.files[0];
+      const uploadData = await subirArchivo(archivo);
+      file_url = uploadData.url || "";
+      file_name = uploadData.originalname || "";
+      file_type = uploadData.filetype || "";
     }
 
     const res = await fetch(API + "/api/lesson", {
@@ -259,19 +281,26 @@ async function crearClase() {
         module_id,
         titulo,
         youtube_url,
-        pdf_url
+        file_url,
+        file_name,
+        file_type
       })
     });
 
-    const data = await res.json();
+    let data;
+    try {
+      data = await res.json();
+    } catch {
+      throw new Error("El servidor no devolvió una respuesta válida al crear la clase");
+    }
 
-    if (!data.ok) {
-      throw new Error(data.error || "No se pudo crear la clase");
+    if (!res.ok || !data.ok) {
+      throw new Error(data?.error || "No se pudo crear la clase");
     }
 
     document.getElementById("claseTitulo").value = "";
     document.getElementById("claseYoutube").value = "";
-    document.getElementById("pdfFile").value = "";
+    document.getElementById("fileInput").value = "";
 
     ponerEstado("estadoClase", "Clase creada correctamente.");
   } catch (err) {
@@ -279,7 +308,6 @@ async function crearClase() {
   }
 }
 
-// ===== INICIO =====
 cargarModulos();
 </script>
 
