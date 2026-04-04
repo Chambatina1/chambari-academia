@@ -1,20 +1,14 @@
-[
-  {
-    "id": 1,
-    "titulo": "Saludos básicos",
-    "subtitulo": "Aprende a presentarte",
-    "descripcion": "Frases simples para saludar, decir tu nombre y responder preguntas básicas."
+{
+  "name": "chambari-academia",
+  "version": "1.0.0",
+  "description": "Plataforma de aprendizaje Chambari Academy",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
   },
-  {
-    "id": 2,
-    "titulo": "Preguntas frecuentes",
-    "subtitulo": "Conversación inicial",
-    "descripcion": "Aprende cómo preguntar y responder cosas comunes."
-  },
-  {
-    "id": 3,
-    "titulo": "Inglés para trabajo",
-    "subtitulo": "Frases útiles",
-    "descripcion": "Expresiones que se usan en entrevistas y en el trabajo diario."
+  "author": "Chambatina",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.18.2"
   }
-]
+}
