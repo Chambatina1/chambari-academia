@@ -3,6 +3,7 @@ const { Pool } = require("pg");
 
 const app = express();
 app.use(express.json());
+app.use(express.static("public"));
 
 // ===== CONEXIÓN DB =====
 const pool = new Pool({
@@ -127,7 +128,7 @@ app.get("/api/lessons/:moduleId", async (req, res) => {
 });
 
 // ===== INICIO =====
-app.get("/", (req, res) => {
+app.get("/api", (req, res) => {
   res.send("Chambari Academy API funcionando");
 });
 
