@@ -1,642 +1,125 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>Chambari Academy</title>
-
-  <meta name="theme-color" content="#f59e0b" />
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-  <meta name="apple-mobile-web-app-title" content="Chambari" />
-
-  <link rel="manifest" href="./manifest.json" />
-  <link rel="apple-touch-icon" href="./public/icono-192.png" />
-
-  <style>
-    *{
-      box-sizing:border-box;
-      margin:0;
-      padding:0;
-    }
-
-    :root{
-      --bg:#f3f4f6;
-      --card:#ffffff;
-      --text:#111827;
-      --muted:#6b7280;
-      --line:#e5e7eb;
-      --orange:#f59e0b;
-      --orange-dark:#d97706;
-      --soft:#fff7ed;
-      --shadow:0 14px 35px rgba(0,0,0,.08);
-      --radius:22px;
-    }
-
-    html{
-      scroll-behavior:smooth;
-    }
-
-    body{
-      font-family: Arial, Helvetica, sans-serif;
-      background:
-        radial-gradient(circle at top left, #fff4d6 0%, transparent 28%),
-        linear-gradient(180deg, #f9fafb 0%, #eef2f7 100%);
-      color:var(--text);
-      min-height:100vh;
-    }
-
-    .app{
-      max-width:1200px;
-      margin:0 auto;
-      padding:18px 16px 40px;
-    }
-
-    .topbar{
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      gap:12px;
-      flex-wrap:wrap;
-      margin-bottom:20px;
-    }
-
-    .brand{
-      display:flex;
-      align-items:center;
-      gap:14px;
-    }
-
-    .logo{
-      width:58px;
-      height:58px;
-      border-radius:18px;
-      background:linear-gradient(135deg, var(--orange), #fb923c);
-      color:#fff;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      font-size:24px;
-      font-weight:800;
-      box-shadow:0 12px 25px rgba(245,158,11,.25);
-    }
-
-    .brand h1{
-      font-size:26px;
-      line-height:1.1;
-    }
-
-    .brand p{
-      margin-top:4px;
-      color:var(--muted);
-      font-size:14px;
-    }
-
-    .install-btn{
-      border:none;
-      background:var(--orange);
-      color:#fff;
-      padding:12px 16px;
-      border-radius:14px;
-      font-weight:700;
-      cursor:pointer;
-      box-shadow:0 10px 20px rgba(245,158,11,.20);
-    }
-
-    .install-btn:hover{
-      background:var(--orange-dark);
-    }
-
-    .hero{
-      display:grid;
-      grid-template-columns:1.15fr .85fr;
-      gap:20px;
-      margin-bottom:22px;
-    }
-
-    .hero-card,
-    .panel,
-    .module-card,
-    .viewer-card{
-      background:rgba(255,255,255,.96);
-      border:1px solid var(--line);
-      border-radius:var(--radius);
-      box-shadow:var(--shadow);
-    }
-
-    .hero-card{
-      padding:34px 28px;
-    }
-
-    .hero-card h2{
-      font-size:44px;
-      line-height:1.05;
-      margin-bottom:14px;
-    }
-
-    .hero-card h2 span{
-      color:var(--orange);
-    }
-
-    .hero-card p{
-      font-size:18px;
-      line-height:1.7;
-      color:#4b5563;
-      max-width:720px;
-    }
-
-    .hero-actions{
-      display:flex;
-      flex-wrap:wrap;
-      gap:12px;
-      margin-top:22px;
-    }
-
-    .btn{
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      text-decoration:none;
-      padding:14px 18px;
-      border-radius:14px;
-      font-weight:700;
-      transition:.2s ease;
-      border:none;
-      cursor:pointer;
-      font-size:15px;
-    }
-
-    .btn-main{
-      background:var(--orange);
-      color:#fff;
-    }
-
-    .btn-main:hover{
-      background:var(--orange-dark);
-      transform:translateY(-1px);
-    }
-
-    .btn-soft{
-      background:var(--soft);
-      color:#9a3412;
-      border:1px solid #fed7aa;
-    }
-
-    .btn-soft:hover{
-      transform:translateY(-1px);
-      background:#ffedd5;
-    }
-
-    .panel{
-      padding:24px;
-    }
-
-    .panel h3{
-      font-size:20px;
-      margin-bottom:10px;
-    }
-
-    .panel p{
-      color:var(--muted);
-      line-height:1.6;
-      margin-bottom:16px;
-    }
-
-    .mini-steps{
-      display:grid;
-      gap:12px;
-    }
-
-    .mini-step{
-      background:#f9fafb;
-      border:1px solid #eceff3;
-      border-radius:16px;
-      padding:14px;
-    }
-
-    .mini-step strong{
-      display:block;
-      margin-bottom:4px;
-    }
-
-    .mini-step span{
-      color:var(--muted);
-      font-size:14px;
-      line-height:1.5;
-    }
-
-    .section-title{
-      margin:26px 0 14px;
-      font-size:24px;
-    }
-
-    .modules{
-      display:grid;
-      grid-template-columns:repeat(3, 1fr);
-      gap:16px;
-      margin-bottom:26px;
-    }
-
-    .module-card{
-      padding:20px;
-      display:flex;
-      flex-direction:column;
-      justify-content:space-between;
-      min-height:220px;
-      transition:.2s ease;
-    }
-
-    .module-card:hover{
-      transform:translateY(-4px);
-      border-color:#f6c26b;
-      box-shadow:0 16px 30px rgba(245,158,11,.08);
-    }
-
-    .module-number{
-      width:48px;
-      height:48px;
-      border-radius:14px;
-      background:var(--soft);
-      color:var(--orange);
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      font-weight:800;
-      font-size:18px;
-      margin-bottom:14px;
-    }
-
-    .module-card h3{
-      font-size:22px;
-      margin-bottom:8px;
-    }
-
-    .module-card p{
-      color:var(--muted);
-      line-height:1.6;
-      margin-bottom:18px;
-    }
-
-    .module-actions{
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-    }
-
-    .small-btn{
-      display:inline-block;
-      text-decoration:none;
-      padding:11px 14px;
-      border-radius:12px;
-      font-size:14px;
-      font-weight:700;
-    }
-
-    .open-btn{
-      background:var(--orange);
-      color:#fff;
-    }
-
-    .view-btn{
-      background:#eef2ff;
-      color:#3730a3;
-    }
-
-    .viewer-card{
-      padding:22px;
-      margin-bottom:26px;
-    }
-
-    .viewer-card h3{
-      font-size:24px;
-      margin-bottom:8px;
-    }
-
-    .viewer-card p{
-      color:var(--muted);
-      margin-bottom:16px;
-      line-height:1.6;
-    }
-
-    .viewer-controls{
-      display:flex;
-      flex-wrap:wrap;
-      gap:12px;
-      align-items:center;
-      margin-bottom:18px;
-    }
-
-    .viewer-select{
-      flex:1;
-      min-width:220px;
-      padding:13px 14px;
-      border-radius:14px;
-      border:1px solid #d1d5db;
-      background:#fff;
-      font-size:15px;
-      color:var(--text);
-      outline:none;
-    }
-
-    .viewer-link{
-      text-decoration:none;
-      background:var(--orange);
-      color:#fff;
-      padding:13px 16px;
-      border-radius:14px;
-      font-weight:700;
-      white-space:nowrap;
-    }
-
-    .viewer-frame{
-      width:100%;
-      height:70vh;
-      min-height:480px;
-      border:none;
-      border-radius:18px;
-      background:#fff;
-      box-shadow:0 8px 20px rgba(0,0,0,.05);
-    }
-
-    .bottom-nav{
-      position:sticky;
-      bottom:10px;
-      z-index:30;
-      margin-top:20px;
-      display:none;
-    }
-
-    .bottom-nav-inner{
-      display:flex;
-      justify-content:space-around;
-      gap:8px;
-      background:rgba(255,255,255,.96);
-      border:1px solid var(--line);
-      box-shadow:var(--shadow);
-      border-radius:22px;
-      padding:10px;
-      backdrop-filter: blur(8px);
-    }
-
-    .bottom-nav a{
-      text-decoration:none;
-      color:#374151;
-      font-size:13px;
-      font-weight:700;
-      padding:10px 12px;
-      border-radius:12px;
-      flex:1;
-      text-align:center;
-    }
-
-    .bottom-nav a:hover{
-      background:#f9fafb;
-    }
-
-    footer{
-      text-align:center;
-      color:#9ca3af;
-      font-size:14px;
-      margin-top:24px;
-      padding-bottom:20px;
-    }
-
-    @media (max-width: 980px){
-      .hero{
-        grid-template-columns:1fr;
-      }
-
-      .modules{
-        grid-template-columns:repeat(2, 1fr);
-      }
-
-      .hero-card h2{
-        font-size:36px;
-      }
-    }
-
-    @media (max-width: 680px){
-      .app{
-        padding:14px 12px 28px;
-      }
-
-      .brand h1{
-        font-size:22px;
-      }
-
-      .hero-card{
-        padding:26px 20px;
-      }
-
-      .hero-card h2{
-        font-size:30px;
-      }
-
-      .hero-card p{
-        font-size:16px;
-      }
-
-      .modules{
-        grid-template-columns:1fr;
-      }
-
-      .viewer-frame{
-        min-height:420px;
-        height:58vh;
-      }
-
-      .install-btn{
-        width:100%;
-      }
-
-      .bottom-nav{
-        display:block;
-      }
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chambari</title>
+
+<link rel="manifest" href="manifest.json">
+
+<style>
+body{
+  margin:0;
+  font-family:Arial, sans-serif;
+  background:#f7f7f7;
+  color:#222;
+}
+
+.header{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:16px;
+  background:white;
+  border-bottom:1px solid #eee;
+}
+
+.logo{
+  width:42px;
+  height:42px;
+  border-radius:10px;
+}
+
+.title{
+  font-size:20px;
+  font-weight:bold;
+}
+
+.container{
+  padding:16px;
+}
+
+.select{
+  width:100%;
+  padding:12px;
+  border-radius:10px;
+  border:1px solid #ddd;
+  margin-bottom:14px;
+}
+
+.button{
+  display:block;
+  width:100%;
+  padding:14px;
+  background:#111;
+  color:white;
+  border-radius:10px;
+  text-align:center;
+  text-decoration:none;
+  margin-bottom:16px;
+}
+
+iframe{
+  width:100%;
+  height:75vh;
+  border:none;
+  border-radius:10px;
+  background:white;
+}
+
+</style>
 </head>
+
 <body>
-  <div class="app">
-    <div class="topbar">
-      <div class="brand">
-        <div class="logo">C</div>
-        <div>
-          <h1>Chambari Academy</h1>
-          <p>Una sola versión para web y app.</p>
-        </div>
-      </div>
 
-      <button id="installBtn" class="install-btn" style="display:none;">Instalar app</button>
-    </div>
+<div class="header">
+  <img src="public/logo.png" class="logo">
+  <div class="title">Chambari</div>
+</div>
 
-    <section class="hero">
-      <div class="hero-card">
-        <h2>Aprende inglés de forma <span>clara</span> y moderna.</h2>
-        <p>
-          Esta versión funciona tanto en computadora como en teléfono. También puede
-          instalarse como app sin tener que crear otro proyecto distinto.
-        </p>
+<div class="container">
 
-        <div class="hero-actions">
-          <a href="#modulos" class="btn btn-main">Ver módulos</a>
-          <a href="#visor" class="btn btn-soft">Abrir visor PDF</a>
-        </div>
-      </div>
+<select id="pdfSelector" class="select"></select>
 
-      <div class="panel">
-        <h3>Cómo usarla</h3>
-        <p>La misma plataforma te sirve para todo.</p>
+<a id="openBtn" class="button" target="_blank">Abrir PDF</a>
 
-        <div class="mini-steps">
-          <div class="mini-step">
-            <strong>1. Web</strong>
-            <span>Abre el sitio desde Safari, Chrome o desde tu dominio.</span>
-          </div>
-          <div class="mini-step">
-            <strong>2. App</strong>
-            <span>En móvil puedes agregarla a pantalla de inicio y usarla como aplicación.</span>
-          </div>
-          <div class="mini-step">
-            <strong>3. PDF</strong>
-            <span>Los modelos se visualizan dentro de la misma página y también pueden abrirse aparte.</span>
-          </div>
-        </div>
-      </div>
-    </section>
+<iframe id="viewer"></iframe>
 
-    <h2 class="section-title" id="modulos">Módulos</h2>
+</div>
 
-    <section class="modules">
-      <div class="module-card">
-        <div>
-          <div class="module-number">1</div>
-          <h3>Greetings</h3>
-          <p>Saludos básicos, presentación personal y frases comunes del día a día.</p>
-        </div>
-        <div class="module-actions">
-          <a class="small-btn open-btn" href="modelos/modelo1.pdf" target="_blank">Abrir PDF</a>
-          <button class="small-btn view-btn" onclick="cambiarPDF('modelos/modelo1.pdf')">Ver aquí</button>
-        </div>
-      </div>
+<script>
+const archivos = [
+  "modelo1.pdf",
+  "modelo2.pdf",
+  "modelo3.pdf"
+];
 
-      <div class="module-card">
-        <div>
-          <div class="module-number">2</div>
-          <h3>Planning the Weekend</h3>
-          <p>Diálogo práctico para comprensión y conversación cotidiana.</p>
-        </div>
-        <div class="module-actions">
-          <a class="small-btn open-btn" href="modelos/modelo2.pdf" target="_blank">Abrir PDF</a>
-          <button class="small-btn view-btn" onclick="cambiarPDF('modelos/modelo2.pdf')">Ver aquí</button>
-        </div>
-      </div>
+const selector = document.getElementById("pdfSelector");
+const viewer = document.getElementById("viewer");
+const btn = document.getElementById("openBtn");
 
-      <div class="module-card">
-        <div>
-          <div class="module-number">3</div>
-          <h3>Friends Vocabulary</h3>
-          <p>Vocabulario útil con acciones, contextos reales y comprensión sencilla.</p>
-        </div>
-        <div class="module-actions">
-          <a class="small-btn open-btn" href="modelos/modelo3.pdf" target="_blank">Abrir PDF</a>
-          <button class="small-btn view-btn" onclick="cambiarPDF('modelos/modelo3.pdf')">Ver aquí</button>
-        </div>
-      </div>
+function cargarLista(){
+  archivos.forEach(a=>{
+    const option = document.createElement("option");
+    option.value = "modelos/" + a;
+    option.textContent = a.replace(".pdf","");
+    selector.appendChild(option);
+  });
 
-      <div class="module-card">
-        <div>
-          <div class="module-number">4</div>
-          <h3>Let It Be</h3>
-          <p>Actividad de comprensión guiada con frases simples y útiles.</p>
-        </div>
-        <div class="module-actions">
-          <a class="small-btn open-btn" href="modelos/modelo4.pdf" target="_blank">Abrir PDF</a>
-          <button class="small-btn view-btn" onclick="cambiarPDF('modelos/modelo4.pdf')">Ver aquí</button>
-        </div>
-      </div>
+  cambiarPDF(selector.value);
+}
 
-      <div class="module-card">
-        <div>
-          <div class="module-number">5</div>
-          <h3>English Class</h3>
-          <p>Clase práctica con vocabulario, expresiones y lectura básica.</p>
-        </div>
-        <div class="module-actions">
-          <a class="small-btn open-btn" href="modelos/modelo5.pdf" target="_blank">Abrir PDF</a>
-          <button class="small-btn view-btn" onclick="cambiarPDF('modelos/modelo5.pdf')">Ver aquí</button>
-        </div>
-      </div>
+function cambiarPDF(ruta){
+  viewer.src = ruta;
+  btn.href = ruta;
+}
 
-      <div class="module-card">
-        <div>
-          <div class="module-number">6</div>
-          <h3>Present Simple</h3>
-          <p>Explicación clara del presente simple con ejemplos directos.</p>
-        </div>
-        <div class="module-actions">
-          <a class="small-btn open-btn" href="modelos/modelo6.pdf" target="_blank">Abrir PDF</a>
-          <button class="small-btn view-btn" onclick="cambiarPDF('modelos/modelo6.pdf')">Ver aquí</button>
-        </div>
-      </div>
-    </section>
+selector.addEventListener("change",()=>{
+  cambiarPDF(selector.value);
+});
 
-    <section class="viewer-card" id="visor">
-      <h3>Visor de documentos</h3>
-      <p>Selecciona el módulo y visualízalo dentro de la plataforma.</p>
+cargarLista();
+</script>
 
-      <div class="viewer-controls">
-        <select id="pdfSelector" class="viewer-select" onchange="cambiarPDF(this.value)">
-          <option value="modelos/modelo1.pdf">Modelo 1 - Greetings</option>
-          <option value="modelos/modelo2.pdf" selected>Modelo 2 - Planning the Weekend</option>
-          <option value="modelos/modelo3.pdf">Modelo 3 - Friends Vocabulary</option>
-          <option value="modelos/modelo4.pdf">Modelo 4 - Let It Be</option>
-          <option value="modelos/modelo5.pdf">Modelo 5 - English Class</option>
-          <option value="modelos/modelo6.pdf">Modelo 6 - Present Simple</option>
-        </select>
-
-        <a id="abrirPDF" class="viewer-link" href="modelos/modelo2.pdf" target="_blank">Abrir aparte</a>
-      </div>
-
-      <iframe id="visorPDF" class="viewer-frame" src="modelos/modelo2.pdf"></iframe>
-    </section>
-
-    <div class="bottom-nav">
-      <div class="bottom-nav-inner">
-        <a href="#">Inicio</a>
-        <a href="#modulos">Módulos</a>
-        <a href="#visor">PDF</a>
-      </div>
-    </div>
-
-    <footer>
-      Chambari Academy · versión unificada para web y app
-    </footer>
-  </div>
-
-  <script>
-    function cambiarPDF(ruta){
-      document.getElementById("visorPDF").src = ruta;
-      document.getElementById("abrirPDF").href = ruta;
-      document.getElementById("pdfSelector").value = ruta;
-      location.hash = "visor";
-    }
-
-    let deferredPrompt = null;
-    const installBtn = document.getElementById("installBtn");
-
-    window.addEventListener("beforeinstallprompt", (e) => {
-      e.preventDefault();
-      deferredPrompt = e;
-      installBtn.style.display = "inline-block";
-    });
-
-    installBtn.addEventListener("click", async () => {
-      if (!deferredPrompt) return;
-      deferredPrompt.prompt();
-      await deferredPrompt.userChoice;
-      deferredPrompt = null;
-      installBtn.style.display = "none";
-    });
-  </script>
 </body>
 </html>
