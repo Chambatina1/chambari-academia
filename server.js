@@ -7,33 +7,35 @@ const app = express();
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Detecta si es móvil o escritorio
 function esMovil(userAgent = '') {
-  return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|Mobile/i.test(userAgent);
+  return /Android|webOS|iPhone|iPod|BlackBerry|IEMobile|Opera Mini|Mobile/i.test(userAgent);
 }
 
-// RAÍZ: móvil = app / escritorio = web
-app.get('/', (req, res) => {
-  const userAgent = req.headers['user-agent'] || '';
+function esTablet(userAgent = '') {
+  return /iPad|Tablet/i.test(userAgent);
+}
 
-  if (esMovil(userAgent)) {
+// Entra por dominio principal:
+// - iPhone/Android => app
+// - iPad/Mac/PC => web
+app.get('/', (req, res) => {
+  const ua = req.headers['user-agent'] || '';
+
+  if (esMovil(ua) && !esTablet(ua)) {
     return res.sendFile(path.join(__dirname, 'public', 'index.html'));
   }
 
   return res.sendFile(path.join(__dirname, 'public', 'web.html'));
 });
 
-// Forzar versión web
 app.get('/web', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'web.html'));
 });
 
-// Forzar versión app
 app.get('/app', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-// API de módulos/modelos
 app.get('/api/modulos', (req, res) => {
   try {
     const ruta = path.join(__dirname, 'data', 'modulos.json');
@@ -42,7 +44,7 @@ app.get('/api/modulos', (req, res) => {
       return res.status(500).json({
         ok: false,
         data: [],
-        error: 'No existe data/modulos.json'
+        error: 'No existe el archivo data/modulos.json'
       });
     }
 
@@ -55,7 +57,6 @@ app.get('/api/modulos', (req, res) => {
     });
   } catch (error) {
     console.error('Error en /api/modulos:', error.message);
-
     return res.status(500).json({
       ok: false,
       data: [],
@@ -64,31 +65,17 @@ app.get('/api/modulos', (req, res) => {
   }
 });
 
-// Guardar progreso simple
 app.post('/api/progreso', (req, res) => {
-  try {
-    console.log('Progreso recibido:', req.body);
-
-    return res.json({
-      ok: true,
-      mensaje: 'Progreso recibido correctamente'
-    });
-  } catch (error) {
-    console.error('Error en /api/progreso:', error.message);
-
-    return res.status(500).json({
-      ok: false,
-      error: error.message
-    });
-  }
+  console.log('Progreso recibido:', req.body);
+  res.json({
+    ok: true
+  });
 });
 
-// Health check
 app.get('/health', (req, res) => {
   res.json({
     ok: true,
-    servicio: 'Chambari Academy',
-    tiempo: new Date().toISOString()
+    servicio: 'Chambari Academy'
   });
 });
 
