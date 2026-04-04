@@ -1,111 +1,76 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Chambari - Alumno</title>
+<meta charset="UTF-8">
+<title>Chambari - Alumno</title>
 
-  <style>
-    body {
-      margin: 0;
-      font-family: Arial;
-      background: #0f0f0f;
-      color: white;
-    }
+<style>
+body {
+  font-family: Arial;
+  background: #0f0f0f;
+  color: white;
+  margin: 0;
+  padding: 20px;
+}
 
-    .wrap {
-      max-width: 900px;
-      margin: auto;
-      padding: 20px;
-    }
+.card {
+  background: #1b1b1b;
+  padding: 20px;
+  border-radius: 12px;
+  margin-bottom: 20px;
+}
 
-    h1 {
-      color: #ff8a00;
-    }
+button {
+  margin-top: 10px;
+  padding: 10px;
+  width: 100%;
+  background: #ff8a00;
+  border: none;
+  color: black;
+  font-weight: bold;
+  border-radius: 8px;
+}
 
-    .card {
-      background: #1b1b1b;
-      border-radius: 16px;
-      padding: 20px;
-      margin-bottom: 20px;
-      border: 1px solid #2a2a2a;
-    }
+.module {
+  background: #222;
+  padding: 10px;
+  margin-top: 10px;
+  border-radius: 8px;
+}
 
-    .btn {
-      display: block;
-      width: 100%;
-      padding: 14px;
-      background: #ff8a00;
-      border: none;
-      color: black;
-      font-weight: bold;
-      border-radius: 10px;
-      margin-top: 10px;
-      cursor: pointer;
-    }
+.lesson {
+  background: #111;
+  padding: 8px;
+  margin-top: 8px;
+  border-radius: 6px;
+}
 
-    .module {
-      background: #222;
-      padding: 15px;
-      border-radius: 12px;
-      margin-top: 10px;
-    }
+iframe {
+  width: 100%;
+  height: 250px;
+}
+</style>
 
-    .lesson {
-      background: #111;
-      padding: 10px;
-      border-radius: 8px;
-      margin-top: 8px;
-    }
-
-    .hidden {
-      display: none;
-    }
-
-    iframe {
-      width: 100%;
-      height: 250px;
-      border-radius: 10px;
-      margin-top: 10px;
-    }
-
-    a {
-      color: #ffb45c;
-    }
-  </style>
 </head>
 
 <body>
 
-<div class="wrap">
+<h1>Alumno</h1>
 
-  <h1>Hola 👋</h1>
-
-  <!-- CONTINUAR -->
-  <div class="card">
-    <h2>Continúa tu clase</h2>
-    <button class="btn" onclick="verModulos()">Entrar</button>
-  </div>
-
-  <!-- MODULOS -->
-  <div id="modulos" class="hidden"></div>
-
-  <!-- CLASE -->
-  <div id="clase" class="hidden"></div>
-
+<div class="card">
+  <button onclick="verModulos()">Entrar</button>
 </div>
 
+<div id="contenido"></div>
+
 <script>
+const API = "https://chambari-academia.onrender.com";
 
-// ===== VER MODULOS =====
 async function verModulos() {
-  const cont = document.getElementById("modulos");
-  cont.innerHTML = "Cargando...";
-  cont.classList.remove("hidden");
-
-  const res = await fetch("/api/modules");
+  const res = await fetch(API + "/api/modules");
   const data = await res.json();
 
+  const cont = document.getElementById("contenido");
   cont.innerHTML = "";
 
   data.modules.forEach(m => {
@@ -113,23 +78,19 @@ async function verModulos() {
     div.className = "module";
 
     div.innerHTML = `
-      <b>${m.titulo}</b><br>
-      ${m.descripcion || ""}<br>
-      <button class="btn" onclick="verClases(${m.id})">
-        Entrar
-      </button>
+      ${m.titulo}<br>
+      <button onclick="verClases(${m.id})">Entrar</button>
     `;
 
     cont.appendChild(div);
   });
 }
 
-// ===== VER CLASES =====
-async function verClases(moduleId) {
-  const cont = document.getElementById("modulos");
-  const res = await fetch(`/api/lessons/${moduleId}`);
+async function verClases(id) {
+  const res = await fetch(API + "/api/lessons/" + id);
   const data = await res.json();
 
+  const cont = document.getElementById("contenido");
   cont.innerHTML = "";
 
   data.lessons.forEach(l => {
@@ -137,8 +98,8 @@ async function verClases(moduleId) {
     div.className = "lesson";
 
     div.innerHTML = `
-      <b>${l.titulo}</b><br>
-      <button class="btn" onclick="abrirClase('${l.titulo}','${l.youtube_url}','${l.pdf_url}')">
+      ${l.titulo}<br>
+      <button onclick="abrir('${l.youtube_url}','${l.pdf_url}')">
         Abrir
       </button>
     `;
@@ -147,41 +108,19 @@ async function verClases(moduleId) {
   });
 }
 
-// ===== ABRIR CLASE =====
-function abrirClase(titulo, youtube, pdf) {
-  const cont = document.getElementById("clase");
-  cont.classList.remove("hidden");
+function abrir(youtube, pdf) {
+  const cont = document.getElementById("contenido");
 
-  let videoHTML = "";
-  if (youtube) {
-    const embed = youtube.replace("watch?v=", "embed/");
-    videoHTML = `<iframe src="${embed}" allowfullscreen></iframe>`;
-  }
-
-  let pdfHTML = "";
-  if (pdf) {
-    pdfHTML = `<a href="${pdf}" target="_blank">📄 Abrir PDF</a>`;
-  }
+  let video = youtube ? `<iframe src="${youtube.replace("watch?v=","embed/")}"></iframe>` : "";
+  let pdfLink = pdf ? `<a href="${pdf}" target="_blank">Abrir PDF</a>` : "";
 
   cont.innerHTML = `
     <div class="card">
-      <h2>${titulo}</h2>
-
-      ${videoHTML}
-      ${pdfHTML}
-
-      <button class="btn" onclick="practicar()">
-        Practicar ahora
-      </button>
+      ${video}
+      ${pdfLink}
     </div>
   `;
 }
-
-// ===== PRACTICA (simulada por ahora) =====
-function practicar() {
-  alert("Aquí irá la práctica interactiva");
-}
-
 </script>
 
 </body>
