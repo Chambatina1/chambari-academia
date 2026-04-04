@@ -8,8 +8,8 @@ const fs = require("fs");
 const app = express();
 
 // ===== ASEGURAR CARPETAS =====
-const pdfDir = path.join(__dirname, "public", "pdfs");
-fs.mkdirSync(pdfDir, { recursive: true });
+const filesDir = path.join(__dirname, "public", "files");
+fs.mkdirSync(filesDir, { recursive: true });
 
 // ===== CONFIG =====
 const PORT = process.env.PORT || 3000;
@@ -27,34 +27,46 @@ const pool = new Pool({
   ssl: { rejectUnauthorized: false }
 });
 
-// ===== MULTER PDF =====
+// ===== TIPOS PERMITIDOS =====
+const allowedExtensions = [
+  ".pdf",
+  ".doc",
+  ".docx",
+  ".xls",
+  ".xlsx",
+  ".ppt",
+  ".pptx",
+  ".txt",
+  ".csv"
+];
+
+// ===== MULTER =====
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, pdfDir);
+    cb(null, filesDir);
   },
   filename: (req, file, cb) => {
-    const safeExt = path.extname(file.originalname || ".pdf").toLowerCase();
-    const fileName = `${Date.now()}-${Math.round(Math.random() * 1e9)}${safeExt}`;
-    cb(null, fileName);
+    const ext = path.extname(file.originalname || "").toLowerCase();
+    const safeName = `${Date.now()}-${Math.round(Math.random() * 1e9)}${ext}`;
+    cb(null, safeName);
   }
 });
 
 const upload = multer({
   storage,
-  limits: { fileSize: 20 * 1024 * 1024 }, // 20MB
+  limits: { fileSize: 30 * 1024 * 1024 }, // 30MB
   fileFilter: (req, file, cb) => {
-    const isPdfMime = file.mimetype === "application/pdf";
-    const isPdfExt = path.extname(file.originalname || "").toLowerCase() === ".pdf";
+    const ext = path.extname(file.originalname || "").toLowerCase();
 
-    if (isPdfMime || isPdfExt) {
+    if (allowedExtensions.includes(ext)) {
       return cb(null, true);
     }
 
-    cb(new Error("Solo se permiten archivos PDF"));
+    cb(new Error("Tipo de archivo no permitido"));
   }
 });
 
-// ===== HELPERS =====
+// ===== INIT DB =====
 async function initDatabase() {
   await pool.query(`
     CREATE TABLE IF NOT EXISTS modules (
@@ -72,7 +84,9 @@ async function initDatabase() {
       module_id INTEGER NOT NULL REFERENCES modules(id) ON DELETE CASCADE,
       titulo TEXT NOT NULL,
       youtube_url TEXT DEFAULT '',
-      pdf_url TEXT DEFAULT '',
+      file_url TEXT DEFAULT '',
+      file_name TEXT DEFAULT '',
+      file_type TEXT DEFAULT '',
       publicado BOOLEAN DEFAULT true,
       created_at TIMESTAMP DEFAULT NOW()
     );
@@ -86,6 +100,43 @@ async function initDatabase() {
       password TEXT,
       created_at TIMESTAMP DEFAULT NOW()
     );
+  `);
+
+  // ===== MIGRACIÓN SI VENÍAS DE pdf_url =====
+  await pool.query(`
+    ALTER TABLE lessons
+    ADD COLUMN IF NOT EXISTS file_url TEXT DEFAULT '';
+  `);
+
+  await pool.query(`
+    ALTER TABLE lessons
+    ADD COLUMN IF NOT EXISTS file_name TEXT DEFAULT '';
+  `);
+
+  await pool.query(`
+    ALTER TABLE lessons
+    ADD COLUMN IF NOT EXISTS file_type TEXT DEFAULT '';
+  `);
+
+  await pool.query(`
+    DO $$
+    BEGIN
+      IF EXISTS (
+        SELECT 1
+        FROM information_schema.columns
+        WHERE table_name = 'lessons'
+        AND column_name = 'pdf_url'
+      ) THEN
+        UPDATE lessons
+        SET file_url = COALESCE(NULLIF(file_url, ''), pdf_url),
+            file_type = CASE
+              WHEN COALESCE(file_type, '') = '' AND COALESCE(pdf_url, '') <> '' THEN 'pdf'
+              ELSE file_type
+            END
+        WHERE COALESCE(pdf_url, '') <> '';
+      END IF;
+    END
+    $$;
   `);
 }
 
@@ -128,12 +179,14 @@ app.get("/api/init-db", async (req, res) => {
       const moduleId = moduleInsert.rows[0].id;
 
       await pool.query(
-        `INSERT INTO lessons (module_id, titulo, youtube_url, pdf_url, publicado)
-         VALUES ($1, $2, $3, $4, true)`,
+        `INSERT INTO lessons (module_id, titulo, youtube_url, file_url, file_name, file_type, publicado)
+         VALUES ($1, $2, $3, $4, $5, $6, true)`,
         [
           moduleId,
           "Primera clase",
           "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+          "",
+          "",
           "",
         ]
       );
@@ -142,6 +195,29 @@ app.get("/api/init-db", async (req, res) => {
     res.json({ ok: true, message: "Base de datos creada correctamente" });
   } catch (err) {
     console.error("INIT DB ERROR:", err);
+    res.status(500).json({ ok: false, error: err.message });
+  }
+});
+
+// ===== SUBIR ARCHIVO =====
+app.post("/api/upload-file", upload.single("file"), (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ ok: false, error: "No se recibió ningún archivo" });
+    }
+
+    const ext = path.extname(req.file.originalname || "").toLowerCase().replace(".", "");
+    const url = `${BASE_URL}/files/${req.file.filename}`;
+
+    res.json({
+      ok: true,
+      url,
+      filename: req.file.filename,
+      originalname: req.file.originalname,
+      filetype: ext
+    });
+  } catch (err) {
+    console.error("UPLOAD FILE ERROR:", err);
     res.status(500).json({ ok: false, error: err.message });
   }
 });
@@ -172,25 +248,6 @@ app.post("/api/register", async (req, res) => {
   }
 });
 
-// ===== SUBIR PDF =====
-app.post("/api/upload-pdf", upload.single("pdf"), (req, res) => {
-  try {
-    if (!req.file) {
-      return res.status(400).json({ ok: false, error: "No se recibió ningún PDF" });
-    }
-
-    const url = `${BASE_URL}/pdfs/${req.file.filename}`;
-    res.json({
-      ok: true,
-      url,
-      filename: req.file.filename
-    });
-  } catch (err) {
-    console.error("UPLOAD PDF ERROR:", err);
-    res.status(500).json({ ok: false, error: err.message });
-  }
-});
-
 // ===== CREAR MÓDULO =====
 app.post("/api/module", async (req, res) => {
   try {
@@ -215,21 +272,23 @@ app.post("/api/module", async (req, res) => {
 // ===== CREAR CLASE =====
 app.post("/api/lesson", async (req, res) => {
   try {
-    const { module_id, titulo, youtube_url, pdf_url } = req.body;
+    const { module_id, titulo, youtube_url, file_url, file_name, file_type } = req.body;
 
     if (!module_id || !titulo || !String(titulo).trim()) {
       return res.status(400).json({ ok: false, error: "Datos incompletos" });
     }
 
     const result = await pool.query(
-      `INSERT INTO lessons (module_id, titulo, youtube_url, pdf_url, publicado)
-       VALUES ($1,$2,$3,$4,true)
+      `INSERT INTO lessons (module_id, titulo, youtube_url, file_url, file_name, file_type, publicado)
+       VALUES ($1,$2,$3,$4,$5,$6,true)
        RETURNING *`,
       [
         Number(module_id),
         String(titulo).trim(),
         (youtube_url || "").trim(),
-        (pdf_url || "").trim()
+        (file_url || "").trim(),
+        (file_name || "").trim(),
+        (file_type || "").trim()
       ]
     );
 
@@ -254,11 +313,13 @@ app.get("/api/modules", async (req, res) => {
   }
 });
 
-// ===== VER CLASES DE UN MÓDULO =====
+// ===== VER CLASES =====
 app.get("/api/lessons/:moduleId", async (req, res) => {
   try {
     const result = await pool.query(
-      "SELECT * FROM lessons WHERE module_id = $1 AND publicado = true ORDER BY id ASC",
+      `SELECT * FROM lessons
+       WHERE module_id = $1 AND publicado = true
+       ORDER BY id ASC`,
       [req.params.moduleId]
     );
 
@@ -269,7 +330,7 @@ app.get("/api/lessons/:moduleId", async (req, res) => {
   }
 });
 
-// ===== ERROR MULTER / GENERAL =====
+// ===== ERROR GENERAL =====
 app.use((err, req, res, next) => {
   console.error("ERROR GENERAL:", err);
 
@@ -277,7 +338,7 @@ app.use((err, req, res, next) => {
     return res.status(400).json({ ok: false, error: err.message });
   }
 
-  if (err.message === "Solo se permiten archivos PDF") {
+  if (err.message === "Tipo de archivo no permitido") {
     return res.status(400).json({ ok: false, error: err.message });
   }
 
