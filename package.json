@@ -1,20 +1,20 @@
-{
-  "name": "Chambari Academy",
-  "short_name": "Chambari",
-  "start_url": "/",
-  "display": "standalone",
-  "background_color": "#f8fbff",
-  "theme_color": "#7dd3fc",
-  "icons": [
-    {
-      "src": "/icon-192x192.png",
-      "sizes": "192x192",
-      "type": "image/png"
-    },
-    {
-      "src": "/icon-512x512.png",
-      "sizes": "512x512",
-      "type": "image/png"
-    }
-  ]
-}
+[
+  {
+    "id": 1,
+    "titulo": "Saludos básicos",
+    "subtitulo": "Aprende a presentarte",
+    "descripcion": "Frases simples para saludar, decir tu nombre y responder preguntas básicas."
+  },
+  {
+    "id": 2,
+    "titulo": "Preguntas frecuentes",
+    "subtitulo": "Conversación inicial",
+    "descripcion": "Aprende cómo preguntar y responder cosas comunes."
+  },
+  {
+    "id": 3,
+    "titulo": "Inglés para trabajo",
+    "subtitulo": "Frases útiles",
+    "descripcion": "Expresiones que se usan en entrevistas y en el trabajo diario."
+  }
+]
