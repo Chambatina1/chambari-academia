@@ -5,35 +5,25 @@ const { Pool } = require("pg");
 const app = express();
 
 app.use(cors({
-  origin: [
-    "https://chambatina1.github.io",
-    "http://localhost:3000",
-    "http://127.0.0.1:5500"
-  ],
-  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-  allowedHeaders: ["Content-Type"]
+  origin: "*"
 }));
 
 app.use(express.json());
 app.use(express.static("public"));
 
-// ===== CONEXIÓN DB =====
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
   ssl: { rejectUnauthorized: false }
 });
 
-// ===== RAÍZ =====
 app.get("/", (req, res) => {
   res.send("Chambari Academy backend funcionando");
 });
 
-// ===== TEST API =====
 app.get("/api", (req, res) => {
-  res.json({ ok: true, message: "Chambari Academy API funcionando" });
+  res.json({ ok: true, message: "API funcionando" });
 });
 
-// ===== TEST DB =====
 app.get("/api/test-db", async (req, res) => {
   try {
     const result = await pool.query("SELECT NOW()");
@@ -44,7 +34,6 @@ app.get("/api/test-db", async (req, res) => {
   }
 });
 
-// ===== REGISTRO =====
 app.post("/api/register", async (req, res) => {
   try {
     const { nombre, email, password } = req.body;
@@ -66,11 +55,10 @@ app.post("/api/register", async (req, res) => {
       return res.status(400).json({ ok: false, error: "Email ya existe" });
     }
 
-    res.status(500).json({ ok: false, error: err.message || "Error registrando" });
+    res.status(500).json({ ok: false, error: err.message });
   }
 });
 
-// ===== CREAR MÓDULO =====
 app.post("/api/module", async (req, res) => {
   try {
     const { titulo, descripcion } = req.body;
@@ -87,11 +75,10 @@ app.post("/api/module", async (req, res) => {
     res.json({ ok: true, module: result.rows[0] });
   } catch (err) {
     console.error("MODULE ERROR:", err);
-    res.status(500).json({ ok: false, error: err.message || "Error creando módulo" });
+    res.status(500).json({ ok: false, error: err.message });
   }
 });
 
-// ===== CREAR CLASE =====
 app.post("/api/lesson", async (req, res) => {
   try {
     const { module_id, titulo, youtube_url, pdf_url } = req.body;
@@ -104,22 +91,16 @@ app.post("/api/lesson", async (req, res) => {
       `INSERT INTO lessons (module_id, titulo, youtube_url, pdf_url, publicado)
        VALUES ($1,$2,$3,$4,true)
        RETURNING *`,
-      [
-        module_id,
-        titulo,
-        youtube_url || "",
-        pdf_url || ""
-      ]
+      [module_id, titulo, youtube_url || "", pdf_url || ""]
     );
 
     res.json({ ok: true, lesson: result.rows[0] });
   } catch (err) {
     console.error("LESSON ERROR:", err);
-    res.status(500).json({ ok: false, error: err.message || "Error creando clase" });
+    res.status(500).json({ ok: false, error: err.message });
   }
 });
 
-// ===== VER MÓDULOS =====
 app.get("/api/modules", async (req, res) => {
   try {
     const result = await pool.query(
@@ -129,11 +110,10 @@ app.get("/api/modules", async (req, res) => {
     res.json({ ok: true, modules: result.rows });
   } catch (err) {
     console.error("GET MODULES ERROR:", err);
-    res.status(500).json({ ok: false, error: err.message || "Error cargando módulos" });
+    res.status(500).json({ ok: false, error: err.message });
   }
 });
 
-// ===== VER CLASES =====
 app.get("/api/lessons/:moduleId", async (req, res) => {
   try {
     const result = await pool.query(
@@ -144,14 +124,8 @@ app.get("/api/lessons/:moduleId", async (req, res) => {
     res.json({ ok: true, lessons: result.rows });
   } catch (err) {
     console.error("GET LESSONS ERROR:", err);
-    res.status(500).json({ ok: false, error: err.message || "Error cargando clases" });
+    res.status(500).json({ ok: false, error: err.message });
   }
-});
-
-// ===== ERROR GENERAL =====
-app.use((err, req, res, next) => {
-  console.error("ERROR GENERAL:", err);
-  res.status(500).json({ ok: false, error: "Error interno del servidor" });
 });
 
 const PORT = process.env.PORT || 3000;
