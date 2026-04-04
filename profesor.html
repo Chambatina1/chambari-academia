@@ -2,7 +2,8 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>Chambari - Alumno</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chambari - Profesor</title>
 
 <style>
 body {
@@ -13,6 +14,10 @@ body {
   padding: 20px;
 }
 
+h1 {
+  color: #ff8a00;
+}
+
 .card {
   background: #1b1b1b;
   padding: 20px;
@@ -20,107 +25,123 @@ body {
   margin-bottom: 20px;
 }
 
+input, textarea {
+  width: 100%;
+  padding: 10px;
+  margin-top: 10px;
+  border-radius: 8px;
+  border: none;
+}
+
 button {
   margin-top: 10px;
-  padding: 10px;
+  padding: 12px;
   width: 100%;
   background: #ff8a00;
   border: none;
   color: black;
   font-weight: bold;
   border-radius: 8px;
+  cursor: pointer;
 }
 
 .module {
   background: #222;
-  padding: 10px;
+  padding: 12px;
   margin-top: 10px;
   border-radius: 8px;
 }
-
-.lesson {
-  background: #111;
-  padding: 8px;
-  margin-top: 8px;
-  border-radius: 6px;
-}
-
-iframe {
-  width: 100%;
-  height: 250px;
-}
 </style>
-
 </head>
 
 <body>
 
-<h1>Alumno</h1>
+<h1>Panel Profesor</h1>
 
 <div class="card">
-  <button onclick="verModulos()">Entrar</button>
+  <h3>Crear módulo</h3>
+  <input id="moduloTitulo" placeholder="Título del módulo">
+  <textarea id="moduloDesc" placeholder="Descripción"></textarea>
+  <button onclick="crearModulo()">Guardar módulo</button>
 </div>
 
-<div id="contenido"></div>
+<div class="card">
+  <h3>Crear clase</h3>
+  <input id="claseModulo" placeholder="ID del módulo">
+  <input id="claseTitulo" placeholder="Título de la clase">
+  <input id="claseYoutube" placeholder="Link YouTube (opcional)">
+  <input id="clasePDF" placeholder="Link PDF (opcional)">
+  <button onclick="crearClase()">Guardar clase</button>
+</div>
+
+<div class="card">
+  <h3>Módulos existentes</h3>
+  <div id="lista"></div>
+</div>
 
 <script>
 const API = "https://chambari-academia.onrender.com";
 
-async function verModulos() {
+// ===== CREAR MÓDULO =====
+async function crearModulo() {
+  const titulo = document.getElementById("moduloTitulo").value;
+  const descripcion = document.getElementById("moduloDesc").value;
+
+  const res = await fetch(API + "/api/module", {
+    method: "POST",
+    headers: {"Content-Type":"application/json"},
+    body: JSON.stringify({ titulo, descripcion })
+  });
+
+  const data = await res.json();
+
+  alert("Módulo creado");
+  cargarModulos();
+}
+
+// ===== CREAR CLASE =====
+async function crearClase() {
+  const module_id = document.getElementById("claseModulo").value;
+  const titulo = document.getElementById("claseTitulo").value;
+  const youtube_url = document.getElementById("claseYoutube").value;
+  const pdf_url = document.getElementById("clasePDF").value;
+
+  const res = await fetch(API + "/api/lesson", {
+    method: "POST",
+    headers: {"Content-Type":"application/json"},
+    body: JSON.stringify({
+      module_id,
+      titulo,
+      youtube_url,
+      pdf_url
+    })
+  });
+
+  const data = await res.json();
+
+  alert("Clase creada");
+}
+
+// ===== CARGAR MÓDULOS =====
+async function cargarModulos() {
   const res = await fetch(API + "/api/modules");
   const data = await res.json();
 
-  const cont = document.getElementById("contenido");
-  cont.innerHTML = "";
+  const lista = document.getElementById("lista");
+  lista.innerHTML = "";
 
   data.modules.forEach(m => {
     const div = document.createElement("div");
     div.className = "module";
-
     div.innerHTML = `
-      ${m.titulo}<br>
-      <button onclick="verClases(${m.id})">Entrar</button>
+      <strong>ID ${m.id}</strong> - ${m.titulo}
     `;
-
-    cont.appendChild(div);
+    lista.appendChild(div);
   });
 }
 
-async function verClases(id) {
-  const res = await fetch(API + "/api/lessons/" + id);
-  const data = await res.json();
-
-  const cont = document.getElementById("contenido");
-  cont.innerHTML = "";
-
-  data.lessons.forEach(l => {
-    const div = document.createElement("div");
-    div.className = "lesson";
-
-    div.innerHTML = `
-      ${l.titulo}<br>
-      <button onclick="abrir('${l.youtube_url}','${l.pdf_url}')">
-        Abrir
-      </button>
-    `;
-
-    cont.appendChild(div);
-  });
-}
-
-function abrir(youtube, pdf) {
-  const cont = document.getElementById("contenido");
-
-  let video = youtube ? `<iframe src="${youtube.replace("watch?v=","embed/")}"></iframe>` : "";
-  let pdfLink = pdf ? `<a href="${pdf}" target="_blank">Abrir PDF</a>` : "";
-
-  cont.innerHTML = `
-    <div class="card">
-      ${video}
-      ${pdfLink}
-    </div>
-  `;
-}
+// cargar al inicio
+cargarModulos();
 </script>
 
 </body>
