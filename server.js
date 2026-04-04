@@ -15,7 +15,6 @@ app.use(cors());
 app.use(express.json({ limit: "20mb" }));
 app.use(express.urlencoded({ extended: true, limit: "20mb" }));
 
-// Servir carpeta public completa
 app.use("/public", express.static(path.join(__dirname, "public")));
 app.use("/files", express.static(path.join(__dirname, "public", "files")));
 
@@ -24,9 +23,7 @@ app.use("/files", express.static(path.join(__dirname, "public", "files")));
 // =========================
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
-  ssl: process.env.DATABASE_URL
-    ? { rejectUnauthorized: false }
-    : false
+  ssl: process.env.DATABASE_URL ? { rejectUnauthorized: false } : false
 });
 
 // =========================
@@ -52,29 +49,41 @@ async function ensureSchema() {
     await client.query("BEGIN");
 
     // =========================
-    // TABLA MODULES
+    // MODULES
     // =========================
     await client.query(`
       CREATE TABLE IF NOT EXISTS modules (
         id SERIAL PRIMARY KEY,
         title TEXT NOT NULL,
         description TEXT DEFAULT '',
-        status TEXT DEFAULT 'published'
+        status TEXT DEFAULT 'published',
+        created_at TIMESTAMP DEFAULT NOW(),
+        updated_at TIMESTAMP DEFAULT NOW()
       )
     `);
 
     await client.query(`
-      ALTER TABLE modules
-      ADD COLUMN IF NOT EXISTS created_at TIMESTAMP DEFAULT NOW()
+      ALTER TABLE modules ADD COLUMN IF NOT EXISTS title TEXT
     `);
 
     await client.query(`
-      ALTER TABLE modules
-      ADD COLUMN IF NOT EXISTS updated_at TIMESTAMP DEFAULT NOW()
+      ALTER TABLE modules ADD COLUMN IF NOT EXISTS description TEXT DEFAULT ''
+    `);
+
+    await client.query(`
+      ALTER TABLE modules ADD COLUMN IF NOT EXISTS status TEXT DEFAULT 'published'
+    `);
+
+    await client.query(`
+      ALTER TABLE modules ADD COLUMN IF NOT EXISTS created_at TIMESTAMP DEFAULT NOW()
+    `);
+
+    await client.query(`
+      ALTER TABLE modules ADD COLUMN IF NOT EXISTS updated_at TIMESTAMP DEFAULT NOW()
     `);
 
     // =========================
-    // TABLA LESSONS
+    // LESSONS
     // =========================
     await client.query(`
       CREATE TABLE IF NOT EXISTS lessons (
@@ -89,50 +98,105 @@ async function ensureSchema() {
         text_content TEXT DEFAULT '',
         file_url TEXT DEFAULT '',
         file_name TEXT DEFAULT '',
-        status TEXT DEFAULT 'draft'
+        link TEXT DEFAULT '',
+        status TEXT DEFAULT 'draft',
+        created_at TIMESTAMP DEFAULT NOW(),
+        updated_at TIMESTAMP DEFAULT NOW()
       )
     `);
 
     await client.query(`
-      ALTER TABLE lessons
-      ADD COLUMN IF NOT EXISTS created_at TIMESTAMP DEFAULT NOW()
+      ALTER TABLE lessons ADD COLUMN IF NOT EXISTS module_id INTEGER REFERENCES modules(id) ON DELETE CASCADE
     `);
 
     await client.query(`
-      ALTER TABLE lessons
-      ADD COLUMN IF NOT EXISTS updated_at TIMESTAMP DEFAULT NOW()
+      ALTER TABLE lessons ADD COLUMN IF NOT EXISTS title TEXT
     `);
 
-    // compatibilidad si antes usabas "link"
     await client.query(`
-      ALTER TABLE lessons
-      ADD COLUMN IF NOT EXISTS link TEXT DEFAULT ''
+      ALTER TABLE lessons ADD COLUMN IF NOT EXISTS description TEXT DEFAULT ''
+    `);
+
+    await client.query(`
+      ALTER TABLE lessons ADD COLUMN IF NOT EXISTS video_url TEXT DEFAULT ''
+    `);
+
+    await client.query(`
+      ALTER TABLE lessons ADD COLUMN IF NOT EXISTS youtube_url TEXT DEFAULT ''
+    `);
+
+    await client.query(`
+      ALTER TABLE lessons ADD COLUMN IF NOT EXISTS tiktok_url TEXT DEFAULT ''
+    `);
+
+    await client.query(`
+      ALTER TABLE lessons ADD COLUMN IF NOT EXISTS audio_url TEXT DEFAULT ''
+    `);
+
+    await client.query(`
+      ALTER TABLE lessons ADD COLUMN IF NOT EXISTS text_content TEXT DEFAULT ''
+    `);
+
+    await client.query(`
+      ALTER TABLE lessons ADD COLUMN IF NOT EXISTS file_url TEXT DEFAULT ''
+    `);
+
+    await client.query(`
+      ALTER TABLE lessons ADD COLUMN IF NOT EXISTS file_name TEXT DEFAULT ''
+    `);
+
+    await client.query(`
+      ALTER TABLE lessons ADD COLUMN IF NOT EXISTS link TEXT DEFAULT ''
+    `);
+
+    await client.query(`
+      ALTER TABLE lessons ADD COLUMN IF NOT EXISTS status TEXT DEFAULT 'draft'
+    `);
+
+    await client.query(`
+      ALTER TABLE lessons ADD COLUMN IF NOT EXISTS created_at TIMESTAMP DEFAULT NOW()
+    `);
+
+    await client.query(`
+      ALTER TABLE lessons ADD COLUMN IF NOT EXISTS updated_at TIMESTAMP DEFAULT NOW()
     `);
 
     // =========================
-    // TABLA STUDENTS
+    // STUDENTS
     // =========================
     await client.query(`
       CREATE TABLE IF NOT EXISTS students (
         id SERIAL PRIMARY KEY,
         nombre TEXT NOT NULL,
         email TEXT UNIQUE NOT NULL,
-        password TEXT NOT NULL
+        password TEXT NOT NULL,
+        created_at TIMESTAMP DEFAULT NOW(),
+        updated_at TIMESTAMP DEFAULT NOW()
       )
     `);
 
     await client.query(`
-      ALTER TABLE students
-      ADD COLUMN IF NOT EXISTS created_at TIMESTAMP DEFAULT NOW()
+      ALTER TABLE students ADD COLUMN IF NOT EXISTS nombre TEXT
     `);
 
     await client.query(`
-      ALTER TABLE students
-      ADD COLUMN IF NOT EXISTS updated_at TIMESTAMP DEFAULT NOW()
+      ALTER TABLE students ADD COLUMN IF NOT EXISTS email TEXT
+    `);
+
+    await client.query(`
+      ALTER TABLE students ADD COLUMN IF NOT EXISTS password TEXT
+    `);
+
+    await client.query(`
+      ALTER TABLE students ADD COLUMN IF NOT EXISTS created_at TIMESTAMP DEFAULT NOW()
+    `);
+
+    await client.query(`
+      ALTER TABLE students ADD COLUMN IF NOT EXISTS updated_at TIMESTAMP DEFAULT NOW()
     `);
 
     // =========================
-    // TABLA PROGRESS
+    // PROGRESS
     // =========================
     await client.query(`
       CREATE TABLE IF NOT EXISTS progress (
@@ -140,18 +204,34 @@ async function ensureSchema() {
         student_id INTEGER REFERENCES students(id) ON DELETE CASCADE,
         lesson_id INTEGER REFERENCES lessons(id) ON DELETE CASCADE,
         completed BOOLEAN DEFAULT FALSE,
-        progress_percent INTEGER DEFAULT 0
+        progress_percent INTEGER DEFAULT 0,
+        created_at TIMESTAMP DEFAULT NOW(),
+        updated_at TIMESTAMP DEFAULT NOW()
       )
     `);
 
     await client.query(`
-      ALTER TABLE progress
-      ADD COLUMN IF NOT EXISTS created_at TIMESTAMP DEFAULT NOW()
+      ALTER TABLE progress ADD COLUMN IF NOT EXISTS student_id INTEGER REFERENCES students(id) ON DELETE CASCADE
     `);
 
     await client.query(`
-      ALTER TABLE progress
-      ADD COLUMN IF NOT EXISTS updated_at TIMESTAMP DEFAULT NOW()
+      ALTER TABLE progress ADD COLUMN IF NOT EXISTS lesson_id INTEGER REFERENCES lessons(id) ON DELETE CASCADE
+    `);
+
+    await client.query(`
+      ALTER TABLE progress ADD COLUMN IF NOT EXISTS completed BOOLEAN DEFAULT FALSE
+    `);
+
+    await client.query(`
+      ALTER TABLE progress ADD COLUMN IF NOT EXISTS progress_percent INTEGER DEFAULT 0
+    `);
+
+    await client.query(`
+      ALTER TABLE progress ADD COLUMN IF NOT EXISTS created_at TIMESTAMP DEFAULT NOW()
+    `);
+
+    await client.query(`
+      ALTER TABLE progress ADD COLUMN IF NOT EXISTS updated_at TIMESTAMP DEFAULT NOW()
     `);
 
     await client.query(`
@@ -188,12 +268,12 @@ const storage = multer.diskStorage({
 const upload = multer({
   storage,
   limits: {
-    fileSize: 30 * 1024 * 1024 // 30 MB
+    fileSize: 30 * 1024 * 1024
   }
 });
 
 // =========================
-// RUTAS BASICAS
+// RUTAS BASE
 // =========================
 app.get("/", (req, res) => {
   res.json({
@@ -227,7 +307,7 @@ app.get("/api/test-db", async (req, res) => {
 });
 
 // =========================
-// DASHBOARD PROFESOR
+// DASHBOARD
 // =========================
 app.get("/api/dashboard", async (req, res) => {
   try {
@@ -253,7 +333,7 @@ app.get("/api/dashboard", async (req, res) => {
 });
 
 // =========================
-// MODULOS
+// MODULES
 // =========================
 app.get("/api/modules", async (req, res) => {
   try {
@@ -396,7 +476,7 @@ app.delete("/api/modules/:id", async (req, res) => {
 });
 
 // =========================
-// CLASES / LESSONS
+// LESSONS
 // =========================
 app.get("/api/lessons/:moduleId", async (req, res) => {
   try {
@@ -422,10 +502,10 @@ app.get("/api/lessons/:moduleId", async (req, res) => {
         text_content,
         file_url,
         file_name,
+        link,
         status,
         created_at,
-        updated_at,
-        link
+        updated_at
       FROM lessons
       WHERE module_id = $1
       ORDER BY id ASC
@@ -537,8 +617,8 @@ app.post("/api/lessons", async (req, res) => {
         text_content,
         file_url,
         file_name,
-        status,
         link,
+        status,
         created_at,
         updated_at
       )
@@ -557,8 +637,8 @@ app.post("/api/lessons", async (req, res) => {
       textContent,
       fileUrl,
       fileName,
-      status,
-      youtubeUrl
+      youtubeUrl,
+      status
     ]);
 
     res.json({
@@ -614,8 +694,8 @@ app.put("/api/lessons/:id", async (req, res) => {
           text_content = $8,
           file_url = $9,
           file_name = $10,
-          status = $11,
-          link = $12,
+          link = $11,
+          status = $12,
           updated_at = NOW()
       WHERE id = $13
       RETURNING *
@@ -630,8 +710,8 @@ app.put("/api/lessons/:id", async (req, res) => {
       textContent,
       fileUrl,
       fileName,
-      status,
       youtubeUrl,
+      status,
       id
     ]);
 
@@ -649,6 +729,86 @@ app.put("/api/lessons/:id", async (req, res) => {
     });
   } catch (error) {
     console.error("UPDATE LESSON ERROR:", error.message);
+    res.status(500).json({
+      ok: false,
+      error: error.message
+    });
+  }
+});
+
+app.put("/api/lessons/:id/publish", async (req, res) => {
+  try {
+    const id = Number(req.params.id);
+
+    if (!id) {
+      return res.status(400).json({
+        ok: false,
+        error: "ID inválido"
+      });
+    }
+
+    const result = await pool.query(`
+      UPDATE lessons
+      SET status = 'published',
+          updated_at = NOW()
+      WHERE id = $1
+      RETURNING *
+    `, [id]);
+
+    if (result.rowCount === 0) {
+      return res.status(404).json({
+        ok: false,
+        error: "Clase no encontrada"
+      });
+    }
+
+    res.json({
+      ok: true,
+      lesson: result.rows[0],
+      message: "Clase publicada correctamente"
+    });
+  } catch (error) {
+    console.error("PUBLISH LESSON ERROR:", error.message);
+    res.status(500).json({
+      ok: false,
+      error: error.message
+    });
+  }
+});
+
+app.put("/api/lessons/:id/archive", async (req, res) => {
+  try {
+    const id = Number(req.params.id);
+
+    if (!id) {
+      return res.status(400).json({
+        ok: false,
+        error: "ID inválido"
+      });
+    }
+
+    const result = await pool.query(`
+      UPDATE lessons
+      SET status = 'archived',
+          updated_at = NOW()
+      WHERE id = $1
+      RETURNING *
+    `, [id]);
+
+    if (result.rowCount === 0) {
+      return res.status(404).json({
+        ok: false,
+        error: "Clase no encontrada"
+      });
+    }
+
+    res.json({
+      ok: true,
+      lesson: result.rows[0],
+      message: "Clase archivada correctamente"
+    });
+  } catch (error) {
+    console.error("ARCHIVE LESSON ERROR:", error.message);
     res.status(500).json({
       ok: false,
       error: error.message
@@ -691,41 +851,7 @@ app.delete("/api/lessons/:id", async (req, res) => {
 });
 
 // =========================
-// SUBIDA DE ARCHIVOS
-// =========================
-app.post("/api/upload-file", upload.single("file"), async (req, res) => {
-  try {
-    if (!req.file) {
-      return res.status(400).json({
-        ok: false,
-        error: "No se recibió ningún archivo"
-      });
-    }
-
-    const fileUrl = `/files/${req.file.filename}`;
-
-    res.json({
-      ok: true,
-      file: {
-        originalName: req.file.originalname,
-        savedName: req.file.filename,
-        size: req.file.size,
-        mimetype: req.file.mimetype,
-        url: fileUrl
-      },
-      message: "Archivo subido correctamente"
-    });
-  } catch (error) {
-    console.error("UPLOAD FILE ERROR:", error.message);
-    res.status(500).json({
-      ok: false,
-      error: error.message
-    });
-  }
-});
-
-// =========================
-// ESTUDIANTES
+// STUDENTS
 // =========================
 app.get("/api/students", async (req, res) => {
   try {
@@ -801,7 +927,7 @@ app.post("/api/register", async (req, res) => {
 });
 
 // =========================
-// PROGRESO
+// PROGRESS
 // =========================
 app.post("/api/progress", async (req, res) => {
   try {
@@ -888,46 +1014,32 @@ app.get("/api/progress/:studentId", async (req, res) => {
 });
 
 // =========================
-// PANEL PROFESOR COMPLETO
+// UPLOAD FILE
 // =========================
-app.get("/api/profesor/panel", async (req, res) => {
+app.post("/api/upload-file", upload.single("file"), async (req, res) => {
   try {
-    const modulesResult = await pool.query(`
-      SELECT
-        m.id,
-        m.title,
-        m.description,
-        m.status,
-        m.created_at,
-        (
-          SELECT COUNT(*)::int
-          FROM lessons l
-          WHERE l.module_id = m.id
-        ) AS total_lessons
-      FROM modules m
-      ORDER BY m.id DESC
-    `);
+    if (!req.file) {
+      return res.status(400).json({
+        ok: false,
+        error: "No se recibió ningún archivo"
+      });
+    }
 
-    const studentsResult = await pool.query(`
-      SELECT
-        s.id,
-        s.nombre,
-        s.email,
-        s.created_at,
-        COALESCE(AVG(p.progress_percent), 0)::int AS progreso_promedio
-      FROM students s
-      LEFT JOIN progress p ON p.student_id = s.id
-      GROUP BY s.id
-      ORDER BY s.id DESC
-    `);
+    const fileUrl = `/files/${req.file.filename}`;
 
     res.json({
       ok: true,
-      modules: modulesResult.rows,
-      students: studentsResult.rows
+      file: {
+        originalName: req.file.originalname,
+        savedName: req.file.filename,
+        size: req.file.size,
+        mimetype: req.file.mimetype,
+        url: fileUrl
+      },
+      message: "Archivo subido correctamente"
     });
   } catch (error) {
-    console.error("PANEL PROFESOR ERROR:", error.message);
+    console.error("UPLOAD FILE ERROR:", error.message);
     res.status(500).json({
       ok: false,
       error: error.message
@@ -936,7 +1048,80 @@ app.get("/api/profesor/panel", async (req, res) => {
 });
 
 // =========================
-// MANEJO DE ERRORES
+// SOLO CLASES PUBLICADAS
+// =========================
+app.get("/api/public/modules", async (req, res) => {
+  try {
+    const result = await pool.query(`
+      SELECT
+        id,
+        title,
+        description
+      FROM modules
+      WHERE status = 'published'
+      ORDER BY id ASC
+    `);
+
+    res.json({
+      ok: true,
+      modules: result.rows
+    });
+  } catch (error) {
+    console.error("GET PUBLIC MODULES ERROR:", error.message);
+    res.status(500).json({
+      ok: false,
+      error: error.message
+    });
+  }
+});
+
+app.get("/api/public/lessons/:moduleId", async (req, res) => {
+  try {
+    const moduleId = Number(req.params.moduleId);
+
+    if (!moduleId) {
+      return res.status(400).json({
+        ok: false,
+        error: "moduleId inválido"
+      });
+    }
+
+    const result = await pool.query(`
+      SELECT
+        id,
+        module_id,
+        title,
+        description,
+        video_url,
+        youtube_url,
+        tiktok_url,
+        audio_url,
+        text_content,
+        file_url,
+        file_name,
+        link,
+        status
+      FROM lessons
+      WHERE module_id = $1
+        AND status = 'published'
+      ORDER BY id ASC
+    `, [moduleId]);
+
+    res.json({
+      ok: true,
+      lessons: result.rows
+    });
+  } catch (error) {
+    console.error("GET PUBLIC LESSONS ERROR:", error.message);
+    res.status(500).json({
+      ok: false,
+      error: error.message
+    });
+  }
+});
+
+// =========================
+// 404
 // =========================
 app.use((req, res) => {
   res.status(404).json({
@@ -945,6 +1130,9 @@ app.use((req, res) => {
   });
 });
 
+// =========================
+// ERROR GLOBAL
+// =========================
 app.use((error, req, res, next) => {
   console.error("ERROR GLOBAL:", error);
   res.status(500).json({
@@ -954,7 +1142,7 @@ app.use((error, req, res, next) => {
 });
 
 // =========================
-// INICIO
+// START
 // =========================
 async function startServer() {
   try {
