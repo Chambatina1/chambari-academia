@@ -18,7 +18,6 @@ const BASE_URL = process.env.BASE_URL || "https://chambari-academia.onrender.com
 // =============================
 const uploadDir = "/var/data/files";
 
-// crear carpeta si no existe
 if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir, { recursive: true });
 }
@@ -30,14 +29,11 @@ app.use(cors({ origin: "*" }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// archivos estáticos normales
 app.use(express.static(path.join(__dirname, "public")));
-
-// servir archivos persistentes
 app.use("/files", express.static(uploadDir));
 
 // =============================
-// CONEXIÓN DB
+// DB
 // =============================
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
@@ -45,7 +41,7 @@ const pool = new Pool({
 });
 
 // =============================
-// TIPOS DE ARCHIVO PERMITIDOS
+// TIPOS DE ARCHIVO
 // =============================
 const allowedExtensions = [
   ".pdf",
@@ -75,20 +71,16 @@ const storage = multer.diskStorage({
 
 const upload = multer({
   storage,
-  limits: { fileSize: 30 * 1024 * 1024 }, // 30MB
+  limits: { fileSize: 30 * 1024 * 1024 },
   fileFilter: (req, file, cb) => {
     const ext = path.extname(file.originalname || "").toLowerCase();
-
-    if (allowedExtensions.includes(ext)) {
-      return cb(null, true);
-    }
-
+    if (allowedExtensions.includes(ext)) return cb(null, true);
     cb(new Error("Tipo de archivo no permitido"));
   }
 });
 
 // =============================
-// INICIALIZAR BASE
+// INIT DB
 // =============================
 async function initDatabase() {
   await pool.query(`
@@ -125,7 +117,6 @@ async function initDatabase() {
     );
   `);
 
-  // compatibilidad si venías de pdf_url
   await pool.query(`
     ALTER TABLE lessons
     ADD COLUMN IF NOT EXISTS file_url TEXT DEFAULT '';
@@ -158,6 +149,21 @@ async function initDatabase() {
 }
 
 // =============================
+// HELPERS
+// =============================
+function getFilePathFromUrl(fileUrl) {
+  try {
+    if (!fileUrl) return null;
+    const prefix = `${BASE_URL}/files/`;
+    if (!fileUrl.startsWith(prefix)) return null;
+    const filename = fileUrl.replace(prefix, "");
+    return path.join(uploadDir, filename);
+  } catch {
+    return null;
+  }
+}
+
+// =============================
 // RUTAS BASE
 // =============================
 app.get("/", (req, res) => {
@@ -178,9 +184,6 @@ app.get("/api/test-db", async (req, res) => {
   }
 });
 
-// =============================
-// INIT DB
-// =============================
 app.get("/api/init-db", async (req, res) => {
   try {
     await initDatabase();
@@ -206,7 +209,7 @@ app.get("/api/init-db", async (req, res) => {
           "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
           "",
           "",
-          "",
+          ""
         ]
       );
     }
@@ -343,7 +346,7 @@ app.get("/api/modules", async (req, res) => {
 });
 
 // =============================
-// VER CLASES
+// VER CLASES DE MÓDULO
 // =============================
 app.get("/api/lessons/:moduleId", async (req, res) => {
   try {
@@ -357,6 +360,133 @@ app.get("/api/lessons/:moduleId", async (req, res) => {
     res.json({ ok: true, lessons: result.rows });
   } catch (err) {
     console.error("GET LESSONS ERROR:", err);
+    res.status(500).json({ ok: false, error: err.message });
+  }
+});
+
+// =============================
+// DASHBOARD PROFESOR
+// =============================
+app.get("/api/dashboard", async (req, res) => {
+  try {
+    const modulesResult = await pool.query(`
+      SELECT
+        m.id,
+        m.titulo,
+        m.descripcion,
+        m.publicado,
+        m.created_at,
+        COUNT(l.id)::int AS total_clases
+      FROM modules m
+      LEFT JOIN lessons l ON l.module_id = m.id AND l.publicado = true
+      WHERE m.publicado = true
+      GROUP BY m.id
+      ORDER BY m.id ASC
+    `);
+
+    const lessonsResult = await pool.query(`
+      SELECT *
+      FROM lessons
+      WHERE publicado = true
+      ORDER BY id DESC
+    `);
+
+    const studentsResult = await pool.query(`
+      SELECT id, nombre, email, created_at
+      FROM students
+      ORDER BY id DESC
+    `);
+
+    res.json({
+      ok: true,
+      resumen: {
+        total_modulos: modulesResult.rows.length,
+        total_clases: lessonsResult.rows.length,
+        total_estudiantes: studentsResult.rows.length
+      },
+      modules: modulesResult.rows,
+      lessons: lessonsResult.rows,
+      students: studentsResult.rows
+    });
+  } catch (err) {
+    console.error("DASHBOARD ERROR:", err);
+    res.status(500).json({ ok: false, error: err.message });
+  }
+});
+
+// =============================
+// ELIMINAR CLASE
+// =============================
+app.delete("/api/lesson/:id", async (req, res) => {
+  try {
+    const lessonId = Number(req.params.id);
+
+    const existing = await pool.query(
+      "SELECT * FROM lessons WHERE id = $1",
+      [lessonId]
+    );
+
+    if (existing.rows.length === 0) {
+      return res.status(404).json({ ok: false, error: "Clase no encontrada" });
+    }
+
+    const lesson = existing.rows[0];
+    const filePath = getFilePathFromUrl(lesson.file_url);
+
+    await pool.query("DELETE FROM lessons WHERE id = $1", [lessonId]);
+
+    if (filePath && fs.existsSync(filePath)) {
+      try {
+        fs.unlinkSync(filePath);
+      } catch (e) {
+        console.error("No se pudo borrar archivo físico:", e.message);
+      }
+    }
+
+    res.json({ ok: true, message: "Clase eliminada correctamente" });
+  } catch (err) {
+    console.error("DELETE LESSON ERROR:", err);
+    res.status(500).json({ ok: false, error: err.message });
+  }
+});
+
+// =============================
+// ELIMINAR MÓDULO
+// =============================
+app.delete("/api/module/:id", async (req, res) => {
+  try {
+    const moduleId = Number(req.params.id);
+
+    const moduleResult = await pool.query(
+      "SELECT * FROM modules WHERE id = $1",
+      [moduleId]
+    );
+
+    if (moduleResult.rows.length === 0) {
+      return res.status(404).json({ ok: false, error: "Módulo no encontrado" });
+    }
+
+    const lessonsResult = await pool.query(
+      "SELECT * FROM lessons WHERE module_id = $1",
+      [moduleId]
+    );
+
+    for (const lesson of lessonsResult.rows) {
+      const filePath = getFilePathFromUrl(lesson.file_url);
+      if (filePath && fs.existsSync(filePath)) {
+        try {
+          fs.unlinkSync(filePath);
+        } catch (e) {
+          console.error("No se pudo borrar archivo físico:", e.message);
+        }
+      }
+    }
+
+    await pool.query("DELETE FROM modules WHERE id = $1", [moduleId]);
+
+    res.json({ ok: true, message: "Módulo eliminado correctamente" });
+  } catch (err) {
+    console.error("DELETE MODULE ERROR:", err);
     res.status(500).json({ ok: false, error: err.message });
   }
 });
@@ -379,7 +509,7 @@ app.use((err, req, res, next) => {
 });
 
 // =============================
-// INICIO
+// START
 // =============================
 app.listen(PORT, () => {
   console.log("Servidor listo en puerto " + PORT);
