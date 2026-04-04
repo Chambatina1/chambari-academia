@@ -1,122 +1,60 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <title>Chambari - Profesor</title>
-
-  <style>
-    body {
-      font-family: Arial;
-      background: #0f0f0f;
-      color: white;
-      margin: 0;
-      padding: 20px;
-    }
-
-    h1 {
-      color: #ff8a00;
-    }
-
-    .card {
-      background: #1b1b1b;
-      padding: 20px;
-      border-radius: 12px;
-      margin-bottom: 20px;
-    }
-
-    input, textarea {
-      width: 100%;
-      padding: 10px;
-      margin-top: 10px;
-      background: #111;
-      border: 1px solid #333;
-      color: white;
-      border-radius: 8px;
-    }
-
-    button {
-      margin-top: 15px;
-      padding: 12px;
-      width: 100%;
-      background: #ff8a00;
-      border: none;
-      color: black;
-      font-weight: bold;
-      border-radius: 8px;
-      cursor: pointer;
-    }
-
-    .module {
-      background: #222;
-      padding: 10px;
-      margin-top: 10px;
-      border-radius: 8px;
-    }
-  </style>
-</head>
-
-<body>
-
-  <h1>Panel Profesor</h1>
-
-  <!-- CREAR MODULO -->
-  <div class="card">
-    <h2>Crear módulo</h2>
-
-    <input id="titulo" placeholder="Título del módulo">
-    <textarea id="descripcion" placeholder="Descripción"></textarea>
-
-    <button onclick="crearModulo()">Guardar módulo</button>
-  </div>
-
-  <!-- LISTA MODULOS -->
-  <div class="card">
-    <h2>Módulos</h2>
-    <div id="lista"></div>
-  </div>
-
 <script>
 async function crearModulo() {
-  const titulo = document.getElementById("titulo").value;
-  const descripcion = document.getElementById("descripcion").value;
+  const titulo = document.getElementById("titulo").value.trim();
+  const descripcion = document.getElementById("descripcion").value.trim();
 
-  const res = await fetch("/api/module", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ titulo, descripcion })
-  });
+  if (!titulo) {
+    alert("Escribe un título");
+    return;
+  }
 
-  const data = await res.json();
+  try {
+    const res = await fetch("/api/module", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ titulo, descripcion })
+    });
 
-  if (data.ok) {
-    alert("Módulo creado");
-    cargarModulos();
-  } else {
-    alert("Error");
+    const data = await res.json();
+
+    if (data.ok) {
+      alert("Módulo creado");
+
+      document.getElementById("titulo").value = "";
+      document.getElementById("descripcion").value = "";
+
+      cargarModulos();
+    } else {
+      alert(data.error || "Error");
+    }
+
+  } catch (err) {
+    alert("Error conectando con el servidor");
   }
 }
 
 async function cargarModulos() {
-  const res = await fetch("/api/modules");
-  const data = await res.json();
+  try {
+    const res = await fetch("/api/modules");
+    const data = await res.json();
 
-  const lista = document.getElementById("lista");
-  lista.innerHTML = "";
+    const lista = document.getElementById("lista");
+    lista.innerHTML = "";
 
-  data.modules.forEach(m => {
-    const div = document.createElement("div");
-    div.className = "module";
-    div.innerHTML = `
-      <b>${m.titulo}</b><br>
-      ${m.descripcion || ""}
-    `;
-    lista.appendChild(div);
-  });
+    data.modules.forEach(m => {
+      const div = document.createElement("div");
+      div.className = "module";
+      div.innerHTML = `
+        <b>${m.titulo}</b><br>
+        ${m.descripcion || ""}
+      `;
+      lista.appendChild(div);
+    });
+
+  } catch (err) {
+    alert("No se pudieron cargar los módulos");
+  }
 }
 
-// cargar al inicio
 cargarModulos();
 </script>
-
-</body>
-</html>
