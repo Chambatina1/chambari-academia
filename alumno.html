@@ -52,13 +52,22 @@ button {
   border-radius: 6px;
 }
 
-iframe {
+iframe.video {
   width: 100%;
   height: 260px;
   border-radius: 8px;
   margin-top: 10px;
   border: none;
   background: #000;
+}
+
+iframe.pdf {
+  width: 100%;
+  height: 700px;
+  border-radius: 8px;
+  margin-top: 12px;
+  border: none;
+  background: white;
 }
 
 a.link-btn {
@@ -84,6 +93,13 @@ a.link-btn {
   font-size: 14px;
   color: #ddd;
   margin-top: 8px;
+}
+
+.archivo-box {
+  margin-top: 14px;
+  padding: 14px;
+  background: #111;
+  border-radius: 8px;
 }
 </style>
 </head>
@@ -136,18 +152,29 @@ function convertirYoutubeAWatch(url) {
   return id ? `https://www.youtube.com/watch?v=${id}` : "";
 }
 
-// ===== TIPOS DE ARCHIVO =====
-function nombreTipoArchivo(fileType, fileName) {
+// ===== ARCHIVOS =====
+function detectarTipoArchivo(fileType, fileName, fileUrl) {
   const tipo = (fileType || "").toLowerCase();
   const nombre = (fileName || "").toLowerCase();
+  const url = (fileUrl || "").toLowerCase();
 
-  if (tipo === "pdf" || nombre.endsWith(".pdf")) return "PDF";
-  if (tipo === "doc" || tipo === "docx" || nombre.endsWith(".doc") || nombre.endsWith(".docx")) return "Word";
-  if (tipo === "xls" || tipo === "xlsx" || nombre.endsWith(".xls") || nombre.endsWith(".xlsx")) return "Excel";
-  if (tipo === "ppt" || tipo === "pptx" || nombre.endsWith(".ppt") || nombre.endsWith(".pptx")) return "PowerPoint";
-  if (tipo === "txt" || nombre.endsWith(".txt")) return "Texto";
-  if (tipo === "csv" || nombre.endsWith(".csv")) return "CSV";
+  if (tipo === "pdf" || nombre.endsWith(".pdf") || url.endsWith(".pdf")) return "pdf";
+  if (tipo === "doc" || tipo === "docx" || nombre.endsWith(".doc") || nombre.endsWith(".docx")) return "word";
+  if (tipo === "xls" || tipo === "xlsx" || nombre.endsWith(".xls") || nombre.endsWith(".xlsx")) return "excel";
+  if (tipo === "ppt" || tipo === "pptx" || nombre.endsWith(".ppt") || nombre.endsWith(".pptx")) return "powerpoint";
+  if (tipo === "txt" || nombre.endsWith(".txt")) return "txt";
+  if (tipo === "csv" || nombre.endsWith(".csv")) return "csv";
 
+  return "documento";
+}
+
+function nombreBonitoArchivo(tipo) {
+  if (tipo === "pdf") return "PDF";
+  if (tipo === "word") return "Word";
+  if (tipo === "excel") return "Excel";
+  if (tipo === "powerpoint") return "PowerPoint";
+  if (tipo === "txt") return "Texto";
+  if (tipo === "csv") return "CSV";
   return "Documento";
 }
 
@@ -249,7 +276,7 @@ function abrirClase(payload) {
 
   const videoHTML = embedURL
     ? `
-      <iframe src="${embedURL}" allowfullscreen></iframe>
+      <iframe class="video" src="${embedURL}" allowfullscreen></iframe>
       <a class="link-btn" href="${watchURL}" target="_blank" rel="noopener noreferrer">
         Ver video en YouTube
       </a>
@@ -262,21 +289,41 @@ function abrirClase(payload) {
   let archivoHTML = `<div class="texto">Esta clase no tiene documento.</div>`;
 
   if (fileUrl) {
-    const tipoBonito = nombreTipoArchivo(fileType, fileName);
+    const tipoDetectado = detectarTipoArchivo(fileType, fileName, fileUrl);
+    const tipoBonito = nombreBonitoArchivo(tipoDetectado);
     const nombreMostrar = fileName || `Archivo ${tipoBonito}`;
 
-    archivoHTML = `
-      <div class="texto">
-        <strong>Documento adjunto:</strong><br>
-        <span class="small">${escapar(nombreMostrar)} (${escapar(tipoBonito)})</span>
-      </div>
-      <a class="link-btn" href="${fileUrl}" target="_blank" rel="noopener noreferrer">
-        Abrir documento
-      </a>
-      <a class="link-btn" href="${fileUrl}" download>
-        Descargar documento
-      </a>
-    `;
+    if (tipoDetectado === "pdf") {
+      archivoHTML = `
+        <div class="archivo-box">
+          <strong>Documento adjunto:</strong><br>
+          <span class="small">${escapar(nombreMostrar)} (${escapar(tipoBonito)})</span>
+        </div>
+        <iframe class="pdf" src="${fileUrl}"></iframe>
+        <a class="link-btn" href="${fileUrl}" target="_blank" rel="noopener noreferrer">
+          Abrir PDF en otra pestaña
+        </a>
+        <a class="link-btn" href="${fileUrl}" download>
+          Descargar PDF
+        </a>
+      `;
+    } else {
+      archivoHTML = `
+        <div class="archivo-box">
+          <strong>Documento adjunto:</strong><br>
+          <span class="small">${escapar(nombreMostrar)} (${escapar(tipoBonito)})</span>
+        </div>
+        <div class="texto">
+          Este tipo de archivo no se muestra dentro de la pantalla, pero puedes abrirlo o descargarlo.
+        </div>
+        <a class="link-btn" href="${fileUrl}" target="_blank" rel="noopener noreferrer">
+          Abrir documento
+        </a>
+        <a class="link-btn" href="${fileUrl}" download>
+          Descargar documento
+        </a>
+      `;
+    }
   }
 
   cont.innerHTML = `
