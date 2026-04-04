@@ -61,7 +61,7 @@ iframe.video {
   background: #000;
 }
 
-iframe.pdf {
+iframe.docviewer {
   width: 100%;
   height: 700px;
   border-radius: 8px;
@@ -186,6 +186,10 @@ function escapar(texto) {
     .replace(/"/g, "&quot;");
 }
 
+function construirViewerUrl(fileUrl) {
+  return `https://docs.google.com/gview?embedded=true&url=${encodeURIComponent(fileUrl)}`;
+}
+
 // ===== VER MÓDULOS =====
 async function verModulos() {
   try {
@@ -292,6 +296,7 @@ function abrirClase(payload) {
     const tipoDetectado = detectarTipoArchivo(fileType, fileName, fileUrl);
     const tipoBonito = nombreBonitoArchivo(tipoDetectado);
     const nombreMostrar = fileName || `Archivo ${tipoBonito}`;
+    const viewerUrl = construirViewerUrl(fileUrl);
 
     if (tipoDetectado === "pdf") {
       archivoHTML = `
@@ -299,7 +304,7 @@ function abrirClase(payload) {
           <strong>Documento adjunto:</strong><br>
           <span class="small">${escapar(nombreMostrar)} (${escapar(tipoBonito)})</span>
         </div>
-        <iframe class="pdf" src="${fileUrl}"></iframe>
+        <iframe class="docviewer" src="${viewerUrl}"></iframe>
         <a class="link-btn" href="${fileUrl}" target="_blank" rel="noopener noreferrer">
           Abrir PDF en otra pestaña
         </a>
@@ -313,9 +318,7 @@ function abrirClase(payload) {
           <strong>Documento adjunto:</strong><br>
           <span class="small">${escapar(nombreMostrar)} (${escapar(tipoBonito)})</span>
         </div>
-        <div class="texto">
-          Este tipo de archivo no se muestra dentro de la pantalla, pero puedes abrirlo o descargarlo.
-        </div>
+        <iframe class="docviewer" src="${viewerUrl}"></iframe>
         <a class="link-btn" href="${fileUrl}" target="_blank" rel="noopener noreferrer">
           Abrir documento
         </a>
