@@ -61,6 +61,14 @@ function safeFileName(name) {
   return `${Date.now()}_${base}${ext}`;
 }
 
+function autoModuleTitle() {
+  return `Módulo rápido ${new Date().toISOString().slice(0, 19).replace("T", " ")}`;
+}
+
+function autoLessonTitle() {
+  return `Clase rápida ${new Date().toISOString().slice(0, 19).replace("T", " ")}`;
+}
+
 function normalizeModuleRow(row) {
   return {
     ...row,
@@ -86,9 +94,6 @@ async function ensureSchema() {
   try {
     await client.query("BEGIN");
 
-    // =========================
-    // MODULES
-    // =========================
     await client.query(`
       CREATE TABLE IF NOT EXISTS modules (
         id SERIAL PRIMARY KEY,
@@ -106,9 +111,6 @@ async function ensureSchema() {
     await client.query(`ALTER TABLE modules ADD COLUMN IF NOT EXISTS created_at TIMESTAMP DEFAULT NOW()`);
     await client.query(`ALTER TABLE modules ADD COLUMN IF NOT EXISTS updated_at TIMESTAMP DEFAULT NOW()`);
 
-    // =========================
-    // LESSONS
-    // =========================
     await client.query(`
       CREATE TABLE IF NOT EXISTS lessons (
         id SERIAL PRIMARY KEY,
@@ -144,9 +146,6 @@ async function ensureSchema() {
     await client.query(`ALTER TABLE lessons ADD COLUMN IF NOT EXISTS created_at TIMESTAMP DEFAULT NOW()`);
     await client.query(`ALTER TABLE lessons ADD COLUMN IF NOT EXISTS updated_at TIMESTAMP DEFAULT NOW()`);
 
-    // =========================
-    // STUDENTS
-    // =========================
     await client.query(`
       CREATE TABLE IF NOT EXISTS students (
         id SERIAL PRIMARY KEY,
@@ -164,9 +163,6 @@ async function ensureSchema() {
     await client.query(`ALTER TABLE students ADD COLUMN IF NOT EXISTS created_at TIMESTAMP DEFAULT NOW()`);
     await client.query(`ALTER TABLE students ADD COLUMN IF NOT EXISTS updated_at TIMESTAMP DEFAULT NOW()`);
 
-    // =========================
-    // PROGRESS
-    // =========================
     await client.query(`
       CREATE TABLE IF NOT EXISTS progress (
         id SERIAL PRIMARY KEY,
@@ -209,29 +205,20 @@ const filesDir = path.join(__dirname, "public", "files");
 fs.mkdirSync(filesDir, { recursive: true });
 
 const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, filesDir);
-  },
-  filename: (req, file, cb) => {
-    cb(null, safeFileName(file.originalname));
-  }
+  destination: (req, file, cb) => cb(null, filesDir),
+  filename: (req, file, cb) => cb(null, safeFileName(file.originalname))
 });
 
 const upload = multer({
   storage,
-  limits: {
-    fileSize: 30 * 1024 * 1024
-  }
+  limits: { fileSize: 30 * 1024 * 1024 }
 });
 
 // =========================
 // RUTAS BASE
 // =========================
 app.get("/", (req, res) => {
-  res.json({
-    ok: true,
-    message: "Servidor Chambari Academy activo"
-  });
+  res.json({ ok: true, message: "Servidor Chambari Academy activo" });
 });
 
 app.get("/api/test", (req, res) => {
@@ -245,16 +232,10 @@ app.get("/api/test", (req, res) => {
 app.get("/api/test-db", async (req, res) => {
   try {
     const result = await pool.query("SELECT NOW() AS now");
-    res.json({
-      ok: true,
-      db_time: result.rows[0].now
-    });
+    res.json({ ok: true, db_time: result.rows[0].now });
   } catch (error) {
     console.error("DB TEST ERROR:", error.message);
-    res.status(500).json({
-      ok: false,
-      error: error.message
-    });
+    res.status(500).json({ ok: false, error: error.message });
   }
 });
 
@@ -270,9 +251,7 @@ app.get("/api/dashboard", async (req, res) => {
         ORDER BY id DESC
       `),
       pool.query(`
-        SELECT
-          l.*,
-          m.title AS module_title
+        SELECT l.*, m.title AS module_title
         FROM lessons l
         LEFT JOIN modules m ON m.id = l.module_id
         ORDER BY l.id DESC
@@ -280,16 +259,12 @@ app.get("/api/dashboard", async (req, res) => {
       pool.query("SELECT COUNT(*)::int AS total FROM students")
     ]);
 
-    const modules = modulesResult.rows.map((module) => {
-      const lessons = lessonsResult.rows
+    const modules = modulesResult.rows.map((module) => ({
+      ...normalizeModuleRow(module),
+      lessons: lessonsResult.rows
         .filter((lesson) => lesson.module_id === module.id)
-        .map(normalizeLessonRow);
-
-      return {
-        ...normalizeModuleRow(module),
-        lessons
-      };
-    });
+        .map(normalizeLessonRow)
+    }));
 
     res.json({
       ok: true,
@@ -303,10 +278,7 @@ app.get("/api/dashboard", async (req, res) => {
     });
   } catch (error) {
     console.error("DASHBOARD ERROR:", error.message);
-    res.status(500).json({
-      ok: false,
-      error: error.message
-    });
+    res.status(500).json({ ok: false, error: error.message });
   }
 });
 
@@ -327,31 +299,22 @@ app.get("/api/modules", async (req, res) => {
     });
   } catch (error) {
     console.error("GET MODULES ERROR:", error.message);
-    res.status(500).json({
-      ok: false,
-      error: error.message
-    });
+    res.status(500).json({ ok: false, error: error.message });
   }
 });
 
 app.post("/api/modules", async (req, res) => {
   try {
-    const title = normalizeText(req.body.title || req.body.titulo);
+    const rawTitle = normalizeText(req.body.title || req.body.titulo);
+    const finalTitle = rawTitle || autoModuleTitle();
     const description = normalizeText(req.body.description || req.body.descripcion);
     const status = normalizeStatus(req.body.status || req.body.estado || "published", "published");
-
-    if (!title) {
-      return res.status(400).json({
-        ok: false,
-        error: "El título del módulo es obligatorio"
-      });
-    }
 
     const result = await pool.query(`
       INSERT INTO modules (title, description, status, created_at, updated_at)
       VALUES ($1, $2, $3, NOW(), NOW())
       RETURNING *
-    `, [title, description, status]);
+    `, [finalTitle, description, status]);
 
     res.json({
       ok: true,
@@ -360,26 +323,20 @@ app.post("/api/modules", async (req, res) => {
     });
   } catch (error) {
     console.error("CREATE MODULE ERROR:", error.message);
-    res.status(500).json({
-      ok: false,
-      error: error.message
-    });
+    res.status(500).json({ ok: false, error: error.message });
   }
 });
 
 app.put("/api/modules/:id", async (req, res) => {
   try {
     const id = Number(req.params.id);
-    const title = normalizeText(req.body.title || req.body.titulo);
+    const rawTitle = normalizeText(req.body.title || req.body.titulo);
+    const finalTitle = rawTitle || autoModuleTitle();
     const description = normalizeText(req.body.description || req.body.descripcion);
     const status = normalizeStatus(req.body.status || req.body.estado || "published", "published");
 
     if (!id) {
       return res.status(400).json({ ok: false, error: "ID inválido" });
-    }
-
-    if (!title) {
-      return res.status(400).json({ ok: false, error: "El título es obligatorio" });
     }
 
     const result = await pool.query(`
@@ -390,13 +347,10 @@ app.put("/api/modules/:id", async (req, res) => {
           updated_at = NOW()
       WHERE id = $4
       RETURNING *
-    `, [title, description, status, id]);
+    `, [finalTitle, description, status, id]);
 
     if (result.rowCount === 0) {
-      return res.status(404).json({
-        ok: false,
-        error: "Módulo no encontrado"
-      });
+      return res.status(404).json({ ok: false, error: "Módulo no encontrado" });
     }
 
     res.json({
@@ -406,10 +360,7 @@ app.put("/api/modules/:id", async (req, res) => {
     });
   } catch (error) {
     console.error("UPDATE MODULE ERROR:", error.message);
-    res.status(500).json({
-      ok: false,
-      error: error.message
-    });
+    res.status(500).json({ ok: false, error: error.message });
   }
 });
 
@@ -428,22 +379,13 @@ app.delete("/api/modules/:id", async (req, res) => {
     `, [id]);
 
     if (result.rowCount === 0) {
-      return res.status(404).json({
-        ok: false,
-        error: "Módulo no encontrado"
-      });
+      return res.status(404).json({ ok: false, error: "Módulo no encontrado" });
     }
 
-    res.json({
-      ok: true,
-      message: "Módulo eliminado correctamente"
-    });
+    res.json({ ok: true, message: "Módulo eliminado correctamente" });
   } catch (error) {
     console.error("DELETE MODULE ERROR:", error.message);
-    res.status(500).json({
-      ok: false,
-      error: error.message
-    });
+    res.status(500).json({ ok: false, error: error.message });
   }
 });
 
@@ -455,16 +397,11 @@ app.get("/api/lessons/:moduleId", async (req, res) => {
     const moduleId = Number(req.params.moduleId);
 
     if (!moduleId) {
-      return res.status(400).json({
-        ok: false,
-        error: "moduleId inválido"
-      });
+      return res.status(400).json({ ok: false, error: "moduleId inválido" });
     }
 
     const result = await pool.query(`
-      SELECT
-        l.*,
-        m.title AS module_title
+      SELECT l.*, m.title AS module_title
       FROM lessons l
       LEFT JOIN modules m ON m.id = l.module_id
       WHERE l.module_id = $1
@@ -477,10 +414,7 @@ app.get("/api/lessons/:moduleId", async (req, res) => {
     });
   } catch (error) {
     console.error("GET LESSONS ERROR:", error.message);
-    res.status(500).json({
-      ok: false,
-      error: error.message
-    });
+    res.status(500).json({ ok: false, error: error.message });
   }
 });
 
@@ -489,16 +423,11 @@ app.get("/api/lesson/:id", async (req, res) => {
     const id = Number(req.params.id);
 
     if (!id) {
-      return res.status(400).json({
-        ok: false,
-        error: "ID inválido"
-      });
+      return res.status(400).json({ ok: false, error: "ID inválido" });
     }
 
     const result = await pool.query(`
-      SELECT
-        l.*,
-        m.title AS module_title
+      SELECT l.*, m.title AS module_title
       FROM lessons l
       LEFT JOIN modules m ON m.id = l.module_id
       WHERE l.id = $1
@@ -506,10 +435,7 @@ app.get("/api/lesson/:id", async (req, res) => {
     `, [id]);
 
     if (result.rowCount === 0) {
-      return res.status(404).json({
-        ok: false,
-        error: "Clase no encontrada"
-      });
+      return res.status(404).json({ ok: false, error: "Clase no encontrada" });
     }
 
     res.json({
@@ -518,17 +444,15 @@ app.get("/api/lesson/:id", async (req, res) => {
     });
   } catch (error) {
     console.error("GET LESSON ERROR:", error.message);
-    res.status(500).json({
-      ok: false,
-      error: error.message
-    });
+    res.status(500).json({ ok: false, error: error.message });
   }
 });
 
 app.post("/api/lessons", async (req, res) => {
   try {
     const moduleId = Number(req.body.module_id || req.body.moduleId);
-    const title = normalizeText(req.body.title || req.body.titulo);
+    const rawTitle = normalizeText(req.body.title || req.body.titulo);
+    const finalTitle = rawTitle || autoLessonTitle();
     const description = normalizeText(req.body.description || req.body.descripcion);
     const videoUrl = normalizeText(req.body.video_url || req.body.videoUrl);
     const youtubeUrl = normalizeText(req.body.youtube_url || req.body.youtubeUrl || req.body.link);
@@ -540,17 +464,7 @@ app.post("/api/lessons", async (req, res) => {
     const status = normalizeStatus(req.body.status || req.body.estado || "draft", "draft");
 
     if (!moduleId) {
-      return res.status(400).json({
-        ok: false,
-        error: "Debes seleccionar un módulo"
-      });
-    }
-
-    if (!title) {
-      return res.status(400).json({
-        ok: false,
-        error: "El título de la clase es obligatorio"
-      });
+      return res.status(400).json({ ok: false, error: "Debes seleccionar un módulo" });
     }
 
     const moduleExists = await pool.query(
@@ -559,10 +473,7 @@ app.post("/api/lessons", async (req, res) => {
     );
 
     if (moduleExists.rowCount === 0) {
-      return res.status(404).json({
-        ok: false,
-        error: "El módulo seleccionado no existe"
-      });
+      return res.status(404).json({ ok: false, error: "El módulo seleccionado no existe" });
     }
 
     const result = await pool.query(`
@@ -582,13 +493,11 @@ app.post("/api/lessons", async (req, res) => {
         created_at,
         updated_at
       )
-      VALUES (
-        $1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,NOW(),NOW()
-      )
+      VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,NOW(),NOW())
       RETURNING *
     `, [
       moduleId,
-      title,
+      finalTitle,
       description,
       videoUrl,
       youtubeUrl,
@@ -608,10 +517,7 @@ app.post("/api/lessons", async (req, res) => {
     });
   } catch (error) {
     console.error("CREATE LESSON ERROR:", error.message);
-    res.status(500).json({
-      ok: false,
-      error: error.message
-    });
+    res.status(500).json({ ok: false, error: error.message });
   }
 });
 
@@ -619,7 +525,8 @@ app.put("/api/lessons/:id", async (req, res) => {
   try {
     const id = Number(req.params.id);
     const moduleId = Number(req.body.module_id || req.body.moduleId);
-    const title = normalizeText(req.body.title || req.body.titulo);
+    const rawTitle = normalizeText(req.body.title || req.body.titulo);
+    const finalTitle = rawTitle || autoLessonTitle();
     const description = normalizeText(req.body.description || req.body.descripcion);
     const videoUrl = normalizeText(req.body.video_url || req.body.videoUrl);
     const youtubeUrl = normalizeText(req.body.youtube_url || req.body.youtubeUrl || req.body.link);
@@ -636,10 +543,6 @@ app.put("/api/lessons/:id", async (req, res) => {
 
     if (!moduleId) {
       return res.status(400).json({ ok: false, error: "Debes seleccionar un módulo" });
-    }
-
-    if (!title) {
-      return res.status(400).json({ ok: false, error: "El título es obligatorio" });
     }
 
     const result = await pool.query(`
@@ -661,7 +564,7 @@ app.put("/api/lessons/:id", async (req, res) => {
       RETURNING *
     `, [
       moduleId,
-      title,
+      finalTitle,
       description,
       videoUrl,
       youtubeUrl,
@@ -676,10 +579,7 @@ app.put("/api/lessons/:id", async (req, res) => {
     ]);
 
     if (result.rowCount === 0) {
-      return res.status(404).json({
-        ok: false,
-        error: "Clase no encontrada"
-      });
+      return res.status(404).json({ ok: false, error: "Clase no encontrada" });
     }
 
     res.json({
@@ -689,10 +589,7 @@ app.put("/api/lessons/:id", async (req, res) => {
     });
   } catch (error) {
     console.error("UPDATE LESSON ERROR:", error.message);
-    res.status(500).json({
-      ok: false,
-      error: error.message
-    });
+    res.status(500).json({ ok: false, error: error.message });
   }
 });
 
@@ -701,10 +598,7 @@ app.put("/api/lessons/:id/publish", async (req, res) => {
     const id = Number(req.params.id);
 
     if (!id) {
-      return res.status(400).json({
-        ok: false,
-        error: "ID inválido"
-      });
+      return res.status(400).json({ ok: false, error: "ID inválido" });
     }
 
     const result = await pool.query(`
@@ -716,10 +610,7 @@ app.put("/api/lessons/:id/publish", async (req, res) => {
     `, [id]);
 
     if (result.rowCount === 0) {
-      return res.status(404).json({
-        ok: false,
-        error: "Clase no encontrada"
-      });
+      return res.status(404).json({ ok: false, error: "Clase no encontrada" });
     }
 
     res.json({
@@ -729,10 +620,7 @@ app.put("/api/lessons/:id/publish", async (req, res) => {
     });
   } catch (error) {
     console.error("PUBLISH LESSON ERROR:", error.message);
-    res.status(500).json({
-      ok: false,
-      error: error.message
-    });
+    res.status(500).json({ ok: false, error: error.message });
   }
 });
 
@@ -741,10 +629,7 @@ app.put("/api/lessons/:id/archive", async (req, res) => {
     const id = Number(req.params.id);
 
     if (!id) {
-      return res.status(400).json({
-        ok: false,
-        error: "ID inválido"
-      });
+      return res.status(400).json({ ok: false, error: "ID inválido" });
     }
 
     const result = await pool.query(`
@@ -756,10 +641,7 @@ app.put("/api/lessons/:id/archive", async (req, res) => {
     `, [id]);
 
     if (result.rowCount === 0) {
-      return res.status(404).json({
-        ok: false,
-        error: "Clase no encontrada"
-      });
+      return res.status(404).json({ ok: false, error: "Clase no encontrada" });
     }
 
     res.json({
@@ -769,10 +651,7 @@ app.put("/api/lessons/:id/archive", async (req, res) => {
     });
   } catch (error) {
     console.error("ARCHIVE LESSON ERROR:", error.message);
-    res.status(500).json({
-      ok: false,
-      error: error.message
-    });
+    res.status(500).json({ ok: false, error: error.message });
   }
 });
 
@@ -791,22 +670,13 @@ app.delete("/api/lessons/:id", async (req, res) => {
     `, [id]);
 
     if (result.rowCount === 0) {
-      return res.status(404).json({
-        ok: false,
-        error: "Clase no encontrada"
-      });
+      return res.status(404).json({ ok: false, error: "Clase no encontrada" });
     }
 
-    res.json({
-      ok: true,
-      message: "Clase eliminada correctamente"
-    });
+    res.json({ ok: true, message: "Clase eliminada correctamente" });
   } catch (error) {
     console.error("DELETE LESSON ERROR:", error.message);
-    res.status(500).json({
-      ok: false,
-      error: error.message
-    });
+    res.status(500).json({ ok: false, error: error.message });
   }
 });
 
@@ -828,16 +698,10 @@ app.get("/api/students", async (req, res) => {
       ORDER BY s.id DESC
     `);
 
-    res.json({
-      ok: true,
-      students: result.rows
-    });
+    res.json({ ok: true, students: result.rows });
   } catch (error) {
     console.error("GET STUDENTS ERROR:", error.message);
-    res.status(500).json({
-      ok: false,
-      error: error.message
-    });
+    res.status(500).json({ ok: false, error: error.message });
   }
 });
 
@@ -848,10 +712,7 @@ app.post("/api/register", async (req, res) => {
     const password = normalizeText(req.body.password);
 
     if (!nombre || !email || !password) {
-      return res.status(400).json({
-        ok: false,
-        error: "Faltan datos"
-      });
+      return res.status(400).json({ ok: false, error: "Faltan datos" });
     }
 
     const existing = await pool.query(
@@ -860,10 +721,7 @@ app.post("/api/register", async (req, res) => {
     );
 
     if (existing.rowCount > 0) {
-      return res.status(400).json({
-        ok: false,
-        error: "Ese correo ya está registrado"
-      });
+      return res.status(400).json({ ok: false, error: "Ese correo ya está registrado" });
     }
 
     const result = await pool.query(`
@@ -879,10 +737,7 @@ app.post("/api/register", async (req, res) => {
     });
   } catch (error) {
     console.error("REGISTER ERROR:", error.message);
-    res.status(500).json({
-      ok: false,
-      error: error.message
-    });
+    res.status(500).json({ ok: false, error: error.message });
   }
 });
 
@@ -892,10 +747,7 @@ app.post("/api/login", async (req, res) => {
     const password = normalizeText(req.body.password);
 
     if (!email || !password) {
-      return res.status(400).json({
-        ok: false,
-        error: "Faltan credenciales"
-      });
+      return res.status(400).json({ ok: false, error: "Faltan credenciales" });
     }
 
     const result = await pool.query(`
@@ -906,10 +758,7 @@ app.post("/api/login", async (req, res) => {
     `, [email, password]);
 
     if (result.rowCount === 0) {
-      return res.status(401).json({
-        ok: false,
-        error: "Correo o contraseña incorrectos"
-      });
+      return res.status(401).json({ ok: false, error: "Correo o contraseña incorrectos" });
     }
 
     res.json({
@@ -919,10 +768,7 @@ app.post("/api/login", async (req, res) => {
     });
   } catch (error) {
     console.error("LOGIN ERROR:", error.message);
-    res.status(500).json({
-      ok: false,
-      error: error.message
-    });
+    res.status(500).json({ ok: false, error: error.message });
   }
 });
 
@@ -940,20 +786,12 @@ app.post("/api/progress", async (req, res) => {
     );
 
     if (!studentId || !lessonId) {
-      return res.status(400).json({
-        ok: false,
-        error: "student_id y lesson_id son obligatorios"
-      });
+      return res.status(400).json({ ok: false, error: "student_id y lesson_id son obligatorios" });
     }
 
     const result = await pool.query(`
       INSERT INTO progress (
-        student_id,
-        lesson_id,
-        completed,
-        progress_percent,
-        created_at,
-        updated_at
+        student_id, lesson_id, completed, progress_percent, created_at, updated_at
       )
       VALUES ($1, $2, $3, $4, NOW(), NOW())
       ON CONFLICT (student_id, lesson_id)
@@ -971,10 +809,7 @@ app.post("/api/progress", async (req, res) => {
     });
   } catch (error) {
     console.error("SAVE PROGRESS ERROR:", error.message);
-    res.status(500).json({
-      ok: false,
-      error: error.message
-    });
+    res.status(500).json({ ok: false, error: error.message });
   }
 });
 
@@ -983,10 +818,7 @@ app.get("/api/progress/:studentId", async (req, res) => {
     const studentId = Number(req.params.studentId);
 
     if (!studentId) {
-      return res.status(400).json({
-        ok: false,
-        error: "studentId inválido"
-      });
+      return res.status(400).json({ ok: false, error: "studentId inválido" });
     }
 
     const result = await pool.query(`
@@ -1000,16 +832,10 @@ app.get("/api/progress/:studentId", async (req, res) => {
       ORDER BY p.id DESC
     `, [studentId]);
 
-    res.json({
-      ok: true,
-      progress: result.rows
-    });
+    res.json({ ok: true, progress: result.rows });
   } catch (error) {
     console.error("GET PROGRESS ERROR:", error.message);
-    res.status(500).json({
-      ok: false,
-      error: error.message
-    });
+    res.status(500).json({ ok: false, error: error.message });
   }
 });
 
@@ -1019,10 +845,7 @@ app.get("/api/progress/:studentId", async (req, res) => {
 app.post("/api/upload-file", upload.single("file"), async (req, res) => {
   try {
     if (!req.file) {
-      return res.status(400).json({
-        ok: false,
-        error: "No se recibió ningún archivo"
-      });
+      return res.status(400).json({ ok: false, error: "No se recibió ningún archivo" });
     }
 
     const fileUrl = `/files/${req.file.filename}`;
@@ -1042,10 +865,7 @@ app.post("/api/upload-file", upload.single("file"), async (req, res) => {
     });
   } catch (error) {
     console.error("UPLOAD FILE ERROR:", error.message);
-    res.status(500).json({
-      ok: false,
-      error: error.message
-    });
+    res.status(500).json({ ok: false, error: error.message });
   }
 });
 
@@ -1055,11 +875,7 @@ app.post("/api/upload-file", upload.single("file"), async (req, res) => {
 app.get("/api/public/modules", async (req, res) => {
   try {
     const result = await pool.query(`
-      SELECT
-        id,
-        title,
-        description,
-        status
+      SELECT id, title, description, status
       FROM modules
       WHERE status = 'published'
       ORDER BY id ASC
@@ -1071,10 +887,7 @@ app.get("/api/public/modules", async (req, res) => {
     });
   } catch (error) {
     console.error("GET PUBLIC MODULES ERROR:", error.message);
-    res.status(500).json({
-      ok: false,
-      error: error.message
-    });
+    res.status(500).json({ ok: false, error: error.message });
   }
 });
 
@@ -1083,16 +896,11 @@ app.get("/api/public/lessons/:moduleId", async (req, res) => {
     const moduleId = Number(req.params.moduleId);
 
     if (!moduleId) {
-      return res.status(400).json({
-        ok: false,
-        error: "moduleId inválido"
-      });
+      return res.status(400).json({ ok: false, error: "moduleId inválido" });
     }
 
     const result = await pool.query(`
-      SELECT
-        l.*,
-        m.title AS module_title
+      SELECT l.*, m.title AS module_title
       FROM lessons l
       LEFT JOIN modules m ON m.id = l.module_id
       WHERE l.module_id = $1
@@ -1106,10 +914,7 @@ app.get("/api/public/lessons/:moduleId", async (req, res) => {
     });
   } catch (error) {
     console.error("GET PUBLIC LESSONS ERROR:", error.message);
-    res.status(500).json({
-      ok: false,
-      error: error.message
-    });
+    res.status(500).json({ ok: false, error: error.message });
   }
 });
 
@@ -1126,9 +931,7 @@ app.get("/api/student-dashboard", async (req, res) => {
         ORDER BY id ASC
       `),
       pool.query(`
-        SELECT
-          l.*,
-          m.title AS module_title
+        SELECT l.*, m.title AS module_title
         FROM lessons l
         LEFT JOIN modules m ON m.id = l.module_id
         WHERE l.status = 'published'
@@ -1143,16 +946,10 @@ app.get("/api/student-dashboard", async (req, res) => {
         .map(normalizeLessonRow)
     }));
 
-    res.json({
-      ok: true,
-      modules
-    });
+    res.json({ ok: true, modules });
   } catch (error) {
     console.error("STUDENT DASHBOARD ERROR:", error.message);
-    res.status(500).json({
-      ok: false,
-      error: error.message
-    });
+    res.status(500).json({ ok: false, error: error.message });
   }
 });
 
@@ -1160,10 +957,7 @@ app.get("/api/student-dashboard", async (req, res) => {
 // 404
 // =========================
 app.use((req, res) => {
-  res.status(404).json({
-    ok: false,
-    error: "Ruta no encontrada"
-  });
+  res.status(404).json({ ok: false, error: "Ruta no encontrada" });
 });
 
 // =========================
