@@ -299,8 +299,52 @@
     .pdf-box strong{
       display:block;
       color:#111827;
-      margin-bottom:8px;
+      margin-bottom:12px;
       font-size:16px;
+    }
+
+    .pdf-controls{
+      display:flex;
+      flex-wrap:wrap;
+      gap:12px;
+      justify-content:center;
+      align-items:center;
+      margin-bottom:18px;
+    }
+
+    .pdf-select{
+      padding:12px 14px;
+      border-radius:12px;
+      border:1px solid #d1d5db;
+      background:white;
+      color:#111827;
+      font-size:15px;
+      min-width:220px;
+      outline:none;
+    }
+
+    .pdf-link{
+      display:inline-block;
+      text-decoration:none;
+      background:#f59e0b;
+      color:white;
+      padding:12px 16px;
+      border-radius:12px;
+      font-weight:700;
+      transition:.2s ease;
+    }
+
+    .pdf-link:hover{
+      background:#ea8c00;
+    }
+
+    .pdf-frame{
+      width:100%;
+      height:560px;
+      border:none;
+      border-radius:16px;
+      background:white;
+      box-shadow:0 8px 20px rgba(0,0,0,.05);
     }
 
     footer{
@@ -346,6 +390,15 @@
       }
 
       .btn{
+        width:100%;
+      }
+
+      .pdf-frame{
+        height:420px;
+      }
+
+      .pdf-select,
+      .pdf-link{
         width:100%;
       }
     }
@@ -402,7 +455,7 @@
     </section>
 
     <section class="menu-grid">
-      <a href="/modulos" class="menu-card" id="modulos">
+      <a href="#modulos" class="menu-card" id="modulos">
         <div>
           <div class="menu-icon">M</div>
           <h3>Módulos</h3>
@@ -410,15 +463,15 @@
         </div>
       </a>
 
-      <a href="/pdfs" class="menu-card">
+      <a href="#visor-pdf" class="menu-card">
         <div>
           <div class="menu-icon">P</div>
           <h3>PDF</h3>
-          <p>Abre tus documentos de estudio en un espacio simple y limpio.</p>
+          <p>Abre tus documentos de estudio dentro de la misma página.</p>
         </div>
       </a>
 
-      <a href="/pizarra" class="menu-card">
+      <a href="#pizarra" class="menu-card">
         <div>
           <div class="menu-icon">D</div>
           <h3>Pizarra del día</h3>
@@ -426,7 +479,7 @@
         </div>
       </a>
 
-      <a href="/diagnostico" class="menu-card" id="diagnostico">
+      <a href="#diagnostico" class="menu-card" id="diagnostico">
         <div>
           <div class="menu-icon">+</div>
           <h3>Diagnóstico</h3>
@@ -452,16 +505,36 @@
         </div>
       </div>
 
-      <div class="section-card">
-        <h3>Espacio abierto para PDF</h3>
+      <div class="section-card" id="visor-pdf">
+        <h3>Modelos en PDF</h3>
         <p>
-          Este bloque puede quedar listo para pegar o mostrar el PDF de cada clase
-          sin recargar la pantalla del estudiante.
+          Selecciona el modelo que quieras ver. Se abrirá dentro de la misma página
+          y también tendrás un botón para abrirlo aparte.
         </p>
 
         <div class="pdf-box">
-          <strong>Aquí va el PDF del día</strong>
-          Puedes insertar el visor o el enlace del documento actual.
+          <strong>Visor de modelos</strong>
+
+          <div class="pdf-controls">
+            <select id="pdfSelector" class="pdf-select" onchange="cambiarPDF(this.value)">
+              <option value="modelos/modelo1.pdf">Modelo 1</option>
+              <option value="modelos/modelo2.pdf">Modelo 2</option>
+              <option value="modelos/modelo3.pdf">Modelo 3</option>
+              <option value="modelos/modelo4.pdf">Modelo 4</option>
+              <option value="modelos/modelo5.pdf">Modelo 5</option>
+              <option value="modelos/modelo6.pdf">Modelo 6</option>
+              <option value="modelos/modelo7.pdf">Modelo 7</option>
+              <option value="modelos/modelo8.pdf" selected>Modelo 8</option>
+            </select>
+
+            <a id="abrirPDF" class="pdf-link" href="modelos/modelo8.pdf" target="_blank">Abrir aparte</a>
+          </div>
+
+          <iframe
+            id="visorPDF"
+            class="pdf-frame"
+            src="modelos/modelo8.pdf">
+          </iframe>
         </div>
       </div>
     </section>
@@ -470,5 +543,12 @@
       Chamberí Academia · aprendizaje claro y útil
     </footer>
   </div>
+
+  <script>
+    function cambiarPDF(ruta){
+      document.getElementById("visorPDF").src = ruta;
+      document.getElementById("abrirPDF").href = ruta;
+    }
+  </script>
 </body>
 </html>
