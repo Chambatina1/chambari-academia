@@ -1,330 +1,127 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Chambari - Profesor</title>
+<meta charset="UTF-8">
+<title>Chambari - Alumno</title>
 
-  <style>
-    * {
-      box-sizing: border-box;
-    }
+<style>
+body {
+  font-family: Arial;
+  background: #0f0f0f;
+  color: white;
+  margin: 0;
+  padding: 20px;
+}
 
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: #0f0f0f;
-      color: white;
-      padding: 20px;
-    }
+.card {
+  background: #1b1b1b;
+  padding: 20px;
+  border-radius: 12px;
+  margin-bottom: 20px;
+}
 
-    .wrap {
-      max-width: 1000px;
-      margin: 0 auto;
-    }
+button {
+  margin-top: 10px;
+  padding: 10px;
+  width: 100%;
+  background: #ff8a00;
+  border: none;
+  color: black;
+  font-weight: bold;
+  border-radius: 8px;
+}
 
-    h1 {
-      color: #ff8a00;
-      margin-bottom: 20px;
-    }
+.module {
+  background: #222;
+  padding: 10px;
+  margin-top: 10px;
+  border-radius: 8px;
+}
 
-    h2 {
-      color: #ffb45c;
-      margin-top: 0;
-    }
+.lesson {
+  background: #111;
+  padding: 8px;
+  margin-top: 8px;
+  border-radius: 6px;
+}
 
-    .card {
-      background: #1b1b1b;
-      padding: 20px;
-      border-radius: 14px;
-      margin-bottom: 20px;
-      border: 1px solid #2a2a2a;
-    }
+iframe {
+  width: 100%;
+  height: 250px;
+}
+</style>
 
-    input, textarea {
-      width: 100%;
-      padding: 12px;
-      margin-top: 10px;
-      background: #111;
-      border: 1px solid #333;
-      color: white;
-      border-radius: 8px;
-      font-size: 15px;
-    }
-
-    textarea {
-      min-height: 100px;
-      resize: vertical;
-    }
-
-    button {
-      margin-top: 15px;
-      padding: 12px;
-      width: 100%;
-      background: #ff8a00;
-      border: none;
-      color: black;
-      font-weight: bold;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 15px;
-    }
-
-    button:hover {
-      opacity: 0.92;
-    }
-
-    .module {
-      background: #222;
-      padding: 15px;
-      margin-top: 12px;
-      border-radius: 10px;
-      border: 1px solid #333;
-    }
-
-    .module-title {
-      font-size: 18px;
-      font-weight: bold;
-      color: #ffb45c;
-      margin-bottom: 8px;
-    }
-
-    .module-desc {
-      color: #ddd;
-      margin-bottom: 12px;
-      white-space: pre-wrap;
-    }
-
-    .lesson-box {
-      margin-top: 14px;
-      padding: 12px;
-      background: #111;
-      border-radius: 8px;
-      border: 1px solid #2d2d2d;
-    }
-
-    .lesson-title {
-      font-weight: bold;
-      color: #fff;
-      margin-bottom: 8px;
-    }
-
-    .lesson-links a {
-      color: #ffb45c;
-      text-decoration: none;
-      display: inline-block;
-      margin-right: 12px;
-      margin-top: 6px;
-    }
-
-    .lesson-links a:hover {
-      text-decoration: underline;
-    }
-
-    .mini-btn {
-      width: auto;
-      padding: 10px 14px;
-      margin-top: 10px;
-      display: inline-block;
-    }
-
-    .empty {
-      color: #aaa;
-      font-style: italic;
-      margin-top: 8px;
-    }
-
-    .status {
-      margin-top: 10px;
-      font-size: 14px;
-      color: #ccc;
-    }
-
-    .divider {
-      height: 1px;
-      background: #333;
-      margin: 14px 0;
-    }
-  </style>
 </head>
+
 <body>
-  <div class="wrap">
-    <h1>Panel Profesor</h1>
 
+<h1>Alumno</h1>
+
+<div class="card">
+  <button onclick="verModulos()">Entrar</button>
+</div>
+
+<div id="contenido"></div>
+
+<script>
+const API = "https://chambari-academia.onrender.com";
+
+async function verModulos() {
+  const res = await fetch(API + "/api/modules");
+  const data = await res.json();
+
+  const cont = document.getElementById("contenido");
+  cont.innerHTML = "";
+
+  data.modules.forEach(m => {
+    const div = document.createElement("div");
+    div.className = "module";
+
+    div.innerHTML = `
+      ${m.titulo}<br>
+      <button onclick="verClases(${m.id})">Entrar</button>
+    `;
+
+    cont.appendChild(div);
+  });
+}
+
+async function verClases(id) {
+  const res = await fetch(API + "/api/lessons/" + id);
+  const data = await res.json();
+
+  const cont = document.getElementById("contenido");
+  cont.innerHTML = "";
+
+  data.lessons.forEach(l => {
+    const div = document.createElement("div");
+    div.className = "lesson";
+
+    div.innerHTML = `
+      ${l.titulo}<br>
+      <button onclick="abrir('${l.youtube_url}','${l.pdf_url}')">
+        Abrir
+      </button>
+    `;
+
+    cont.appendChild(div);
+  });
+}
+
+function abrir(youtube, pdf) {
+  const cont = document.getElementById("contenido");
+
+  let video = youtube ? `<iframe src="${youtube.replace("watch?v=","embed/")}"></iframe>` : "";
+  let pdfLink = pdf ? `<a href="${pdf}" target="_blank">Abrir PDF</a>` : "";
+
+  cont.innerHTML = `
     <div class="card">
-      <h2>Crear módulo</h2>
-      <input id="titulo" placeholder="Título del módulo" />
-      <textarea id="descripcion" placeholder="Descripción del módulo"></textarea>
-      <button onclick="crearModulo()">Guardar módulo</button>
-      <div id="estadoModulo" class="status"></div>
+      ${video}
+      ${pdfLink}
     </div>
+  `;
+}
+</script>
 
-    <div class="card">
-      <h2>Módulos y clases</h2>
-      <div id="lista">Cargando módulos...</div>
-    </div>
-  </div>
-
-  <script>
-    async function crearModulo() {
-      const titulo = document.getElementById("titulo").value.trim();
-      const descripcion = document.getElementById("descripcion").value.trim();
-      const estado = document.getElementById("estadoModulo");
-
-      if (!titulo) {
-        estado.textContent = "Debes escribir un título.";
-        return;
-      }
-
-      estado.textContent = "Guardando módulo...";
-
-      try {
-        const res = await fetch("/api/module", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ titulo, descripcion })
-        });
-
-        const data = await res.json();
-
-        if (data.ok) {
-          document.getElementById("titulo").value = "";
-          document.getElementById("descripcion").value = "";
-          estado.textContent = "Módulo creado correctamente.";
-          await cargarModulos();
-        } else {
-          estado.textContent = data.error || "No se pudo crear el módulo.";
-        }
-      } catch (err) {
-        estado.textContent = "Error conectando con el servidor.";
-      }
-    }
-
-    async function crearClase(moduleId) {
-      const titulo = prompt("Título de la clase:");
-      if (!titulo || !titulo.trim()) return;
-
-      const youtube_url = prompt("Link de YouTube (opcional):") || "";
-      const pdf_url = prompt("Link del PDF (opcional):") || "";
-
-      try {
-        const res = await fetch("/api/lesson", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            module_id: moduleId,
-            titulo: titulo.trim(),
-            youtube_url: youtube_url.trim(),
-            pdf_url: pdf_url.trim()
-          })
-        });
-
-        const data = await res.json();
-
-        if (data.ok) {
-          alert("Clase creada correctamente.");
-          await cargarModulos();
-        } else {
-          alert(data.error || "No se pudo crear la clase.");
-        }
-      } catch (err) {
-        alert("Error conectando con el servidor.");
-      }
-    }
-
-    async function cargarModulos() {
-      const lista = document.getElementById("lista");
-      lista.innerHTML = "Cargando módulos...";
-
-      try {
-        const res = await fetch("/api/modules");
-        const data = await res.json();
-
-        if (!data.ok) {
-          lista.innerHTML = '<div class="empty">No se pudieron cargar los módulos.</div>';
-          return;
-        }
-
-        if (!data.modules || data.modules.length === 0) {
-          lista.innerHTML = '<div class="empty">Todavía no hay módulos creados.</div>';
-          return;
-        }
-
-        lista.innerHTML = "";
-
-        for (const m of data.modules) {
-          const div = document.createElement("div");
-          div.className = "module";
-          div.innerHTML = `
-            <div class="module-title">${escapeHtml(m.titulo)}</div>
-            <div class="module-desc">${escapeHtml(m.descripcion || "")}</div>
-            <button class="mini-btn" onclick="crearClase(${m.id})">+ Agregar clase</button>
-            <div class="divider"></div>
-            <div id="clases-${m.id}" class="empty">Cargando clases...</div>
-          `;
-          lista.appendChild(div);
-
-          await cargarClases(m.id);
-        }
-      } catch (err) {
-        lista.innerHTML = '<div class="empty">Error conectando con el servidor.</div>';
-      }
-    }
-
-    async function cargarClases(moduleId) {
-      const cont = document.getElementById(`clases-${moduleId}`);
-      if (!cont) return;
-
-      try {
-        const res = await fetch(`/api/lessons/${moduleId}`);
-        const data = await res.json();
-
-        if (!data.ok) {
-          cont.innerHTML = '<div class="empty">No se pudieron cargar las clases.</div>';
-          return;
-        }
-
-        if (!data.lessons || data.lessons.length === 0) {
-          cont.innerHTML = '<div class="empty">Este módulo aún no tiene clases.</div>';
-          return;
-        }
-
-        cont.innerHTML = "";
-
-        data.lessons.forEach(l => {
-          const box = document.createElement("div");
-          box.className = "lesson-box";
-
-          box.innerHTML = `
-            <div class="lesson-title">📘 ${escapeHtml(l.titulo)}</div>
-            <div class="lesson-links">
-              ${l.youtube_url ? `<a href="${escapeAttribute(l.youtube_url)}" target="_blank">🎥 Ver video</a>` : ""}
-              ${l.pdf_url ? `<a href="${escapeAttribute(l.pdf_url)}" target="_blank">📄 Abrir PDF</a>` : ""}
-              ${!l.youtube_url && !l.pdf_url ? `<span class="empty">Sin enlaces adicionales.</span>` : ""}
-            </div>
-          `;
-
-          cont.appendChild(box);
-        });
-      } catch (err) {
-        cont.innerHTML = '<div class="empty">Error cargando clases.</div>';
-      }
-    }
-
-    function escapeHtml(text) {
-      return String(text)
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
-    }
-
-    function escapeAttribute(text) {
-      return String(text).replace(/"/g, "&quot;");
-    }
-
-    cargarModulos();
-  </script>
 </body>
 </html>
