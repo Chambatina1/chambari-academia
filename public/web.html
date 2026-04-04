@@ -1,1 +1,42 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Chambari Academy</title>
 
+<style>
+body{font-family:Arial;background:#f4f7fb;margin:0;padding:20px}
+.container{max-width:900px;margin:auto}
+.card{background:white;padding:20px;border-radius:15px;margin:10px 0}
+button{padding:10px;background:#5b8def;color:white;border:none;border-radius:8px}
+</style>
+
+</head>
+<body>
+
+<div class="container">
+  <h1>Modelos</h1>
+  <div id="lista"></div>
+</div>
+
+<script>
+async function cargar(){
+  const res = await fetch('/api/modulos');
+  const data = await res.json();
+
+  document.getElementById('lista').innerHTML =
+    data.data.map(m => `
+      <div class="card">
+        <h3>${m.titulo}</h3>
+        <p>${m.descripcion}</p>
+        <a href="${m.archivo}" target="_blank">
+          <button>Abrir PDF</button>
+        </a>
+      </div>
+    `).join('');
+}
+cargar();
+</script>
+
+</body>
+</html>
