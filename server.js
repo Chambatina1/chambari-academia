@@ -7,27 +7,46 @@ const fs = require("fs");
 
 const app = express();
 
-// ===== ASEGURAR CARPETAS =====
-const filesDir = path.join(__dirname, "public", "files");
-fs.mkdirSync(filesDir, { recursive: true });
-
-// ===== CONFIG =====
+// =============================
+// CONFIG GENERAL
+// =============================
 const PORT = process.env.PORT || 3000;
 const BASE_URL = process.env.BASE_URL || "https://chambari-academia.onrender.com";
 
-// ===== MIDDLEWARE =====
+// =============================
+// DISCO PERSISTENTE EN RENDER
+// =============================
+const uploadDir = "/var/data/files";
+
+// crear carpeta si no existe
+if (!fs.existsSync(uploadDir)) {
+  fs.mkdirSync(uploadDir, { recursive: true });
+}
+
+// =============================
+// MIDDLEWARE
+// =============================
 app.use(cors({ origin: "*" }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+// archivos estáticos normales
 app.use(express.static(path.join(__dirname, "public")));
 
-// ===== CONEXIÓN DB =====
+// servir archivos persistentes
+app.use("/files", express.static(uploadDir));
+
+// =============================
+// CONEXIÓN DB
+// =============================
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
   ssl: { rejectUnauthorized: false }
 });
 
-// ===== TIPOS PERMITIDOS =====
+// =============================
+// TIPOS DE ARCHIVO PERMITIDOS
+// =============================
 const allowedExtensions = [
   ".pdf",
   ".doc",
@@ -40,10 +59,12 @@ const allowedExtensions = [
   ".csv"
 ];
 
-// ===== MULTER =====
+// =============================
+// MULTER
+// =============================
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, filesDir);
+    cb(null, uploadDir);
   },
   filename: (req, file, cb) => {
     const ext = path.extname(file.originalname || "").toLowerCase();
@@ -66,7 +87,9 @@ const upload = multer({
   }
 });
 
-// ===== INIT DB =====
+// =============================
+// INICIALIZAR BASE
+// =============================
 async function initDatabase() {
   await pool.query(`
     CREATE TABLE IF NOT EXISTS modules (
@@ -102,7 +125,7 @@ async function initDatabase() {
     );
   `);
 
-  // ===== MIGRACIÓN SI VENÍAS DE pdf_url =====
+  // compatibilidad si venías de pdf_url
   await pool.query(`
     ALTER TABLE lessons
     ADD COLUMN IF NOT EXISTS file_url TEXT DEFAULT '';
@@ -119,38 +142,32 @@ async function initDatabase() {
   `);
 
   await pool.query(`
-    DO $$
-    BEGIN
-      IF EXISTS (
-        SELECT 1
-        FROM information_schema.columns
-        WHERE table_name = 'lessons'
-        AND column_name = 'pdf_url'
-      ) THEN
-        UPDATE lessons
-        SET file_url = COALESCE(NULLIF(file_url, ''), pdf_url),
-            file_type = CASE
-              WHEN COALESCE(file_type, '') = '' AND COALESCE(pdf_url, '') <> '' THEN 'pdf'
-              ELSE file_type
-            END
-        WHERE COALESCE(pdf_url, '') <> '';
-      END IF;
-    END
-    $$;
+    ALTER TABLE lessons
+    ADD COLUMN IF NOT EXISTS pdf_url TEXT;
+  `);
+
+  await pool.query(`
+    UPDATE lessons
+    SET file_url = COALESCE(NULLIF(file_url, ''), pdf_url),
+        file_type = CASE
+          WHEN COALESCE(file_type, '') = '' AND COALESCE(pdf_url, '') <> '' THEN 'pdf'
+          ELSE file_type
+        END
+    WHERE COALESCE(pdf_url, '') <> '';
   `);
 }
 
-// ===== RAÍZ =====
+// =============================
+// RUTAS BASE
+// =============================
 app.get("/", (req, res) => {
   res.send("Chambari Academy backend funcionando");
 });
 
-// ===== API BASE =====
 app.get("/api", (req, res) => {
   res.json({ ok: true, message: "Chambari Academy API funcionando" });
 });
 
-// ===== TEST DB =====
 app.get("/api/test-db", async (req, res) => {
   try {
     const result = await pool.query("SELECT NOW()");
@@ -161,7 +178,9 @@ app.get("/api/test-db", async (req, res) => {
   }
 });
 
-// ===== INIT DB =====
+// =============================
+// INIT DB
+// =============================
 app.get("/api/init-db", async (req, res) => {
   try {
     await initDatabase();
@@ -199,7 +218,9 @@ app.get("/api/init-db", async (req, res) => {
   }
 });
 
-// ===== SUBIR ARCHIVO =====
+// =============================
+// SUBIR ARCHIVO
+// =============================
 app.post("/api/upload-file", upload.single("file"), (req, res) => {
   try {
     if (!req.file) {
@@ -222,7 +243,9 @@ app.post("/api/upload-file", upload.single("file"), (req, res) => {
   }
 });
 
-// ===== REGISTRO =====
+// =============================
+// REGISTRO
+// =============================
 app.post("/api/register", async (req, res) => {
   try {
     const { nombre, email, password } = req.body;
@@ -248,7 +271,9 @@ app.post("/api/register", async (req, res) => {
   }
 });
 
-// ===== CREAR MÓDULO =====
+// =============================
+// CREAR MÓDULO
+// =============================
 app.post("/api/module", async (req, res) => {
   try {
     const { titulo, descripcion } = req.body;
@@ -269,7 +294,9 @@ app.post("/api/module", async (req, res) => {
   }
 });
 
-// ===== CREAR CLASE =====
+// =============================
+// CREAR CLASE
+// =============================
 app.post("/api/lesson", async (req, res) => {
   try {
     const { module_id, titulo, youtube_url, file_url, file_name, file_type } = req.body;
@@ -299,7 +326,9 @@ app.post("/api/lesson", async (req, res) => {
   }
 });
 
-// ===== VER MÓDULOS =====
+// =============================
+// VER MÓDULOS
+// =============================
 app.get("/api/modules", async (req, res) => {
   try {
     const result = await pool.query(
@@ -313,7 +342,9 @@ app.get("/api/modules", async (req, res) => {
   }
 });
 
-// ===== VER CLASES =====
+// =============================
+// VER CLASES
+// =============================
 app.get("/api/lessons/:moduleId", async (req, res) => {
   try {
     const result = await pool.query(
@@ -330,7 +361,9 @@ app.get("/api/lessons/:moduleId", async (req, res) => {
   }
 });
 
-// ===== ERROR GENERAL =====
+// =============================
+// ERROR GENERAL
+// =============================
 app.use((err, req, res, next) => {
   console.error("ERROR GENERAL:", err);
 
@@ -345,7 +378,9 @@ app.use((err, req, res, next) => {
   res.status(500).json({ ok: false, error: "Error interno del servidor" });
 });
 
-// ===== INICIO =====
+// =============================
+// INICIO
+// =============================
 app.listen(PORT, () => {
   console.log("Servidor listo en puerto " + PORT);
 });
