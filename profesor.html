@@ -13,42 +13,30 @@ body {
   margin: 0;
   padding: 20px;
 }
-
-h1 {
-  color: #ff8a00;
-  margin-top: 0;
-}
-
-h2, h3 {
-  margin-top: 0;
-}
-
+h1 { color: #ff8a00; margin-top: 0; }
+h2, h3 { margin-top: 0; }
 .card {
   background: #1b1b1b;
   padding: 20px;
   border-radius: 14px;
   margin-bottom: 20px;
 }
-
 .stats {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
   gap: 14px;
 }
-
 .stat {
   background: #222;
   padding: 16px;
   border-radius: 12px;
   text-align: center;
 }
-
 .stat strong {
   display: block;
   font-size: 28px;
   color: #ff8a00;
 }
-
 input, textarea, select {
   width: 100%;
   padding: 12px;
@@ -58,12 +46,7 @@ input, textarea, select {
   box-sizing: border-box;
   font-size: 15px;
 }
-
-input[type="file"] {
-  background: #fff;
-  color: #000;
-}
-
+input[type="file"] { background: #fff; color: #000; }
 button {
   margin-top: 12px;
   padding: 12px;
@@ -76,31 +59,11 @@ button {
   cursor: pointer;
   font-size: 15px;
 }
-
-button.secundario {
-  background: #333;
-  color: white;
-}
-
-button.eliminar {
-  background: #c62828;
-  color: white;
-}
-
-button.publicar {
-  background: #2e7d32;
-  color: white;
-}
-
-button.archivar {
-  background: #6d4c41;
-  color: white;
-}
-
-button.ver {
-  background: #1565c0;
-  color: white;
-}
+button.secundario { background: #333; color: white; }
+button.eliminar { background: #c62828; color: white; }
+button.publicar { background: #2e7d32; color: white; }
+button.archivar { background: #6d4c41; color: white; }
+button.ver { background: #1565c0; color: white; }
 
 .item {
   background: #222;
@@ -108,47 +71,35 @@ button.ver {
   border-radius: 10px;
   margin-top: 10px;
 }
-
 .small {
   font-size: 13px;
   color: #bbb;
   margin-top: 6px;
 }
-
 .estado {
   margin-top: 12px;
   padding: 12px;
   border-radius: 8px;
   background: #111;
 }
-
-.ok {
-  border-left: 4px solid #2e7d32;
-}
-
-.error {
-  border-left: 4px solid #c62828;
-}
-
+.ok { border-left: 4px solid #2e7d32; }
+.error { border-left: 4px solid #c62828; }
 .acciones {
   display: grid;
   gap: 8px;
   margin-top: 10px;
 }
-
 .lesson-box {
   background: #111;
   padding: 12px;
   margin-top: 10px;
   border-radius: 10px;
 }
-
 .topbar {
   display: grid;
   gap: 12px;
   margin-bottom: 20px;
 }
-
 .modal {
   position: fixed;
   inset: 0;
@@ -159,7 +110,6 @@ button.ver {
   padding: 20px;
   z-index: 999;
 }
-
 .modal-content {
   width: min(900px, 100%);
   max-height: 90vh;
@@ -168,12 +118,10 @@ button.ver {
   border-radius: 16px;
   padding: 20px;
 }
-
 .modal-close {
   background: #c62828;
   color: white;
 }
-
 .link-btn {
   display: inline-block;
   background: #ff8a00;
@@ -184,11 +132,8 @@ button.ver {
   font-weight: bold;
   margin-top: 10px;
 }
-
 @media (min-width: 900px) {
-  .topbar {
-    grid-template-columns: 1fr 1fr;
-  }
+  .topbar { grid-template-columns: 1fr 1fr; }
 }
 </style>
 </head>
@@ -200,18 +145,9 @@ button.ver {
 <div class="card">
   <h2>Resumen general</h2>
   <div class="stats">
-    <div class="stat">
-      <strong id="statModulos">0</strong>
-      Módulos
-    </div>
-    <div class="stat">
-      <strong id="statClases">0</strong>
-      Clases
-    </div>
-    <div class="stat">
-      <strong id="statEstudiantes">0</strong>
-      Estudiantes
-    </div>
+    <div class="stat"><strong id="statModulos">0</strong>Módulos</div>
+    <div class="stat"><strong id="statClases">0</strong>Clases</div>
+    <div class="stat"><strong id="statEstudiantes">0</strong>Estudiantes</div>
   </div>
   <button class="secundario" onclick="cargarTodo()">Actualizar panel</button>
 </div>
@@ -219,8 +155,8 @@ button.ver {
 <div class="topbar">
   <div class="card">
     <h3>Crear módulo</h3>
-    <input id="moduloTitulo" placeholder="Título del módulo">
-    <textarea id="moduloDesc" placeholder="Descripción del módulo"></textarea>
+    <input id="moduloTitulo" placeholder="Título del módulo (opcional)">
+    <textarea id="moduloDesc" placeholder="Descripción del módulo (opcional)"></textarea>
     <button onclick="crearModulo()">Guardar módulo</button>
     <div id="estadoModulo"></div>
   </div>
@@ -232,17 +168,13 @@ button.ver {
       <option value="">Cargando módulos...</option>
     </select>
 
-    <input id="claseTitulo" placeholder="Título de la clase">
+    <input id="claseTitulo" placeholder="Título de la clase (opcional)">
     <textarea id="claseDesc" placeholder="Descripción corta (opcional)"></textarea>
-    <textarea id="claseContenido" placeholder="Contenido o explicación de la clase (opcional)"></textarea>
+    <textarea id="claseContenido" placeholder="Contenido o explicación (opcional)"></textarea>
     <input id="claseYoutube" placeholder="Link YouTube (opcional)">
 
-    <label class="small">Subir archivo (PDF, Word, Excel, PowerPoint, TXT, CSV)</label>
-    <input
-      type="file"
-      id="fileInput"
-      accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.csv,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-powerpoint,application/vnd.openxmlformats-officedocument.presentationml.presentation,text/plain,text/csv"
-    >
+    <label class="small">Subir archivo</label>
+    <input type="file" id="fileInput">
 
     <button onclick="crearClase()">Guardar clase</button>
     <div id="estadoClase"></div>
@@ -279,13 +211,11 @@ function limpiarYoutube(url) {
     if (!url) return "";
     let texto = url.trim();
     if (!texto) return "";
-
     if (!texto.startsWith("http://") && !texto.startsWith("https://")) {
       if (texto.includes("youtube.com") || texto.includes("youtu.be")) {
         texto = "https://" + texto.replace(/^\/+/, "");
       }
     }
-
     return texto;
   } catch {
     return "";
@@ -376,12 +306,33 @@ function llenarSelectModulos(modulos) {
   modulos.forEach(m => {
     const option = document.createElement("option");
     option.value = m.id;
-    option.textContent = `ID ${m.id} - ${m.titulo || m.title}`;
+    option.textContent = `ID ${m.id} - ${m.titulo || m.title || "Sin título"}`;
     select.appendChild(option);
   });
 }
 
-async function renderModulos(modulosConClases) {
+function renderEstudiantes(estudiantes) {
+  const cont = document.getElementById("listaEstudiantes");
+  cont.innerHTML = "";
+
+  if (!estudiantes.length) {
+    cont.innerHTML = `<div class="item">No hay estudiantes registrados todavía.</div>`;
+    return;
+  }
+
+  estudiantes.forEach(est => {
+    const div = document.createElement("div");
+    div.className = "item";
+    div.innerHTML = `
+      <strong>${escapar(est.nombre || "Sin nombre")}</strong>
+      <div class="small">${escapar(est.email || "Sin email")}</div>
+      <div class="small">Progreso promedio: ${Number(est.progreso_promedio || 0)}%</div>
+    `;
+    cont.appendChild(div);
+  });
+}
+
+function renderModulos(modulosConClases) {
   const cont = document.getElementById("listaModulos");
   cont.innerHTML = "";
 
@@ -424,7 +375,7 @@ async function renderModulos(modulosConClases) {
               <button class="ver" onclick="verClase(${clase.id})">Revisar clase</button>
               <button class="publicar" onclick="publicarClase(${clase.id})">Publicar</button>
               <button class="archivar" onclick="archivarClase(${clase.id})">Archivar</button>
-              <button class="eliminar" onclick="eliminarClase(${clase.id}, ${JSON.stringify(tituloClase).replace(/"/g, "&quot;")})">Eliminar clase</button>
+              <button class="eliminar" onclick='eliminarClase(${clase.id}, ${JSON.stringify(tituloClase)})'>Eliminar clase</button>
             </div>
           </div>
         `;
@@ -437,7 +388,7 @@ async function renderModulos(modulosConClases) {
       <div class="small">Estado: ${escapar(estadoBonito(estadoModulo))}</div>
       <div class="small">Total de clases: ${clasesDelModulo.length}</div>
       <div class="acciones">
-        <button class="eliminar" onclick="eliminarModulo(${modulo.id}, ${JSON.stringify(tituloModulo).replace(/"/g, "&quot;")})">Eliminar módulo completo</button>
+        <button class="eliminar" onclick='eliminarModulo(${modulo.id}, ${JSON.stringify(tituloModulo)})'>Eliminar módulo completo</button>
       </div>
       ${clasesHtml}
     `;
@@ -446,35 +397,9 @@ async function renderModulos(modulosConClases) {
   });
 }
 
-function renderEstudiantes(estudiantes) {
-  const cont = document.getElementById("listaEstudiantes");
-  cont.innerHTML = "";
-
-  if (!estudiantes.length) {
-    cont.innerHTML = `<div class="item">No hay estudiantes registrados todavía.</div>`;
-    return;
-  }
-
-  estudiantes.forEach(est => {
-    const div = document.createElement("div");
-    div.className = "item";
-    div.innerHTML = `
-      <strong>${escapar(est.nombre || "Sin nombre")}</strong>
-      <div class="small">${escapar(est.email || "Sin email")}</div>
-      <div class="small">Progreso promedio: ${Number(est.progreso_promedio || 0)}%</div>
-    `;
-    cont.appendChild(div);
-  });
-}
-
 async function crearModulo() {
   const titulo = document.getElementById("moduloTitulo").value.trim();
   const descripcion = document.getElementById("moduloDesc").value.trim();
-
-  if (!titulo) {
-    ponerEstado("estadoModulo", "Debes escribir el título del módulo.", "error");
-    return;
-  }
 
   try {
     const res = await fetch(API + "/api/modules", {
@@ -487,11 +412,11 @@ async function crearModulo() {
       })
     });
 
-    await leerJSON(res);
+    const data = await leerJSON(res);
 
     document.getElementById("moduloTitulo").value = "";
     document.getElementById("moduloDesc").value = "";
-    ponerEstado("estadoModulo", "Módulo creado correctamente.");
+    ponerEstado("estadoModulo", `Módulo creado correctamente: ${escapar(data.module?.titulo || data.module?.title || "")}`);
     await cargarTodo();
   } catch (err) {
     ponerEstado("estadoModulo", "Error creando módulo: " + err.message, "error");
@@ -508,11 +433,6 @@ async function crearClase() {
 
   if (!module_id) {
     ponerEstado("estadoClase", "Debes seleccionar un módulo.", "error");
-    return;
-  }
-
-  if (!titulo) {
-    ponerEstado("estadoClase", "Debes escribir el título de la clase.", "error");
     return;
   }
 
@@ -544,7 +464,7 @@ async function crearClase() {
       })
     });
 
-    await leerJSON(res);
+    const data = await leerJSON(res);
 
     document.getElementById("claseTitulo").value = "";
     document.getElementById("claseDesc").value = "";
@@ -552,7 +472,7 @@ async function crearClase() {
     document.getElementById("claseYoutube").value = "";
     document.getElementById("fileInput").value = "";
 
-    ponerEstado("estadoClase", "Clase creada correctamente.");
+    ponerEstado("estadoClase", `Clase creada correctamente: ${escapar(data.lesson?.titulo || data.lesson?.title || "")}`);
     await cargarTodo();
   } catch (err) {
     ponerEstado("estadoClase", "Error creando clase: " + err.message, "error");
@@ -561,10 +481,7 @@ async function crearClase() {
 
 async function publicarClase(id) {
   try {
-    const res = await fetch(API + "/api/lessons/" + id + "/publish", {
-      method: "PUT"
-    });
-
+    const res = await fetch(API + "/api/lessons/" + id + "/publish", { method: "PUT" });
     await leerJSON(res);
     await cargarTodo();
   } catch (err) {
@@ -574,10 +491,7 @@ async function publicarClase(id) {
 
 async function archivarClase(id) {
   try {
-    const res = await fetch(API + "/api/lessons/" + id + "/archive", {
-      method: "PUT"
-    });
-
+    const res = await fetch(API + "/api/lessons/" + id + "/archive", { method: "PUT" });
     await leerJSON(res);
     await cargarTodo();
   } catch (err) {
@@ -590,10 +504,7 @@ async function eliminarClase(id, titulo) {
   if (!ok) return;
 
   try {
-    const res = await fetch(API + "/api/lessons/" + id, {
-      method: "DELETE"
-    });
-
+    const res = await fetch(API + "/api/lessons/" + id, { method: "DELETE" });
     await leerJSON(res);
     await cargarTodo();
     alert("Clase eliminada correctamente.");
@@ -607,10 +518,7 @@ async function eliminarModulo(id, titulo) {
   if (!ok) return;
 
   try {
-    const res = await fetch(API + "/api/modules/" + id, {
-      method: "DELETE"
-    });
-
+    const res = await fetch(API + "/api/modules/" + id, { method: "DELETE" });
     await leerJSON(res);
     await cargarTodo();
     alert("Módulo eliminado correctamente.");
@@ -666,7 +574,7 @@ async function cargarTodo() {
     ]);
 
     llenarSelectModulos(modulosBase);
-    await renderModulos(modulosDashboard);
+    renderModulos(modulosDashboard);
     renderEstudiantes(estudiantes);
   } catch (err) {
     document.getElementById("listaModulos").innerHTML =
