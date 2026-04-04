@@ -1,1 +1,250 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Chambari Academy - Plataforma</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+  <style>
+    body{
+      margin:0;
+      font-family: Arial, sans-serif;
+      background:#f4f7fb;
+      color:#1e293b;
+    }
+
+    .container{
+      max-width:1100px;
+      margin:auto;
+      padding:30px 20px;
+    }
+
+    header{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      margin-bottom:30px;
+    }
+
+    .logo{
+      display:flex;
+      align-items:center;
+      gap:10px;
+    }
+
+    .logo img{
+      width:50px;
+      border-radius:10px;
+    }
+
+    h1{
+      margin:0;
+      font-size:22px;
+    }
+
+    .nav{
+      display:flex;
+      gap:10px;
+    }
+
+    .nav button{
+      padding:10px 16px;
+      border:none;
+      border-radius:10px;
+      background:#e2e8f0;
+      cursor:pointer;
+      font-weight:bold;
+    }
+
+    .nav button.active{
+      background:#5b8def;
+      color:white;
+    }
+
+    .panel{
+      display:none;
+      background:white;
+      padding:20px;
+      border-radius:16px;
+      box-shadow:0 10px 20px rgba(0,0,0,0.05);
+    }
+
+    .panel.active{
+      display:block;
+    }
+
+    .modules{
+      display:grid;
+      grid-template-columns: repeat(auto-fill,minmax(250px,1fr));
+      gap:15px;
+    }
+
+    .card{
+      background:#f8fafc;
+      padding:15px;
+      border-radius:12px;
+      border:1px solid #e2e8f0;
+    }
+
+    .card h3{
+      margin:0 0 5px 0;
+    }
+
+    .card small{
+      color:#5b8def;
+      display:block;
+      margin-bottom:8px;
+    }
+
+    .card p{
+      font-size:14px;
+      margin:0;
+    }
+
+    .input{
+      margin-bottom:15px;
+    }
+
+    input, select, textarea{
+      width:100%;
+      padding:10px;
+      border-radius:10px;
+      border:1px solid #cbd5e1;
+    }
+
+    button.primary{
+      background:#5b8def;
+      color:white;
+      padding:12px;
+      border:none;
+      border-radius:10px;
+      width:100%;
+      cursor:pointer;
+    }
+
+    .result{
+      margin-top:10px;
+      padding:10px;
+      background:#e0f2fe;
+      border-radius:10px;
+      display:none;
+    }
+
+  </style>
+</head>
+<body>
+
+<div class="container">
+
+  <header>
+    <div class="logo">
+      <img src="/logo.png">
+      <h1>Chambari Academy</h1>
+    </div>
+
+    <div class="nav">
+      <button onclick="show('diagnostico')" id="btn1">Diagnóstico</button>
+      <button onclick="show('pizarra')" id="btn2">Clase</button>
+      <button onclick="show('modulos')" id="btn3">Módulos</button>
+    </div>
+  </header>
+
+  <!-- DIAGNOSTICO -->
+  <div id="diagnostico" class="panel active">
+    <h2>Diagnóstico</h2>
+
+    <div class="input">
+      <input id="nombre" placeholder="Tu nombre">
+    </div>
+
+    <div class="input">
+      <select id="q1">
+        <option value="">¿Entiendes inglés?</option>
+        <option value="0">No</option>
+        <option value="1">Un poco</option>
+        <option value="2">Sí</option>
+      </select>
+    </div>
+
+    <div class="input">
+      <select id="q2">
+        <option value="">¿Puedes responder?</option>
+        <option value="0">No</option>
+        <option value="1">A veces</option>
+        <option value="2">Sí</option>
+      </select>
+    </div>
+
+    <button class="primary" onclick="evaluar()">Evaluar</button>
+
+    <div id="res" class="result"></div>
+  </div>
+
+  <!-- CLASE -->
+  <div id="pizarra" class="panel">
+    <h2>Clase de hoy</h2>
+    <p>Aquí puedes poner tu contenido manual o dinámico.</p>
+  </div>
+
+  <!-- MODULOS -->
+  <div id="modulos" class="panel">
+    <h2>Módulos</h2>
+    <div id="lista" class="modules"></div>
+  </div>
+
+</div>
+
+<script>
+
+function show(id){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav button').forEach(b=>b.classList.remove('active'));
+
+  document.getElementById(id).classList.add('active');
+
+  if(id === 'modulos'){
+    cargarModulos();
+  }
+}
+
+async function cargarModulos(){
+  const res = await fetch('/api/modulos');
+  const data = await res.json();
+
+  const lista = document.getElementById('lista');
+
+  lista.innerHTML = data.data.map(m => `
+    <div class="card">
+      <h3>${m.titulo}</h3>
+      <small>${m.subtitulo}</small>
+      <p>${m.descripcion}</p>
+    </div>
+  `).join('');
+}
+
+function evaluar(){
+  const nombre = document.getElementById('nombre').value;
+  const q1 = document.getElementById('q1').value;
+  const q2 = document.getElementById('q2').value;
+  const res = document.getElementById('res');
+
+  const total = Number(q1) + Number(q2);
+
+  let msg = '';
+
+  if(total <= 1){
+    msg = 'Nivel básico';
+  }else if(total <= 3){
+    msg = 'Nivel intermedio';
+  }else{
+    msg = 'Nivel avanzado';
+  }
+
+  res.style.display = 'block';
+  res.innerHTML = `<strong>${nombre}</strong>: ${msg}`;
+}
+
+</script>
+
+</body>
+</html>
