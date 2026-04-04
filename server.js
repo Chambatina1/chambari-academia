@@ -4,26 +4,27 @@ const { Pool } = require("pg");
 
 const app = express();
 
-app.use(cors({
-  origin: "*"
-}));
-
+app.use(cors({ origin: "*" }));
 app.use(express.json());
 app.use(express.static("public"));
 
+// ===== CONEXIÓN DB =====
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
   ssl: { rejectUnauthorized: false }
 });
 
+// ===== RAÍZ =====
 app.get("/", (req, res) => {
   res.send("Chambari Academy backend funcionando");
 });
 
+// ===== API BASE =====
 app.get("/api", (req, res) => {
-  res.json({ ok: true, message: "API funcionando" });
+  res.json({ ok: true, message: "Chambari Academy API funcionando" });
 });
 
+// ===== TEST DB =====
 app.get("/api/test-db", async (req, res) => {
   try {
     const result = await pool.query("SELECT NOW()");
@@ -34,6 +35,67 @@ app.get("/api/test-db", async (req, res) => {
   }
 });
 
+// ===== INICIALIZAR TABLAS =====
+app.get("/api/init-db", async (req, res) => {
+  try {
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS modules (
+        id SERIAL PRIMARY KEY,
+        titulo TEXT NOT NULL,
+        descripcion TEXT,
+        publicado BOOLEAN DEFAULT true
+      );
+    `);
+
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS lessons (
+        id SERIAL PRIMARY KEY,
+        module_id INTEGER REFERENCES modules(id) ON DELETE CASCADE,
+        titulo TEXT NOT NULL,
+        youtube_url TEXT,
+        pdf_url TEXT,
+        publicado BOOLEAN DEFAULT true
+      );
+    `);
+
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS students (
+        id SERIAL PRIMARY KEY,
+        nombre TEXT,
+        email TEXT UNIQUE,
+        password TEXT
+      );
+    `);
+
+    const checkModule = await pool.query("SELECT COUNT(*) AS total FROM modules");
+    const totalModules = Number(checkModule.rows[0].total);
+
+    if (totalModules === 0) {
+      await pool.query(`
+        INSERT INTO modules (titulo, descripcion, publicado)
+        VALUES ('Primer módulo', 'Introducción inicial', true);
+      `);
+
+      await pool.query(`
+        INSERT INTO lessons (module_id, titulo, youtube_url, pdf_url, publicado)
+        VALUES (
+          1,
+          'Primera clase',
+          'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+          '',
+          true
+        );
+      `);
+    }
+
+    res.json({ ok: true, message: "Base de datos creada correctamente" });
+  } catch (err) {
+    console.error("INIT DB ERROR:", err);
+    res.status(500).json({ ok: false, error: err.message });
+  }
+});
+
+// ===== REGISTRO =====
 app.post("/api/register", async (req, res) => {
   try {
     const { nombre, email, password } = req.body;
@@ -59,6 +121,7 @@ app.post("/api/register", async (req, res) => {
   }
 });
 
+// ===== CREAR MÓDULO =====
 app.post("/api/module", async (req, res) => {
   try {
     const { titulo, descripcion } = req.body;
@@ -79,6 +142,7 @@ app.post("/api/module", async (req, res) => {
   }
 });
 
+// ===== CREAR CLASE =====
 app.post("/api/lesson", async (req, res) => {
   try {
     const { module_id, titulo, youtube_url, pdf_url } = req.body;
@@ -101,6 +165,7 @@ app.post("/api/lesson", async (req, res) => {
   }
 });
 
+// ===== VER MÓDULOS =====
 app.get("/api/modules", async (req, res) => {
   try {
     const result = await pool.query(
@@ -114,6 +179,7 @@ app.get("/api/modules", async (req, res) => {
   }
 });
 
+// ===== VER CLASES =====
 app.get("/api/lessons/:moduleId", async (req, res) => {
   try {
     const result = await pool.query(
@@ -128,6 +194,13 @@ app.get("/api/lessons/:moduleId", async (req, res) => {
   }
 });
 
+// ===== ERROR GENERAL =====
+app.use((err, req, res, next) => {
+  console.error("ERROR GENERAL:", err);
+  res.status(500).json({ ok: false, error: "Error interno del servidor" });
+});
+
+// ===== PUERTO =====
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log("Servidor listo en puerto " + PORT);
