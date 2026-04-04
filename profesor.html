@@ -23,11 +23,6 @@ h2, h3 {
   margin-top: 0;
 }
 
-.grid {
-  display: grid;
-  gap: 20px;
-}
-
 .card {
   background: #1b1b1b;
   padding: 20px;
@@ -167,7 +162,7 @@ button.eliminar {
       Estudiantes
     </div>
   </div>
-  <button class="secundario" onclick="cargarDashboard()">Actualizar panel</button>
+  <button class="secundario" onclick="cargarTodo()">Actualizar panel</button>
 </div>
 
 <div class="topbar">
@@ -182,9 +177,12 @@ button.eliminar {
   <div class="card">
     <h3>Crear clase</h3>
     <label>Selecciona el módulo</label>
-    <select id="claseModulo"></select>
+    <select id="claseModulo">
+      <option value="">Cargando módulos...</option>
+    </select>
 
     <input id="claseTitulo" placeholder="Título de la clase">
+    <textarea id="claseDesc" placeholder="Descripción corta (opcional)"></textarea>
     <input id="claseYoutube" placeholder="Link YouTube (opcional)">
 
     <label class="small">Subir archivo (PDF, Word, Excel, PowerPoint, TXT, CSV)</label>
@@ -220,6 +218,7 @@ function limpiarYoutube(url) {
   try {
     if (!url) return "";
     let texto = url.trim();
+    if (!texto) return "";
 
     if (!texto.startsWith("http://") && !texto.startsWith("https://")) {
       if (texto.includes("youtube.com") || texto.includes("youtu.be")) {
@@ -241,6 +240,19 @@ function escapar(texto) {
     .replace(/"/g, "&quot;");
 }
 
+async function leerJSON(res) {
+  let data = null;
+  try {
+    data = await res.json();
+  } catch {
+    throw new Error("El servidor no devolvió JSON válido");
+  }
+  if (!res.ok || !data.ok) {
+    throw new Error(data?.error || "Error del servidor");
+  }
+  return data;
+}
+
 async function subirArchivo(file) {
   const formData = new FormData();
   formData.append("file", file);
@@ -250,56 +262,60 @@ async function subirArchivo(file) {
     body: formData
   });
 
-  let data;
-  try {
-    data = await res.json();
-  } catch {
-    throw new Error("El servidor no devolvió una respuesta JSON válida");
-  }
-
-  if (!res.ok || !data.ok) {
-    throw new Error(data?.error || "No se pudo subir el archivo");
-  }
-
-  return data;
+  const data = await leerJSON(res);
+  return data.file;
 }
 
 async function cargarDashboard() {
-  try {
-    const res = await fetch(API + "/api/dashboard");
-    const data = await res.json();
+  const res = await fetch(API + "/api/dashboard");
+  const data = await leerJSON(res);
 
-    if (!data.ok) {
-      throw new Error(data.error || "No se pudo cargar el dashboard");
-    }
-
-    document.getElementById("statModulos").textContent = data.resumen.total_modulos || 0;
-    document.getElementById("statClases").textContent = data.resumen.total_clases || 0;
-    document.getElementById("statEstudiantes").textContent = data.resumen.total_estudiantes || 0;
-
-    const select = document.getElementById("claseModulo");
-    select.innerHTML = "";
-
-    if (!data.modules || data.modules.length === 0) {
-      select.innerHTML = `<option value="">No hay módulos</option>`;
-    } else {
-      data.modules.forEach(m => {
-        const option = document.createElement("option");
-        option.value = m.id;
-        option.textContent = `ID ${m.id} - ${m.titulo}`;
-        select.appendChild(option);
-      });
-    }
-
-    renderModulos(data.modules || [], data.lessons || []);
-    renderEstudiantes(data.students || []);
-
-  } catch (err) {
-    document.getElementById("listaModulos").innerHTML = `<div class="item">Error cargando panel: ${escapar(err.message)}</div>`;
-  }
+  document.getElementById("statModulos").textContent = data.modules || 0;
+  document.getElementById("statClases").textContent = data.lessons || 0;
+  document.getElementById("statEstudiantes").textContent = data.students || 0;
 }
 
-function renderModulos(modulos, clases) {
+async function cargarModulos() {
+  const res = await fetch(API + "/api/modules");
+  const data = await leerJSON(res);
+  return data.modules || [];
+}
+
+async function cargarStudents() {
+  const res = await fetch(API + "/api/students");
+  const data = await leerJSON(res);
+  return data.students || [];
+}
+
+async function cargarLeccionesDeModulo(moduleId) {
+  const res = await fetch(API + "/api/lessons/" + moduleId);
+  const data = await leerJSON(res);
+  return data.lessons || [];
+}
+
+function llenarSelectModulos(modulos) {
+  const select = document.getElementById("claseModulo");
+  select.innerHTML = "";
+
+  if (!modulos.length) {
+    select.innerHTML = `<option value="">No hay módulos</option>`;
+    return;
+  }
+
+  const opcionBase = document.createElement("option");
+  opcionBase.value = "";
+  opcionBase.textContent = "Selecciona un módulo";
+  select.appendChild(opcionBase);
+
+  modulos.forEach(m => {
+    const option = document.createElement("option");
+    option.value = m.id;
+    option.textContent = `ID ${m.id} - ${m.title}`;
+    select.appendChild(option);
+  });
+}
+
+async function renderModulos(modulos) {
   const cont = document.getElementById("listaModulos");
   cont.innerHTML = "";
 
@@ -308,11 +324,16 @@ function renderModulos(modulos, clases) {
     return;
   }
 
-  modulos.forEach(modulo => {
+  for (const modulo of modulos) {
+    let clasesDelModulo = [];
+    try {
+      clasesDelModulo = await cargarLeccionesDeModulo(modulo.id);
+    } catch (e) {
+      clasesDelModulo = [];
+    }
+
     const div = document.createElement("div");
     div.className = "item";
-
-    const clasesDelModulo = clases.filter(c => Number(c.module_id) === Number(modulo.id));
 
     let clasesHtml = "";
     if (!clasesDelModulo.length) {
@@ -324,11 +345,12 @@ function renderModulos(modulos, clases) {
 
         return `
           <div class="lesson-box">
-            <strong>Clase ID ${clase.id}: ${escapar(clase.titulo)}</strong>
+            <strong>Clase ID ${clase.id}: ${escapar(clase.title)}</strong>
+            ${clase.description ? `<div class="small">${escapar(clase.description)}</div>` : ""}
             <div class="small">Video: ${tieneVideo} | Archivo: ${tieneArchivo}</div>
             ${clase.file_name ? `<div class="small">Archivo: ${escapar(clase.file_name)}</div>` : ""}
             <div class="acciones">
-              <button class="eliminar" onclick="eliminarClase(${clase.id}, '${escapar(clase.titulo)}')">Eliminar clase</button>
+              <button class="eliminar" onclick="eliminarClase(${clase.id}, '${escapar(clase.title)}')">Eliminar clase</button>
             </div>
           </div>
         `;
@@ -336,17 +358,18 @@ function renderModulos(modulos, clases) {
     }
 
     div.innerHTML = `
-      <strong>Módulo ID ${modulo.id}: ${escapar(modulo.titulo)}</strong>
-      <div class="small">${escapar(modulo.descripcion || "")}</div>
-      <div class="small">Total de clases: ${modulo.total_clases || 0}</div>
+      <strong>Módulo ID ${modulo.id}: ${escapar(modulo.title)}</strong>
+      <div class="small">${escapar(modulo.description || "")}</div>
+      <div class="small">Estado: ${escapar(modulo.status || "published")}</div>
+      <div class="small">Total de clases: ${clasesDelModulo.length}</div>
       <div class="acciones">
-        <button class="eliminar" onclick="eliminarModulo(${modulo.id}, '${escapar(modulo.titulo)}')">Eliminar módulo completo</button>
+        <button class="eliminar" onclick="eliminarModulo(${modulo.id}, '${escapar(modulo.title)}')">Eliminar módulo completo</button>
       </div>
       ${clasesHtml}
     `;
 
     cont.appendChild(div);
-  });
+  }
 }
 
 function renderEstudiantes(estudiantes) {
@@ -364,46 +387,43 @@ function renderEstudiantes(estudiantes) {
     div.innerHTML = `
       <strong>${escapar(est.nombre || "Sin nombre")}</strong>
       <div class="small">${escapar(est.email || "Sin email")}</div>
+      <div class="small">Progreso promedio: ${Number(est.progreso_promedio || 0)}%</div>
     `;
     cont.appendChild(div);
   });
 }
 
 async function crearModulo() {
-  const titulo = document.getElementById("moduloTitulo").value.trim();
-  const descripcion = document.getElementById("moduloDesc").value.trim();
+  const title = document.getElementById("moduloTitulo").value.trim();
+  const description = document.getElementById("moduloDesc").value.trim();
 
-  if (!titulo) {
+  if (!title) {
     ponerEstado("estadoModulo", "Debes escribir el título del módulo.", "error");
     return;
   }
 
   try {
-    const res = await fetch(API + "/api/module", {
+    const res = await fetch(API + "/api/modules", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ titulo, descripcion })
+      body: JSON.stringify({ title, description, status: "published" })
     });
 
-    const data = await res.json();
-
-    if (!res.ok || !data.ok) {
-      throw new Error(data?.error || "No se pudo crear el módulo");
-    }
+    await leerJSON(res);
 
     document.getElementById("moduloTitulo").value = "";
     document.getElementById("moduloDesc").value = "";
-
     ponerEstado("estadoModulo", "Módulo creado correctamente.");
-    await cargarDashboard();
+    await cargarTodo();
   } catch (err) {
     ponerEstado("estadoModulo", "Error creando módulo: " + err.message, "error");
   }
 }
 
 async function crearClase() {
-  const module_id = document.getElementById("claseModulo").value;
-  const titulo = document.getElementById("claseTitulo").value.trim();
+  const module_id = Number(document.getElementById("claseModulo").value);
+  const title = document.getElementById("claseTitulo").value.trim();
+  const description = document.getElementById("claseDesc").value.trim();
   const youtube_url = limpiarYoutube(document.getElementById("claseYoutube").value);
   const fileInput = document.getElementById("fileInput");
 
@@ -412,7 +432,7 @@ async function crearClase() {
     return;
   }
 
-  if (!titulo) {
+  if (!title) {
     ponerEstado("estadoClase", "Debes escribir el título de la clase.", "error");
     return;
   }
@@ -422,41 +442,37 @@ async function crearClase() {
 
     let file_url = "";
     let file_name = "";
-    let file_type = "";
 
     if (fileInput.files.length > 0) {
       const archivo = fileInput.files[0];
-      const uploadData = await subirArchivo(archivo);
-      file_url = uploadData.url || "";
-      file_name = uploadData.originalname || "";
-      file_type = uploadData.filetype || "";
+      const fileData = await subirArchivo(archivo);
+      file_url = fileData.url || "";
+      file_name = fileData.originalName || "";
     }
 
-    const res = await fetch(API + "/api/lesson", {
+    const res = await fetch(API + "/api/lessons", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         module_id,
-        titulo,
+        title,
+        description,
         youtube_url,
         file_url,
         file_name,
-        file_type
+        status: "draft"
       })
     });
 
-    const data = await res.json();
-
-    if (!res.ok || !data.ok) {
-      throw new Error(data?.error || "No se pudo crear la clase");
-    }
+    await leerJSON(res);
 
     document.getElementById("claseTitulo").value = "";
+    document.getElementById("claseDesc").value = "";
     document.getElementById("claseYoutube").value = "";
     document.getElementById("fileInput").value = "";
 
     ponerEstado("estadoClase", "Clase creada correctamente.");
-    await cargarDashboard();
+    await cargarTodo();
   } catch (err) {
     ponerEstado("estadoClase", "Error creando clase: " + err.message, "error");
   }
@@ -467,17 +483,12 @@ async function eliminarClase(id, titulo) {
   if (!ok) return;
 
   try {
-    const res = await fetch(API + "/api/lesson/" + id, {
+    const res = await fetch(API + "/api/lessons/" + id, {
       method: "DELETE"
     });
 
-    const data = await res.json();
-
-    if (!res.ok || !data.ok) {
-      throw new Error(data?.error || "No se pudo eliminar la clase");
-    }
-
-    await cargarDashboard();
+    await leerJSON(res);
+    await cargarTodo();
     alert("Clase eliminada correctamente.");
   } catch (err) {
     alert("Error eliminando clase: " + err.message);
@@ -489,24 +500,35 @@ async function eliminarModulo(id, titulo) {
   if (!ok) return;
 
   try {
-    const res = await fetch(API + "/api/module/" + id, {
+    const res = await fetch(API + "/api/modules/" + id, {
       method: "DELETE"
     });
 
-    const data = await res.json();
-
-    if (!res.ok || !data.ok) {
-      throw new Error(data?.error || "No se pudo eliminar el módulo");
-    }
-
-    await cargarDashboard();
+    await leerJSON(res);
+    await cargarTodo();
     alert("Módulo eliminado correctamente.");
   } catch (err) {
     alert("Error eliminando módulo: " + err.message);
   }
 }
 
-cargarDashboard();
+async function cargarTodo() {
+  try {
+    await cargarDashboard();
+    const [modulos, estudiantes] = await Promise.all([
+      cargarModulos(),
+      cargarStudents()
+    ]);
+    llenarSelectModulos(modulos);
+    await renderModulos(modulos);
+    renderEstudiantes(estudiantes);
+  } catch (err) {
+    document.getElementById("listaModulos").innerHTML =
+      `<div class="item">Error cargando panel: ${escapar(err.message)}</div>`;
+  }
+}
+
+cargarTodo();
 </script>
 
 </body>
