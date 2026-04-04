@@ -87,6 +87,21 @@ button.eliminar {
   color: white;
 }
 
+button.publicar {
+  background: #2e7d32;
+  color: white;
+}
+
+button.archivar {
+  background: #6d4c41;
+  color: white;
+}
+
+button.ver {
+  background: #1565c0;
+  color: white;
+}
+
 .item {
   background: #222;
   padding: 14px;
@@ -132,6 +147,42 @@ button.eliminar {
   display: grid;
   gap: 12px;
   margin-bottom: 20px;
+}
+
+.modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.75);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  z-index: 999;
+}
+
+.modal-content {
+  width: min(900px, 100%);
+  max-height: 90vh;
+  overflow: auto;
+  background: #1a1a1a;
+  border-radius: 16px;
+  padding: 20px;
+}
+
+.modal-close {
+  background: #c62828;
+  color: white;
+}
+
+.link-btn {
+  display: inline-block;
+  background: #ff8a00;
+  color: black;
+  text-decoration: none;
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-weight: bold;
+  margin-top: 10px;
 }
 
 @media (min-width: 900px) {
@@ -183,6 +234,7 @@ button.eliminar {
 
     <input id="claseTitulo" placeholder="Título de la clase">
     <textarea id="claseDesc" placeholder="Descripción corta (opcional)"></textarea>
+    <textarea id="claseContenido" placeholder="Contenido o explicación de la clase (opcional)"></textarea>
     <input id="claseYoutube" placeholder="Link YouTube (opcional)">
 
     <label class="small">Subir archivo (PDF, Word, Excel, PowerPoint, TXT, CSV)</label>
@@ -205,6 +257,14 @@ button.eliminar {
 <div class="card">
   <h2>Estudiantes registrados</h2>
   <div id="listaEstudiantes"></div>
+</div>
+
+<div class="modal" id="modalClase">
+  <div class="modal-content">
+    <h2 id="modalTituloClase">Clase</h2>
+    <div id="modalContenidoClase"></div>
+    <button class="modal-close" onclick="cerrarModalClase()">Cerrar</button>
+  </div>
 </div>
 
 <script>
@@ -237,7 +297,8 @@ function escapar(texto) {
     .replace(/&/g, "&amp;")
     .replace(/</g, "&lt;")
     .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;");
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
 }
 
 async function leerJSON(res) {
@@ -253,6 +314,14 @@ async function leerJSON(res) {
   return data;
 }
 
+function estadoBonito(estado) {
+  const e = String(estado || "").toLowerCase();
+  if (e === "published" || e === "publicado") return "Publicado";
+  if (e === "draft" || e === "borrador") return "Borrador";
+  if (e === "archived" || e === "archivado") return "Archivado";
+  return estado || "Borrador";
+}
+
 async function subirArchivo(file) {
   const formData = new FormData();
   formData.append("file", file);
@@ -263,16 +332,19 @@ async function subirArchivo(file) {
   });
 
   const data = await leerJSON(res);
-  return data.file;
+  return data.file || {};
 }
 
 async function cargarDashboard() {
   const res = await fetch(API + "/api/dashboard");
   const data = await leerJSON(res);
 
-  document.getElementById("statModulos").textContent = data.modules || 0;
-  document.getElementById("statClases").textContent = data.lessons || 0;
-  document.getElementById("statEstudiantes").textContent = data.students || 0;
+  const summary = data.summary || {};
+  document.getElementById("statModulos").textContent = Number(summary.modules || 0);
+  document.getElementById("statClases").textContent = Number(summary.lessons || 0);
+  document.getElementById("statEstudiantes").textContent = Number(summary.students || 0);
+
+  return data.modules || [];
 }
 
 async function cargarModulos() {
@@ -285,12 +357,6 @@ async function cargarStudents() {
   const res = await fetch(API + "/api/students");
   const data = await leerJSON(res);
   return data.students || [];
-}
-
-async function cargarLeccionesDeModulo(moduleId) {
-  const res = await fetch(API + "/api/lessons/" + moduleId);
-  const data = await leerJSON(res);
-  return data.lessons || [];
 }
 
 function llenarSelectModulos(modulos) {
@@ -310,27 +376,25 @@ function llenarSelectModulos(modulos) {
   modulos.forEach(m => {
     const option = document.createElement("option");
     option.value = m.id;
-    option.textContent = `ID ${m.id} - ${m.title}`;
+    option.textContent = `ID ${m.id} - ${m.titulo || m.title}`;
     select.appendChild(option);
   });
 }
 
-async function renderModulos(modulos) {
+async function renderModulos(modulosConClases) {
   const cont = document.getElementById("listaModulos");
   cont.innerHTML = "";
 
-  if (!modulos.length) {
+  if (!modulosConClases.length) {
     cont.innerHTML = `<div class="item">No hay módulos todavía.</div>`;
     return;
   }
 
-  for (const modulo of modulos) {
-    let clasesDelModulo = [];
-    try {
-      clasesDelModulo = await cargarLeccionesDeModulo(modulo.id);
-    } catch (e) {
-      clasesDelModulo = [];
-    }
+  modulosConClases.forEach(modulo => {
+    const clasesDelModulo = Array.isArray(modulo.lessons) ? modulo.lessons : [];
+    const tituloModulo = modulo.titulo || modulo.title || "Sin título";
+    const descripcionModulo = modulo.descripcion || modulo.description || "";
+    const estadoModulo = modulo.estado || modulo.status || "published";
 
     const div = document.createElement("div");
     div.className = "item";
@@ -340,17 +404,27 @@ async function renderModulos(modulos) {
       clasesHtml = `<div class="lesson-box">Este módulo no tiene clases todavía.</div>`;
     } else {
       clasesHtml = clasesDelModulo.map(clase => {
-        const tieneVideo = clase.youtube_url ? "Sí" : "No";
-        const tieneArchivo = clase.file_url ? "Sí" : "No";
+        const tituloClase = clase.titulo || clase.title || "Sin título";
+        const descripcionClase = clase.descripcion || clase.description || "";
+        const contenidoClase = clase.contenido || clase.text_content || "";
+        const estadoClase = clase.estado || clase.status || "draft";
+        const youtubeClase = clase.youtube_url || "";
+        const fileClase = clase.file_url || "";
+        const fileNameClase = clase.file_name || "";
 
         return `
           <div class="lesson-box">
-            <strong>Clase ID ${clase.id}: ${escapar(clase.title)}</strong>
-            ${clase.description ? `<div class="small">${escapar(clase.description)}</div>` : ""}
-            <div class="small">Video: ${tieneVideo} | Archivo: ${tieneArchivo}</div>
-            ${clase.file_name ? `<div class="small">Archivo: ${escapar(clase.file_name)}</div>` : ""}
+            <strong>Clase ID ${clase.id}: ${escapar(tituloClase)}</strong>
+            ${descripcionClase ? `<div class="small">${escapar(descripcionClase)}</div>` : ""}
+            ${contenidoClase ? `<div class="small">Contenido: ${escapar(contenidoClase.substring(0, 180))}${contenidoClase.length > 180 ? "..." : ""}</div>` : ""}
+            <div class="small">Estado: ${escapar(estadoBonito(estadoClase))}</div>
+            <div class="small">Video: ${youtubeClase ? "Sí" : "No"} | Archivo: ${fileClase ? "Sí" : "No"}</div>
+            ${fileNameClase ? `<div class="small">Archivo: ${escapar(fileNameClase)}</div>` : ""}
             <div class="acciones">
-              <button class="eliminar" onclick="eliminarClase(${clase.id}, '${escapar(clase.title)}')">Eliminar clase</button>
+              <button class="ver" onclick="verClase(${clase.id})">Revisar clase</button>
+              <button class="publicar" onclick="publicarClase(${clase.id})">Publicar</button>
+              <button class="archivar" onclick="archivarClase(${clase.id})">Archivar</button>
+              <button class="eliminar" onclick="eliminarClase(${clase.id}, ${JSON.stringify(tituloClase).replace(/"/g, "&quot;")})">Eliminar clase</button>
             </div>
           </div>
         `;
@@ -358,18 +432,18 @@ async function renderModulos(modulos) {
     }
 
     div.innerHTML = `
-      <strong>Módulo ID ${modulo.id}: ${escapar(modulo.title)}</strong>
-      <div class="small">${escapar(modulo.description || "")}</div>
-      <div class="small">Estado: ${escapar(modulo.status || "published")}</div>
+      <strong>Módulo ID ${modulo.id}: ${escapar(tituloModulo)}</strong>
+      <div class="small">${escapar(descripcionModulo)}</div>
+      <div class="small">Estado: ${escapar(estadoBonito(estadoModulo))}</div>
       <div class="small">Total de clases: ${clasesDelModulo.length}</div>
       <div class="acciones">
-        <button class="eliminar" onclick="eliminarModulo(${modulo.id}, '${escapar(modulo.title)}')">Eliminar módulo completo</button>
+        <button class="eliminar" onclick="eliminarModulo(${modulo.id}, ${JSON.stringify(tituloModulo).replace(/"/g, "&quot;")})">Eliminar módulo completo</button>
       </div>
       ${clasesHtml}
     `;
 
     cont.appendChild(div);
-  }
+  });
 }
 
 function renderEstudiantes(estudiantes) {
@@ -394,10 +468,10 @@ function renderEstudiantes(estudiantes) {
 }
 
 async function crearModulo() {
-  const title = document.getElementById("moduloTitulo").value.trim();
-  const description = document.getElementById("moduloDesc").value.trim();
+  const titulo = document.getElementById("moduloTitulo").value.trim();
+  const descripcion = document.getElementById("moduloDesc").value.trim();
 
-  if (!title) {
+  if (!titulo) {
     ponerEstado("estadoModulo", "Debes escribir el título del módulo.", "error");
     return;
   }
@@ -406,7 +480,11 @@ async function crearModulo() {
     const res = await fetch(API + "/api/modules", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ title, description, status: "published" })
+      body: JSON.stringify({
+        titulo,
+        descripcion,
+        estado: "publicado"
+      })
     });
 
     await leerJSON(res);
@@ -422,8 +500,9 @@ async function crearModulo() {
 
 async function crearClase() {
   const module_id = Number(document.getElementById("claseModulo").value);
-  const title = document.getElementById("claseTitulo").value.trim();
-  const description = document.getElementById("claseDesc").value.trim();
+  const titulo = document.getElementById("claseTitulo").value.trim();
+  const descripcion = document.getElementById("claseDesc").value.trim();
+  const contenido = document.getElementById("claseContenido").value.trim();
   const youtube_url = limpiarYoutube(document.getElementById("claseYoutube").value);
   const fileInput = document.getElementById("fileInput");
 
@@ -432,7 +511,7 @@ async function crearClase() {
     return;
   }
 
-  if (!title) {
+  if (!titulo) {
     ponerEstado("estadoClase", "Debes escribir el título de la clase.", "error");
     return;
   }
@@ -447,7 +526,7 @@ async function crearClase() {
       const archivo = fileInput.files[0];
       const fileData = await subirArchivo(archivo);
       file_url = fileData.url || "";
-      file_name = fileData.originalName || "";
+      file_name = fileData.originalName || fileData.savedName || "";
     }
 
     const res = await fetch(API + "/api/lessons", {
@@ -455,12 +534,13 @@ async function crearClase() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         module_id,
-        title,
-        description,
+        titulo,
+        descripcion,
+        contenido,
         youtube_url,
         file_url,
         file_name,
-        status: "draft"
+        estado: "borrador"
       })
     });
 
@@ -468,6 +548,7 @@ async function crearClase() {
 
     document.getElementById("claseTitulo").value = "";
     document.getElementById("claseDesc").value = "";
+    document.getElementById("claseContenido").value = "";
     document.getElementById("claseYoutube").value = "";
     document.getElementById("fileInput").value = "";
 
@@ -475,6 +556,32 @@ async function crearClase() {
     await cargarTodo();
   } catch (err) {
     ponerEstado("estadoClase", "Error creando clase: " + err.message, "error");
+  }
+}
+
+async function publicarClase(id) {
+  try {
+    const res = await fetch(API + "/api/lessons/" + id + "/publish", {
+      method: "PUT"
+    });
+
+    await leerJSON(res);
+    await cargarTodo();
+  } catch (err) {
+    alert("Error publicando clase: " + err.message);
+  }
+}
+
+async function archivarClase(id) {
+  try {
+    const res = await fetch(API + "/api/lessons/" + id + "/archive", {
+      method: "PUT"
+    });
+
+    await leerJSON(res);
+    await cargarTodo();
+  } catch (err) {
+    alert("Error archivando clase: " + err.message);
   }
 }
 
@@ -512,15 +619,54 @@ async function eliminarModulo(id, titulo) {
   }
 }
 
+async function verClase(id) {
+  try {
+    const res = await fetch(API + "/api/lesson/" + id);
+    const data = await leerJSON(res);
+
+    const clase = data.lesson || {};
+    const titulo = clase.titulo || clase.title || "Sin título";
+    const descripcion = clase.descripcion || clase.description || "";
+    const contenido = clase.contenido || clase.text_content || "";
+    const estado = clase.estado || clase.status || "draft";
+    const modulo = clase.module_titulo || clase.module_title || "";
+    const youtube = clase.youtube_url || "";
+    const archivo = clase.file_url || "";
+    const archivoNombre = clase.file_name || "";
+
+    document.getElementById("modalTituloClase").textContent = titulo;
+
+    document.getElementById("modalContenidoClase").innerHTML = `
+      <div class="item">
+        <div class="small"><strong>Módulo:</strong> ${escapar(modulo)}</div>
+        <div class="small"><strong>Estado:</strong> ${escapar(estadoBonito(estado))}</div>
+        ${descripcion ? `<p><strong>Descripción:</strong><br>${escapar(descripcion)}</p>` : ""}
+        ${contenido ? `<p><strong>Contenido:</strong><br>${escapar(contenido).replace(/\n/g, "<br>")}</p>` : ""}
+        ${youtube ? `<p><a class="link-btn" href="${youtube}" target="_blank">Abrir video</a></p>` : ""}
+        ${archivo ? `<p><a class="link-btn" href="${API}${archivo}" target="_blank">Abrir archivo ${archivoNombre ? "- " + escapar(archivoNombre) : ""}</a></p>` : ""}
+      </div>
+    `;
+
+    document.getElementById("modalClase").style.display = "flex";
+  } catch (err) {
+    alert("Error revisando clase: " + err.message);
+  }
+}
+
+function cerrarModalClase() {
+  document.getElementById("modalClase").style.display = "none";
+}
+
 async function cargarTodo() {
   try {
-    await cargarDashboard();
-    const [modulos, estudiantes] = await Promise.all([
+    const [modulosDashboard, modulosBase, estudiantes] = await Promise.all([
+      cargarDashboard(),
       cargarModulos(),
       cargarStudents()
     ]);
-    llenarSelectModulos(modulos);
-    await renderModulos(modulos);
+
+    llenarSelectModulos(modulosBase);
+    await renderModulos(modulosDashboard);
     renderEstudiantes(estudiantes);
   } catch (err) {
     document.getElementById("listaModulos").innerHTML =
