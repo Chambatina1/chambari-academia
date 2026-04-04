@@ -2,8 +2,17 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Chamberí Academia</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Chambari Academy</title>
+
+  <meta name="theme-color" content="#f59e0b" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="Chambari" />
+
+  <link rel="manifest" href="./manifest.json" />
+  <link rel="apple-touch-icon" href="./public/icono-192.png" />
+
   <style>
     *{
       box-sizing:border-box;
@@ -11,17 +20,36 @@
       padding:0;
     }
 
+    :root{
+      --bg:#f3f4f6;
+      --card:#ffffff;
+      --text:#111827;
+      --muted:#6b7280;
+      --line:#e5e7eb;
+      --orange:#f59e0b;
+      --orange-dark:#d97706;
+      --soft:#fff7ed;
+      --shadow:0 14px 35px rgba(0,0,0,.08);
+      --radius:22px;
+    }
+
+    html{
+      scroll-behavior:smooth;
+    }
+
     body{
       font-family: Arial, Helvetica, sans-serif;
-      background: linear-gradient(180deg, #f8fafc 0%, #eef2f7 100%);
-      color:#111827;
+      background:
+        radial-gradient(circle at top left, #fff4d6 0%, transparent 28%),
+        linear-gradient(180deg, #f9fafb 0%, #eef2f7 100%);
+      color:var(--text);
       min-height:100vh;
     }
 
-    .wrap{
-      max-width:1100px;
+    .app{
+      max-width:1200px;
       margin:0 auto;
-      padding:24px 18px 60px;
+      padding:18px 16px 40px;
     }
 
     .topbar{
@@ -29,65 +57,71 @@
       justify-content:space-between;
       align-items:center;
       gap:12px;
-      margin-bottom:28px;
       flex-wrap:wrap;
+      margin-bottom:20px;
     }
 
     .brand{
       display:flex;
       align-items:center;
-      gap:12px;
+      gap:14px;
     }
 
     .logo{
-      width:50px;
-      height:50px;
-      border-radius:14px;
-      background:linear-gradient(135deg,#f59e0b,#fb923c);
+      width:58px;
+      height:58px;
+      border-radius:18px;
+      background:linear-gradient(135deg, var(--orange), #fb923c);
+      color:#fff;
       display:flex;
       align-items:center;
       justify-content:center;
-      color:white;
-      font-weight:bold;
-      font-size:20px;
-      box-shadow:0 10px 25px rgba(245,158,11,.25);
-    }
-
-    .brand-text h1{
       font-size:24px;
+      font-weight:800;
+      box-shadow:0 12px 25px rgba(245,158,11,.25);
+    }
+
+    .brand h1{
+      font-size:26px;
       line-height:1.1;
-      color:#111827;
     }
 
-    .brand-text p{
-      font-size:14px;
-      color:#6b7280;
+    .brand p{
       margin-top:4px;
+      color:var(--muted);
+      font-size:14px;
     }
 
-    .status{
-      background:white;
-      padding:10px 14px;
+    .install-btn{
+      border:none;
+      background:var(--orange);
+      color:#fff;
+      padding:12px 16px;
       border-radius:14px;
-      border:1px solid #e5e7eb;
-      font-size:14px;
-      color:#374151;
-      box-shadow:0 8px 20px rgba(0,0,0,.04);
+      font-weight:700;
+      cursor:pointer;
+      box-shadow:0 10px 20px rgba(245,158,11,.20);
+    }
+
+    .install-btn:hover{
+      background:var(--orange-dark);
     }
 
     .hero{
       display:grid;
-      grid-template-columns:1.1fr .9fr;
-      gap:24px;
-      align-items:center;
-      margin-bottom:30px;
+      grid-template-columns:1.15fr .85fr;
+      gap:20px;
+      margin-bottom:22px;
     }
 
-    .hero-card, .side-card, .section-card{
-      background:white;
-      border:1px solid #e5e7eb;
-      border-radius:24px;
-      box-shadow:0 12px 35px rgba(0,0,0,.05);
+    .hero-card,
+    .panel,
+    .module-card,
+    .viewer-card{
+      background:rgba(255,255,255,.96);
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
     }
 
     .hero-card{
@@ -95,21 +129,20 @@
     }
 
     .hero-card h2{
-      font-size:40px;
+      font-size:44px;
       line-height:1.05;
-      margin-bottom:16px;
-      color:#111827;
+      margin-bottom:14px;
     }
 
     .hero-card h2 span{
-      color:#f59e0b;
+      color:var(--orange);
     }
 
     .hero-card p{
       font-size:18px;
-      line-height:1.6;
+      line-height:1.7;
       color:#4b5563;
-      max-width:650px;
+      max-width:720px;
     }
 
     .hero-actions{
@@ -134,18 +167,17 @@
     }
 
     .btn-main{
-      background:#f59e0b;
-      color:white;
-      box-shadow:0 10px 20px rgba(245,158,11,.25);
+      background:var(--orange);
+      color:#fff;
     }
 
     .btn-main:hover{
+      background:var(--orange-dark);
       transform:translateY(-1px);
-      background:#ea8c00;
     }
 
     .btn-soft{
-      background:#fff7ed;
+      background:var(--soft);
       color:#9a3412;
       border:1px solid #fed7aa;
     }
@@ -155,20 +187,19 @@
       background:#ffedd5;
     }
 
-    .side-card{
+    .panel{
       padding:24px;
     }
 
-    .side-card h3{
+    .panel h3{
       font-size:20px;
       margin-bottom:10px;
-      color:#111827;
     }
 
-    .side-card p{
-      color:#6b7280;
+    .panel p{
+      color:var(--muted);
       line-height:1.6;
-      margin-bottom:18px;
+      margin-bottom:16px;
     }
 
     .mini-steps{
@@ -185,196 +216,212 @@
 
     .mini-step strong{
       display:block;
-      color:#111827;
-      margin-bottom:5px;
+      margin-bottom:4px;
     }
 
     .mini-step span{
+      color:var(--muted);
       font-size:14px;
-      color:#6b7280;
       line-height:1.5;
     }
 
-    .menu-grid{
-      display:grid;
-      grid-template-columns:repeat(4, 1fr);
-      gap:16px;
-      margin-bottom:28px;
+    .section-title{
+      margin:26px 0 14px;
+      font-size:24px;
     }
 
-    .menu-card{
-      background:white;
-      border:1px solid #e5e7eb;
-      border-radius:22px;
-      padding:22px 18px;
-      text-decoration:none;
-      color:inherit;
-      box-shadow:0 10px 25px rgba(0,0,0,.04);
-      transition:.2s ease;
-      min-height:180px;
+    .modules{
+      display:grid;
+      grid-template-columns:repeat(3, 1fr);
+      gap:16px;
+      margin-bottom:26px;
+    }
+
+    .module-card{
+      padding:20px;
       display:flex;
       flex-direction:column;
       justify-content:space-between;
+      min-height:220px;
+      transition:.2s ease;
     }
 
-    .menu-card:hover{
-      transform:translateY(-3px);
-      border-color:#f59e0b;
-      box-shadow:0 14px 30px rgba(245,158,11,.10);
+    .module-card:hover{
+      transform:translateY(-4px);
+      border-color:#f6c26b;
+      box-shadow:0 16px 30px rgba(245,158,11,.08);
     }
 
-    .menu-icon{
+    .module-number{
       width:48px;
       height:48px;
       border-radius:14px;
-      background:#fff7ed;
-      color:#f59e0b;
+      background:var(--soft);
+      color:var(--orange);
       display:flex;
       align-items:center;
       justify-content:center;
-      font-size:22px;
+      font-weight:800;
+      font-size:18px;
       margin-bottom:14px;
-      font-weight:bold;
     }
 
-    .menu-card h3{
-      font-size:20px;
-      margin-bottom:8px;
-      color:#111827;
-    }
-
-    .menu-card p{
-      font-size:15px;
-      line-height:1.6;
-      color:#6b7280;
-    }
-
-    .section-grid{
-      display:grid;
-      grid-template-columns:1fr 1fr;
-      gap:20px;
-    }
-
-    .section-card{
-      padding:24px;
-    }
-
-    .section-card h3{
+    .module-card h3{
       font-size:22px;
-      margin-bottom:10px;
-      color:#111827;
+      margin-bottom:8px;
     }
 
-    .section-card p{
-      color:#6b7280;
-      line-height:1.7;
-      margin-bottom:16px;
+    .module-card p{
+      color:var(--muted);
+      line-height:1.6;
+      margin-bottom:18px;
     }
 
-    .tag-list{
+    .module-actions{
       display:flex;
-      flex-wrap:wrap;
       gap:10px;
-      margin-top:8px;
+      flex-wrap:wrap;
     }
 
-    .tag{
-      background:#f3f4f6;
-      color:#374151;
-      padding:10px 14px;
-      border-radius:999px;
+    .small-btn{
+      display:inline-block;
+      text-decoration:none;
+      padding:11px 14px;
+      border-radius:12px;
       font-size:14px;
+      font-weight:700;
     }
 
-    .pdf-box{
-      background:#f9fafb;
-      border:2px dashed #d1d5db;
-      border-radius:18px;
+    .open-btn{
+      background:var(--orange);
+      color:#fff;
+    }
+
+    .view-btn{
+      background:#eef2ff;
+      color:#3730a3;
+    }
+
+    .viewer-card{
       padding:22px;
-      text-align:center;
-      color:#6b7280;
-      margin-top:8px;
+      margin-bottom:26px;
     }
 
-    .pdf-box strong{
-      display:block;
-      color:#111827;
-      margin-bottom:12px;
-      font-size:16px;
+    .viewer-card h3{
+      font-size:24px;
+      margin-bottom:8px;
     }
 
-    .pdf-controls{
+    .viewer-card p{
+      color:var(--muted);
+      margin-bottom:16px;
+      line-height:1.6;
+    }
+
+    .viewer-controls{
       display:flex;
       flex-wrap:wrap;
       gap:12px;
-      justify-content:center;
       align-items:center;
       margin-bottom:18px;
     }
 
-    .pdf-select{
-      padding:12px 14px;
-      border-radius:12px;
-      border:1px solid #d1d5db;
-      background:white;
-      color:#111827;
-      font-size:15px;
+    .viewer-select{
+      flex:1;
       min-width:220px;
+      padding:13px 14px;
+      border-radius:14px;
+      border:1px solid #d1d5db;
+      background:#fff;
+      font-size:15px;
+      color:var(--text);
       outline:none;
     }
 
-    .pdf-link{
-      display:inline-block;
+    .viewer-link{
       text-decoration:none;
-      background:#f59e0b;
-      color:white;
-      padding:12px 16px;
-      border-radius:12px;
+      background:var(--orange);
+      color:#fff;
+      padding:13px 16px;
+      border-radius:14px;
       font-weight:700;
-      transition:.2s ease;
+      white-space:nowrap;
     }
 
-    .pdf-link:hover{
-      background:#ea8c00;
-    }
-
-    .pdf-frame{
+    .viewer-frame{
       width:100%;
-      height:560px;
+      height:70vh;
+      min-height:480px;
       border:none;
-      border-radius:16px;
-      background:white;
+      border-radius:18px;
+      background:#fff;
       box-shadow:0 8px 20px rgba(0,0,0,.05);
     }
 
+    .bottom-nav{
+      position:sticky;
+      bottom:10px;
+      z-index:30;
+      margin-top:20px;
+      display:none;
+    }
+
+    .bottom-nav-inner{
+      display:flex;
+      justify-content:space-around;
+      gap:8px;
+      background:rgba(255,255,255,.96);
+      border:1px solid var(--line);
+      box-shadow:var(--shadow);
+      border-radius:22px;
+      padding:10px;
+      backdrop-filter: blur(8px);
+    }
+
+    .bottom-nav a{
+      text-decoration:none;
+      color:#374151;
+      font-size:13px;
+      font-weight:700;
+      padding:10px 12px;
+      border-radius:12px;
+      flex:1;
+      text-align:center;
+    }
+
+    .bottom-nav a:hover{
+      background:#f9fafb;
+    }
+
     footer{
-      margin-top:34px;
       text-align:center;
       color:#9ca3af;
       font-size:14px;
+      margin-top:24px;
+      padding-bottom:20px;
     }
 
-    @media (max-width: 950px){
+    @media (max-width: 980px){
       .hero{
         grid-template-columns:1fr;
       }
 
-      .menu-grid{
+      .modules{
         grid-template-columns:repeat(2, 1fr);
       }
 
-      .section-grid{
-        grid-template-columns:1fr;
-      }
-
       .hero-card h2{
-        font-size:32px;
+        font-size:36px;
       }
     }
 
-    @media (max-width: 640px){
-      .menu-grid{
-        grid-template-columns:1fr;
+    @media (max-width: 680px){
+      .app{
+        padding:14px 12px 28px;
+      }
+
+      .brand h1{
+        font-size:22px;
       }
 
       .hero-card{
@@ -382,165 +429,187 @@
       }
 
       .hero-card h2{
-        font-size:28px;
+        font-size:30px;
       }
 
       .hero-card p{
         font-size:16px;
       }
 
-      .btn{
+      .modules{
+        grid-template-columns:1fr;
+      }
+
+      .viewer-frame{
+        min-height:420px;
+        height:58vh;
+      }
+
+      .install-btn{
         width:100%;
       }
 
-      .pdf-frame{
-        height:420px;
-      }
-
-      .pdf-select,
-      .pdf-link{
-        width:100%;
+      .bottom-nav{
+        display:block;
       }
     }
   </style>
 </head>
 <body>
-  <div class="wrap">
+  <div class="app">
     <div class="topbar">
       <div class="brand">
         <div class="logo">C</div>
-        <div class="brand-text">
-          <h1>Chamberí Academia</h1>
-          <p>Aprender inglés con orden, claridad y práctica.</p>
+        <div>
+          <h1>Chambari Academy</h1>
+          <p>Una sola versión para web y app.</p>
         </div>
       </div>
 
-      <div class="status">Clase del día disponible</div>
+      <button id="installBtn" class="install-btn" style="display:none;">Instalar app</button>
     </div>
 
     <section class="hero">
       <div class="hero-card">
-        <h2>Aprende inglés de forma <span>simple</span>.</h2>
+        <h2>Aprende inglés de forma <span>clara</span> y moderna.</h2>
         <p>
-          Estás aquí para avanzar sin presión. Entra al diagnóstico, ve a tus módulos,
-          revisa tus PDF o abre la pizarra de hoy. Todo está pensado para que aprendas
-          paso a paso, sin sentirte cargado.
+          Esta versión funciona tanto en computadora como en teléfono. También puede
+          instalarse como app sin tener que crear otro proyecto distinto.
         </p>
 
         <div class="hero-actions">
-          <a href="#diagnostico" class="btn btn-main">Empezar diagnóstico</a>
-          <a href="#modulos" class="btn btn-soft">Ir a módulos</a>
+          <a href="#modulos" class="btn btn-main">Ver módulos</a>
+          <a href="#visor" class="btn btn-soft">Abrir visor PDF</a>
         </div>
       </div>
 
-      <div class="side-card">
-        <h3>Tu ruta hoy</h3>
-        <p>No necesitas hacerlo todo de una vez. Solo sigue este orden.</p>
+      <div class="panel">
+        <h3>Cómo usarla</h3>
+        <p>La misma plataforma te sirve para todo.</p>
 
         <div class="mini-steps">
           <div class="mini-step">
-            <strong>1. Descubre tu nivel</strong>
-            <span>Haz un diagnóstico corto para saber por dónde empezar.</span>
+            <strong>1. Web</strong>
+            <span>Abre el sitio desde Safari, Chrome o desde tu dominio.</span>
           </div>
           <div class="mini-step">
-            <strong>2. Entra al módulo</strong>
-            <span>Aprende con contenido directo, claro y útil.</span>
+            <strong>2. App</strong>
+            <span>En móvil puedes agregarla a pantalla de inicio y usarla como aplicación.</span>
           </div>
           <div class="mini-step">
-            <strong>3. Ve el PDF o la pizarra</strong>
-            <span>Repasa la clase del día y entiende mejor.</span>
+            <strong>3. PDF</strong>
+            <span>Los modelos se visualizan dentro de la misma página y también pueden abrirse aparte.</span>
           </div>
         </div>
       </div>
     </section>
 
-    <section class="menu-grid">
-      <a href="#modulos" class="menu-card" id="modulos">
+    <h2 class="section-title" id="modulos">Módulos</h2>
+
+    <section class="modules">
+      <div class="module-card">
         <div>
-          <div class="menu-icon">M</div>
-          <h3>Módulos</h3>
-          <p>Entra a tus clases por tema. Todo organizado de lo fácil a lo más complejo.</p>
+          <div class="module-number">1</div>
+          <h3>Greetings</h3>
+          <p>Saludos básicos, presentación personal y frases comunes del día a día.</p>
         </div>
-      </a>
-
-      <a href="#visor-pdf" class="menu-card">
-        <div>
-          <div class="menu-icon">P</div>
-          <h3>PDF</h3>
-          <p>Abre tus documentos de estudio dentro de la misma página.</p>
-        </div>
-      </a>
-
-      <a href="#pizarra" class="menu-card">
-        <div>
-          <div class="menu-icon">D</div>
-          <h3>Pizarra del día</h3>
-          <p>Ve la clase actual, las palabras clave y los puntos más importantes.</p>
-        </div>
-      </a>
-
-      <a href="#diagnostico" class="menu-card" id="diagnostico">
-        <div>
-          <div class="menu-icon">+</div>
-          <h3>Diagnóstico</h3>
-          <p>Empieza aquí si eres nuevo. Es rápido y te orienta mejor.</p>
-        </div>
-      </a>
-    </section>
-
-    <section class="section-grid">
-      <div class="section-card">
-        <h3>Un método claro</h3>
-        <p>
-          Aquí no vas a encontrar explicaciones pesadas. Vas a ver ideas cortas,
-          ejemplos útiles y una ruta que te ayude a entender el inglés sin sentir
-          que todo es difícil.
-        </p>
-
-        <div class="tag-list">
-          <span class="tag">Simple</span>
-          <span class="tag">Directo</span>
-          <span class="tag">Paso a paso</span>
-          <span class="tag">Sin presión</span>
+        <div class="module-actions">
+          <a class="small-btn open-btn" href="modelos/modelo1.pdf" target="_blank">Abrir PDF</a>
+          <button class="small-btn view-btn" onclick="cambiarPDF('modelos/modelo1.pdf')">Ver aquí</button>
         </div>
       </div>
 
-      <div class="section-card" id="visor-pdf">
-        <h3>Modelos en PDF</h3>
-        <p>
-          Selecciona el modelo que quieras ver. Se abrirá dentro de la misma página
-          y también tendrás un botón para abrirlo aparte.
-        </p>
+      <div class="module-card">
+        <div>
+          <div class="module-number">2</div>
+          <h3>Planning the Weekend</h3>
+          <p>Diálogo práctico para comprensión y conversación cotidiana.</p>
+        </div>
+        <div class="module-actions">
+          <a class="small-btn open-btn" href="modelos/modelo2.pdf" target="_blank">Abrir PDF</a>
+          <button class="small-btn view-btn" onclick="cambiarPDF('modelos/modelo2.pdf')">Ver aquí</button>
+        </div>
+      </div>
 
-        <div class="pdf-box">
-          <strong>Visor de modelos</strong>
+      <div class="module-card">
+        <div>
+          <div class="module-number">3</div>
+          <h3>Friends Vocabulary</h3>
+          <p>Vocabulario útil con acciones, contextos reales y comprensión sencilla.</p>
+        </div>
+        <div class="module-actions">
+          <a class="small-btn open-btn" href="modelos/modelo3.pdf" target="_blank">Abrir PDF</a>
+          <button class="small-btn view-btn" onclick="cambiarPDF('modelos/modelo3.pdf')">Ver aquí</button>
+        </div>
+      </div>
 
-          <div class="pdf-controls">
-            <select id="pdfSelector" class="pdf-select" onchange="cambiarPDF(this.value)">
-              <option value="modelos/modelo1.pdf">Modelo 1</option>
-              <option value="modelos/modelo2.pdf">Modelo 2</option>
-              <option value="modelos/modelo3.pdf">Modelo 3</option>
-              <option value="modelos/modelo4.pdf">Modelo 4</option>
-              <option value="modelos/modelo5.pdf">Modelo 5</option>
-              <option value="modelos/modelo6.pdf">Modelo 6</option>
-              <option value="modelos/modelo7.pdf">Modelo 7</option>
-              <option value="modelos/modelo8.pdf" selected>Modelo 8</option>
-            </select>
+      <div class="module-card">
+        <div>
+          <div class="module-number">4</div>
+          <h3>Let It Be</h3>
+          <p>Actividad de comprensión guiada con frases simples y útiles.</p>
+        </div>
+        <div class="module-actions">
+          <a class="small-btn open-btn" href="modelos/modelo4.pdf" target="_blank">Abrir PDF</a>
+          <button class="small-btn view-btn" onclick="cambiarPDF('modelos/modelo4.pdf')">Ver aquí</button>
+        </div>
+      </div>
 
-            <a id="abrirPDF" class="pdf-link" href="modelos/modelo8.pdf" target="_blank">Abrir aparte</a>
-          </div>
+      <div class="module-card">
+        <div>
+          <div class="module-number">5</div>
+          <h3>English Class</h3>
+          <p>Clase práctica con vocabulario, expresiones y lectura básica.</p>
+        </div>
+        <div class="module-actions">
+          <a class="small-btn open-btn" href="modelos/modelo5.pdf" target="_blank">Abrir PDF</a>
+          <button class="small-btn view-btn" onclick="cambiarPDF('modelos/modelo5.pdf')">Ver aquí</button>
+        </div>
+      </div>
 
-          <iframe
-            id="visorPDF"
-            class="pdf-frame"
-            src="modelos/modelo8.pdf">
-          </iframe>
+      <div class="module-card">
+        <div>
+          <div class="module-number">6</div>
+          <h3>Present Simple</h3>
+          <p>Explicación clara del presente simple con ejemplos directos.</p>
+        </div>
+        <div class="module-actions">
+          <a class="small-btn open-btn" href="modelos/modelo6.pdf" target="_blank">Abrir PDF</a>
+          <button class="small-btn view-btn" onclick="cambiarPDF('modelos/modelo6.pdf')">Ver aquí</button>
         </div>
       </div>
     </section>
+
+    <section class="viewer-card" id="visor">
+      <h3>Visor de documentos</h3>
+      <p>Selecciona el módulo y visualízalo dentro de la plataforma.</p>
+
+      <div class="viewer-controls">
+        <select id="pdfSelector" class="viewer-select" onchange="cambiarPDF(this.value)">
+          <option value="modelos/modelo1.pdf">Modelo 1 - Greetings</option>
+          <option value="modelos/modelo2.pdf" selected>Modelo 2 - Planning the Weekend</option>
+          <option value="modelos/modelo3.pdf">Modelo 3 - Friends Vocabulary</option>
+          <option value="modelos/modelo4.pdf">Modelo 4 - Let It Be</option>
+          <option value="modelos/modelo5.pdf">Modelo 5 - English Class</option>
+          <option value="modelos/modelo6.pdf">Modelo 6 - Present Simple</option>
+        </select>
+
+        <a id="abrirPDF" class="viewer-link" href="modelos/modelo2.pdf" target="_blank">Abrir aparte</a>
+      </div>
+
+      <iframe id="visorPDF" class="viewer-frame" src="modelos/modelo2.pdf"></iframe>
+    </section>
+
+    <div class="bottom-nav">
+      <div class="bottom-nav-inner">
+        <a href="#">Inicio</a>
+        <a href="#modulos">Módulos</a>
+        <a href="#visor">PDF</a>
+      </div>
+    </div>
 
     <footer>
-      Chamberí Academia · aprendizaje claro y útil
+      Chambari Academy · versión unificada para web y app
     </footer>
   </div>
 
@@ -548,7 +617,26 @@
     function cambiarPDF(ruta){
       document.getElementById("visorPDF").src = ruta;
       document.getElementById("abrirPDF").href = ruta;
+      document.getElementById("pdfSelector").value = ruta;
+      location.hash = "visor";
     }
+
+    let deferredPrompt = null;
+    const installBtn = document.getElementById("installBtn");
+
+    window.addEventListener("beforeinstallprompt", (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      installBtn.style.display = "inline-block";
+    });
+
+    installBtn.addEventListener("click", async () => {
+      if (!deferredPrompt) return;
+      deferredPrompt.prompt();
+      await deferredPrompt.userChoice;
+      deferredPrompt = null;
+      installBtn.style.display = "none";
+    });
   </script>
 </body>
 </html>
