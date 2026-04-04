@@ -14,7 +14,7 @@ body {
   padding: 20px;
 }
 
-h1 {
+h1, h2 {
   margin-top: 0;
 }
 
@@ -83,6 +83,7 @@ a.link-btn {
 .small {
   font-size: 14px;
   color: #ddd;
+  margin-top: 8px;
 }
 </style>
 </head>
@@ -100,7 +101,7 @@ a.link-btn {
 <script>
 const API = "https://chambari-academia.onrender.com";
 
-// ===== EXTRAER ID DE YOUTUBE =====
+// ===== YOUTUBE =====
 function extraerYoutubeId(url) {
   try {
     if (!url) return "";
@@ -135,6 +136,29 @@ function convertirYoutubeAWatch(url) {
   return id ? `https://www.youtube.com/watch?v=${id}` : "";
 }
 
+// ===== TIPOS DE ARCHIVO =====
+function nombreTipoArchivo(fileType, fileName) {
+  const tipo = (fileType || "").toLowerCase();
+  const nombre = (fileName || "").toLowerCase();
+
+  if (tipo === "pdf" || nombre.endsWith(".pdf")) return "PDF";
+  if (tipo === "doc" || tipo === "docx" || nombre.endsWith(".doc") || nombre.endsWith(".docx")) return "Word";
+  if (tipo === "xls" || tipo === "xlsx" || nombre.endsWith(".xls") || nombre.endsWith(".xlsx")) return "Excel";
+  if (tipo === "ppt" || tipo === "pptx" || nombre.endsWith(".ppt") || nombre.endsWith(".pptx")) return "PowerPoint";
+  if (tipo === "txt" || nombre.endsWith(".txt")) return "Texto";
+  if (tipo === "csv" || nombre.endsWith(".csv")) return "CSV";
+
+  return "Documento";
+}
+
+function escapar(texto) {
+  return String(texto || "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
+
 // ===== VER MÓDULOS =====
 async function verModulos() {
   try {
@@ -154,8 +178,8 @@ async function verModulos() {
       div.className = "module";
 
       div.innerHTML = `
-        <strong>${m.titulo}</strong><br>
-        <div class="small">${m.descripcion || ""}</div>
+        <strong>${escapar(m.titulo)}</strong><br>
+        <div class="small">${escapar(m.descripcion || "")}</div>
         <button onclick="verClases(${m.id})">Entrar</button>
       `;
 
@@ -186,12 +210,18 @@ async function verClases(id) {
       const div = document.createElement("div");
       div.className = "lesson";
 
-      const yt = (l.youtube_url || "").replace(/'/g, "\\'");
-      const pdf = (l.pdf_url || "").replace(/'/g, "\\'");
+      const lessonData = encodeURIComponent(JSON.stringify({
+        titulo: l.titulo || "",
+        youtube_url: l.youtube_url || "",
+        file_url: l.file_url || l.pdf_url || "",
+        file_name: l.file_name || "",
+        file_type: l.file_type || "",
+        pdf_url: l.pdf_url || ""
+      }));
 
       div.innerHTML = `
-        <strong>${l.titulo}</strong><br>
-        <button onclick="abrir('${yt}','${pdf}','${(l.titulo || "").replace(/'/g, "\\'")}')">Abrir</button>
+        <strong>${escapar(l.titulo)}</strong><br>
+        <button onclick="abrirClase('${lessonData}')">Abrir</button>
       `;
 
       cont.appendChild(div);
@@ -204,8 +234,15 @@ async function verClases(id) {
 }
 
 // ===== ABRIR CLASE =====
-function abrir(youtube, pdf, titulo) {
+function abrirClase(payload) {
   const cont = document.getElementById("contenido");
+  const datos = JSON.parse(decodeURIComponent(payload));
+
+  const titulo = datos.titulo || "Clase";
+  const youtube = datos.youtube_url || "";
+  const fileUrl = datos.file_url || datos.pdf_url || "";
+  const fileName = datos.file_name || "";
+  const fileType = datos.file_type || "";
 
   const embedURL = convertirYoutubeAEmbed(youtube);
   const watchURL = convertirYoutubeAWatch(youtube);
@@ -217,20 +254,36 @@ function abrir(youtube, pdf, titulo) {
         Ver video en YouTube
       </a>
       <div class="texto small">
-        Si el video no carga dentro de la página, toca el botón y se abrirá directamente en YouTube.
+        Si el video no carga dentro de la página, usa el botón para abrirlo directamente en YouTube.
       </div>
     `
     : `<div class="texto">Esta clase no tiene video.</div>`;
 
-  const pdfHTML = pdf
-    ? `<a class="link-btn" href="${pdf}" target="_blank" rel="noopener noreferrer">Abrir PDF</a>`
-    : `<div class="texto">Esta clase no tiene PDF.</div>`;
+  let archivoHTML = `<div class="texto">Esta clase no tiene documento.</div>`;
+
+  if (fileUrl) {
+    const tipoBonito = nombreTipoArchivo(fileType, fileName);
+    const nombreMostrar = fileName || `Archivo ${tipoBonito}`;
+
+    archivoHTML = `
+      <div class="texto">
+        <strong>Documento adjunto:</strong><br>
+        <span class="small">${escapar(nombreMostrar)} (${escapar(tipoBonito)})</span>
+      </div>
+      <a class="link-btn" href="${fileUrl}" target="_blank" rel="noopener noreferrer">
+        Abrir documento
+      </a>
+      <a class="link-btn" href="${fileUrl}" download>
+        Descargar documento
+      </a>
+    `;
+  }
 
   cont.innerHTML = `
     <div class="card">
-      <h2>${titulo || "Clase"}</h2>
+      <h2>${escapar(titulo)}</h2>
       ${videoHTML}
-      ${pdfHTML}
+      ${archivoHTML}
     </div>
   `;
 }
