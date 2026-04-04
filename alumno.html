@@ -2,15 +2,20 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Chambari - Alumno</title>
 
 <style>
 body {
-  font-family: Arial;
+  font-family: Arial, sans-serif;
   background: #0f0f0f;
   color: white;
   margin: 0;
   padding: 20px;
+}
+
+h1 {
+  margin-top: 0;
 }
 
 .card {
@@ -22,35 +27,68 @@ body {
 
 button {
   margin-top: 10px;
-  padding: 10px;
+  padding: 12px;
   width: 100%;
   background: #ff8a00;
   border: none;
   color: black;
   font-weight: bold;
   border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+button:hover {
+  opacity: 0.95;
 }
 
 .module {
   background: #222;
-  padding: 10px;
-  margin-top: 10px;
+  padding: 14px;
+  margin-top: 12px;
   border-radius: 8px;
 }
 
 .lesson {
   background: #111;
-  padding: 8px;
-  margin-top: 8px;
+  padding: 12px;
+  margin-top: 10px;
   border-radius: 6px;
 }
 
 iframe {
   width: 100%;
-  height: 250px;
+  height: 300px;
+  border: none;
+  border-radius: 8px;
+  margin-top: 10px;
+}
+
+a {
+  color: #ffb347;
+  font-weight: bold;
+  text-decoration: none;
+  display: inline-block;
+  margin-top: 12px;
+}
+
+.estado {
+  padding: 14px;
+  border-radius: 8px;
+  margin-top: 10px;
+  background: #1a1a1a;
+}
+
+.error {
+  background: #3a1010;
+  color: #ffd6d6;
+}
+
+.ok {
+  background: #102a10;
+  color: #d8ffd8;
 }
 </style>
-
 </head>
 
 <body>
@@ -66,53 +104,106 @@ iframe {
 <script>
 const API = "https://chambari-academia.onrender.com";
 
-async function verModulos() {
-  const res = await fetch(API + "/api/modules");
-  const data = await res.json();
-
+function mostrarMensaje(texto, tipo = "") {
   const cont = document.getElementById("contenido");
-  cont.innerHTML = "";
+  cont.innerHTML = `<div class="estado ${tipo}">${texto}</div>`;
+}
 
-  data.modules.forEach(m => {
-    const div = document.createElement("div");
-    div.className = "module";
+async function verModulos() {
+  try {
+    mostrarMensaje("Cargando módulos...");
 
-    div.innerHTML = `
-      ${m.titulo}<br>
-      <button onclick="verClases(${m.id})">Entrar</button>
-    `;
+    const res = await fetch(API + "/api/modules");
 
-    cont.appendChild(div);
-  });
+    if (!res.ok) {
+      throw new Error("El servidor respondió con estado " + res.status);
+    }
+
+    const data = await res.json();
+
+    const cont = document.getElementById("contenido");
+    cont.innerHTML = "";
+
+    if (!data.modules || data.modules.length === 0) {
+      cont.innerHTML = `<div class="estado">No hay módulos disponibles todavía.</div>`;
+      return;
+    }
+
+    data.modules.forEach(m => {
+      const div = document.createElement("div");
+      div.className = "module";
+      div.innerHTML = `
+        <strong>${m.titulo || "Módulo sin título"}</strong><br>
+        <button onclick="verClases(${m.id})">Entrar</button>
+      `;
+      cont.appendChild(div);
+    });
+
+  } catch (err) {
+    mostrarMensaje(
+      "No se pudieron cargar los módulos. Posible causa: backend apagado, ruta incorrecta o bloqueo CORS.<br><br>Detalle: " + err.message,
+      "error"
+    );
+    console.error("Error en verModulos:", err);
+  }
 }
 
 async function verClases(id) {
-  const res = await fetch(API + "/api/lessons/" + id);
-  const data = await res.json();
+  try {
+    mostrarMensaje("Cargando clases...");
 
-  const cont = document.getElementById("contenido");
-  cont.innerHTML = "";
+    const res = await fetch(API + "/api/lessons/" + id);
 
-  data.lessons.forEach(l => {
-    const div = document.createElement("div");
-    div.className = "lesson";
+    if (!res.ok) {
+      throw new Error("El servidor respondió con estado " + res.status);
+    }
 
-    div.innerHTML = `
-      ${l.titulo}<br>
-      <button onclick="abrir('${l.youtube_url}','${l.pdf_url}')">
-        Abrir
-      </button>
-    `;
+    const data = await res.json();
 
-    cont.appendChild(div);
-  });
+    const cont = document.getElementById("contenido");
+    cont.innerHTML = "";
+
+    if (!data.lessons || data.lessons.length === 0) {
+      cont.innerHTML = `<div class="estado">Este módulo no tiene clases todavía.</div>`;
+      return;
+    }
+
+    data.lessons.forEach(l => {
+      const div = document.createElement("div");
+      div.className = "lesson";
+      div.innerHTML = `
+        <strong>${l.titulo || "Clase sin título"}</strong><br>
+        <button onclick="abrir('${(l.youtube_url || "").replace(/'/g, "\\'")}','${(l.pdf_url || "").replace(/'/g, "\\'")}')">
+          Abrir
+        </button>
+      `;
+      cont.appendChild(div);
+    });
+
+  } catch (err) {
+    mostrarMensaje(
+      "No se pudieron cargar las clases.<br><br>Detalle: " + err.message,
+      "error"
+    );
+    console.error("Error en verClases:", err);
+  }
+}
+
+function convertirYoutubeAEmbed(url) {
+  if (!url) return "";
+  return url.replace("watch?v=", "embed/");
 }
 
 function abrir(youtube, pdf) {
   const cont = document.getElementById("contenido");
 
-  let video = youtube ? `<iframe src="${youtube.replace("watch?v=","embed/")}"></iframe>` : "";
-  let pdfLink = pdf ? `<a href="${pdf}" target="_blank">Abrir PDF</a>` : "";
+  const video = youtube
+    ? `<iframe src="${convertirYoutubeAEmbed(youtube)}" allowfullscreen></iframe>`
+    : `<div class="estado">Esta clase no tiene video.</div>`;
+
+  const pdfLink = pdf
+    ? `<a href="${pdf}" target="_blank">Abrir PDF</a>`
+    : `<div class="estado">Esta clase no tiene PDF.</div>`;
 
   cont.innerHTML = `
     <div class="card">
