@@ -24,9 +24,6 @@
   --wood-2: #a67c52;
 
   --danger: #c85c5c;
-  --success: #6f9f6f;
-  --info: #8ca6c1;
-
   --border: #e6ddd2;
   --shadow: 0 10px 26px rgba(66, 40, 80, 0.08);
 }
@@ -339,8 +336,8 @@ button.sinapsis {
 }
 
 .modal-content {
-  width: min(980px, 100%);
-  max-height: 90vh;
+  width: min(1080px, 100%);
+  max-height: 92vh;
   overflow: auto;
   background: white;
   border-radius: 20px;
@@ -366,6 +363,39 @@ button.sinapsis {
   margin-top: 16px;
 }
 
+.video-box {
+  margin-top: 16px;
+  background: #f8f4ee;
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 14px;
+}
+
+.video-frame {
+  position: relative;
+  width: 100%;
+  padding-top: 56.25%;
+  border-radius: 14px;
+  overflow: hidden;
+  background: #ddd;
+}
+
+.video-frame iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+.class-box {
+  margin-top: 18px;
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 18px;
+}
+
 pre {
   white-space: pre-wrap;
   background: #f8f4ee;
@@ -381,21 +411,6 @@ pre {
   margin-top: 18px;
   padding-top: 14px;
   border-top: 1px solid var(--border);
-}
-
-.doc-chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  background: #efe7db;
-  color: #6d5036;
-  padding: 8px 12px;
-  border-radius: 999px;
-  font-size: 13px;
-  font-weight: bold;
-  margin-top: 10px;
-  margin-right: 8px;
-  border: 1px solid #e3d3c1;
 }
 
 @media (min-width: 900px) {
@@ -439,418 +454,4 @@ pre {
     <div class="card">
       <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:12px;">
         <h2 style="margin-bottom:0;">Tu avance</h2>
-        <span class="pill">Método Sinapsis</span>
-      </div>
-
-      <div class="stats">
-        <div class="stat"><strong id="statModulos">0</strong>Módulos disponibles</div>
-        <div class="stat"><strong id="statClases">0</strong>Clases publicadas</div>
-        <div class="stat"><strong id="statVistas">0</strong>Clases abiertas</div>
-      </div>
-
-      <div class="progress-wrap">
-        <div class="small">Progreso visual de esta sesión</div>
-        <div class="progress-bar">
-          <div id="barraProgreso"></div>
-        </div>
-        <div class="small" id="textoProgreso">0%</div>
-      </div>
-    </div>
-
-    <div class="card">
-      <h2>Explorar</h2>
-      <div class="toolbar">
-        <input id="buscador" placeholder="Buscar por módulo o clase">
-        <select id="filtroModulo">
-          <option value="">Todos los módulos</option>
-        </select>
-        <button class="secundario" onclick="cargarClases()">Actualizar</button>
-      </div>
-      <div id="estado" class="estado" style="margin-top:12px;">Cargando información...</div>
-    </div>
-  </div>
-
-  <div id="contenido"></div>
-
-</div>
-
-<div class="modal" id="modal">
-  <div class="modal-content">
-    <div class="modal-top">
-      <h2 id="tituloClase" style="margin-bottom:0;">Clase</h2>
-      <button class="close-btn" onclick="cerrarModal()">Cerrar</button>
-    </div>
-    <div id="detalleClase" class="content-box"></div>
-  </div>
-</div>
-
-<script>
-const API = "https://chambari-academia.onrender.com";
-
-let modulosGlobales = [];
-let clasesAbiertas = new Set();
-
-function escapar(texto){
-  return String(texto || "")
-    .replace(/&/g,"&amp;")
-    .replace(/</g,"&lt;")
-    .replace(/>/g,"&gt;")
-    .replace(/"/g,"&quot;")
-    .replace(/'/g,"&#39;");
-}
-
-function limpiarUrl(url){
-  const texto = String(url || "").trim();
-  if(!texto) return "";
-  if(texto.startsWith("http://") || texto.startsWith("https://")) return texto;
-  return "https://" + texto.replace(/^\/+/, "");
-}
-
-function normalizarDocumentoUrl(url){
-  const texto = String(url || "").trim();
-  if(!texto) return "";
-  if(texto.startsWith("http://") || texto.startsWith("https://")) return texto;
-  return API + texto;
-}
-
-function estadoBonito(estado) {
-  const e = String(estado || "").toLowerCase();
-  if (e === "published" || e === "publicado") return "Publicado";
-  if (e === "draft" || e === "borrador") return "Borrador";
-  if (e === "archived" || e === "archivado") return "Archivado";
-  return estado || "Borrador";
-}
-
-function parseJSONSeguro(valor, fallback = []) {
-  try {
-    if (!valor) return fallback;
-    if (Array.isArray(valor)) return valor;
-    return JSON.parse(valor);
-  } catch {
-    return fallback;
-  }
-}
-
-function ponerEstado(texto){
-  document.getElementById("estado").textContent = texto;
-}
-
-function clasePublicada(c){
-  const estado = String(c?.estado || c?.status || "").toLowerCase();
-  return estado === "published" || estado === "publicado";
-}
-
-function actualizarStats() {
-  const modulosConClases = modulosGlobales.filter(m => {
-    const lessons = Array.isArray(m.lessons) ? m.lessons.filter(clasePublicada) : [];
-    return lessons.length > 0;
-  });
-
-  const totalClases = modulosConClases.reduce((acc, m) => {
-    const lessons = Array.isArray(m.lessons) ? m.lessons.filter(clasePublicada) : [];
-    return acc + lessons.length;
-  }, 0);
-
-  document.getElementById("statModulos").textContent = modulosConClases.length;
-  document.getElementById("statClases").textContent = totalClases;
-  document.getElementById("statVistas").textContent = clasesAbiertas.size;
-
-  const porcentaje = totalClases ? Math.round((clasesAbiertas.size / totalClases) * 100) : 0;
-  document.getElementById("barraProgreso").style.width = porcentaje + "%";
-  document.getElementById("textoProgreso").textContent = porcentaje + "%";
-}
-
-function llenarFiltroModulos(modulos){
-  const select = document.getElementById("filtroModulo");
-  const valorActual = select.value;
-  select.innerHTML = `<option value="">Todos los módulos</option>`;
-
-  modulos.forEach(m => {
-    const lessons = Array.isArray(m.lessons) ? m.lessons.filter(clasePublicada) : [];
-    if (!lessons.length) return;
-
-    const option = document.createElement("option");
-    option.value = String(m.id);
-    option.textContent = m.titulo || m.title || "Sin título";
-    select.appendChild(option);
-  });
-
-  select.value = valorActual;
-}
-
-function obtenerModulosFiltrados() {
-  const texto = document.getElementById("buscador").value.trim().toLowerCase();
-  const moduloSeleccionado = document.getElementById("filtroModulo").value;
-
-  return modulosGlobales
-    .map(m => {
-      const lessons = Array.isArray(m.lessons) ? m.lessons.filter(clasePublicada) : [];
-
-      const filtradas = lessons.filter(c => {
-        if (!texto) return true;
-
-        const moduloTexto = String(m.titulo || m.title || "").toLowerCase();
-        const moduloDesc = String(m.descripcion || m.description || "").toLowerCase();
-        const claseTexto = String(c.titulo || c.title || "").toLowerCase();
-        const claseDesc = String(c.descripcion || c.description || "").toLowerCase();
-        const claseContenido = String(c.contenido || c.text_content || "").toLowerCase();
-
-        return (
-          moduloTexto.includes(texto) ||
-          moduloDesc.includes(texto) ||
-          claseTexto.includes(texto) ||
-          claseDesc.includes(texto) ||
-          claseContenido.includes(texto)
-        );
-      });
-
-      return { ...m, lessons: filtradas };
-    })
-    .filter(m => {
-      const okModulo = !moduloSeleccionado || String(m.id) === moduloSeleccionado;
-      return okModulo && Array.isArray(m.lessons) && m.lessons.length > 0;
-    });
-}
-
-function renderSinapsisSimple(clase) {
-  const titulo = clase.titulo || clase.title || "esta clase";
-  return `
-    <div class="sinapsis-box">
-      <h4>Ruta Sinapsis para ${escapar(titulo)}</h4>
-      <div class="sinapsis-grid">
-        <div class="sinapsis-item">
-          <strong>Lo que ya sabes</strong>
-          Revisa el título y la idea principal antes de comenzar.
-        </div>
-        <div class="sinapsis-item">
-          <strong>Practica ahora</strong>
-          Explica con tus palabras lo que entendiste del contenido.
-        </div>
-        <div class="sinapsis-item">
-          <strong>Habla en esta situación</strong>
-          Imagina una conversación real donde usarías esta lección.
-        </div>
-        <div class="sinapsis-item">
-          <strong>Refuerza</strong>
-          Vuelve a abrir los documentos y links más importantes para fijar lo aprendido.
-        </div>
-      </div>
-    </div>
-  `;
-}
-
-function renderContenido() {
-  const cont = document.getElementById("contenido");
-  const modulos = obtenerModulosFiltrados();
-  cont.innerHTML = "";
-
-  if (!modulos.length) {
-    cont.innerHTML = `<div class="empty">No hay clases publicadas para mostrar con este filtro.</div>`;
-    return;
-  }
-
-  modulos.forEach(m => {
-    const box = document.createElement("div");
-    box.className = "modulo";
-
-    const tituloModulo = m.titulo || m.title || "Módulo sin título";
-    const descModulo = m.descripcion || m.description || "";
-    const lessons = Array.isArray(m.lessons) ? m.lessons : [];
-
-    let clasesHtml = "";
-    lessons.forEach(c => {
-      const tituloClase = c.titulo || c.title || "Clase sin título";
-      const descClase = c.descripcion || c.description || "";
-      const linksCount = [c.link_1, c.link_2, c.link_3, c.link_4, c.link_5].filter(Boolean).length;
-
-      const docs = parseJSONSeguro(
-        c.document_urls ||
-        c.documents_json ||
-        c.documentos_json ||
-        "[]",
-        []
-      );
-      const docsCount = docs.length || (c.file_url ? 1 : 0);
-
-      clasesHtml += `
-        <div class="clase">
-          <div class="clase-title">${escapar(tituloClase)}</div>
-          ${descClase ? `<div class="small">${escapar(descClase)}</div>` : ""}
-          <div class="small">Estado: ${escapar(estadoBonito(c.estado || c.status || "Publicado"))}</div>
-          <div class="small">Links: ${linksCount} | Documentos: ${docsCount} | Video: ${c.youtube_url ? "Sí" : "No"}</div>
-
-          <div class="actions">
-            <button class="ver" onclick="verClase(${c.id})">Abrir clase</button>
-            <button class="sinapsis" onclick="marcarVista(${c.id})">Marcar como vista</button>
-          </div>
-        </div>
-      `;
-    });
-
-    box.innerHTML = `
-      <div class="modulo-header">
-        <div>
-          <h2>${escapar(tituloModulo)}</h2>
-          ${descModulo ? `<div class="modulo-desc">${escapar(descModulo)}</div>` : ""}
-        </div>
-        <span class="pill">${lessons.length} clase(s)</span>
-      </div>
-      <div class="clases-grid">${clasesHtml}</div>
-    `;
-
-    cont.appendChild(box);
-  });
-}
-
-async function cargarClases(){
-  ponerEstado("Cargando clases publicadas...");
-  const cont = document.getElementById("contenido");
-  cont.innerHTML = "";
-
-  try{
-    const res = await fetch(API + "/api/dashboard");
-    const data = await res.json();
-
-    modulosGlobales = Array.isArray(data.modules) ? data.modules : [];
-
-    llenarFiltroModulos(modulosGlobales);
-    actualizarStats();
-    renderContenido();
-
-    const totalClases = modulosGlobales.reduce((acc, m) => {
-      const lessons = Array.isArray(m.lessons) ? m.lessons.filter(clasePublicada) : [];
-      return acc + lessons.length;
-    }, 0);
-
-    ponerEstado(`Se cargaron ${totalClases} clases publicadas.`);
-  } catch(e){
-    cont.innerHTML = `<div class="empty">Error cargando datos del alumno.</div>`;
-    ponerEstado("No se pudo cargar la información.");
-  }
-}
-
-function marcarVista(id){
-  clasesAbiertas.add(Number(id));
-  actualizarStats();
-}
-
-function renderLinksClase(c) {
-  const links = [c.link_1, c.link_2, c.link_3, c.link_4, c.link_5].filter(Boolean);
-  if (!links.length) return "";
-
-  return `
-    <div class="bloque">
-      <h4>Links adicionales</h4>
-      ${links.map((l, i) => `
-        <p><a class="link-btn" href="${limpiarUrl(l)}" target="_blank" rel="noopener noreferrer">Abrir recurso ${i + 1}</a></p>
-      `).join("")}
-    </div>
-  `;
-}
-
-function renderDocumentosClase(c) {
-  const docs = parseJSONSeguro(
-    c.document_urls ||
-    c.documents_json ||
-    c.documentos_json ||
-    "[]",
-    []
-  );
-
-  const docsNormalizados = docs.map(d => {
-    if (typeof d === "string") {
-      return { url: d, name: "Documento" };
-    }
-    return {
-      url: d.url || d.file_url || "",
-      name: d.name || d.file_name || "Documento"
-    };
-  }).filter(d => d.url);
-
-  if (!docsNormalizados.length && !c.file_url) return "";
-
-  let html = `<div class="bloque"><h4>Documentos de la clase</h4>`;
-
-  if (docsNormalizados.length) {
-    html += docsNormalizados.map((doc, i) => `
-      <p>
-        <a class="link-btn" href="${normalizarDocumentoUrl(doc.url)}" target="_blank" rel="noopener noreferrer">
-          Abrir documento ${i + 1}${doc.name ? " - " + escapar(doc.name) : ""}
-        </a>
-      </p>
-    `).join("");
-  } else if (c.file_url) {
-    html += `
-      <p>
-        <a class="link-btn" href="${normalizarDocumentoUrl(c.file_url)}" target="_blank" rel="noopener noreferrer">
-          Abrir archivo${c.file_name ? " - " + escapar(c.file_name) : ""}
-        </a>
-      </p>
-    `;
-  }
-
-  html += `</div>`;
-  return html;
-}
-
-async function verClase(id){
-  try{
-    const res = await fetch(API + "/api/lesson/" + id);
-    const data = await res.json();
-    const c = data.lesson || {};
-
-    marcarVista(id);
-
-    const titulo = c.titulo || c.title || "Clase";
-    const descripcion = c.descripcion || c.description || "";
-    const contenido = c.contenido || c.text_content || "";
-    const modulo = c.module_titulo || c.module_title || "";
-    const youtube = c.youtube_url || "";
-
-    let html = `
-      <div class="small"><strong>Módulo:</strong> ${escapar(modulo)}</div>
-      <div class="small"><strong>Estado:</strong> ${escapar(estadoBonito(c.estado || c.status || "Publicado"))}</div>
-    `;
-
-    if (descripcion) {
-      html += `<div class="bloque"><h4>Descripción</h4><p>${escapar(descripcion)}</p></div>`;
-    }
-
-    if (contenido) {
-      html += `<div class="bloque"><h4>Contenido</h4><pre>${escapar(contenido)}</pre></div>`;
-    }
-
-    if (youtube) {
-      html += `
-        <div class="bloque">
-          <h4>Video principal</h4>
-          <p><a class="link-btn" href="${limpiarUrl(youtube)}" target="_blank" rel="noopener noreferrer">Abrir video</a></p>
-        </div>
-      `;
-    }
-
-    html += renderLinksClase(c);
-    html += renderDocumentosClase(c);
-    html += renderSinapsisSimple(c);
-
-    document.getElementById("tituloClase").textContent = titulo;
-    document.getElementById("detalleClase").innerHTML = html;
-    document.getElementById("modal").style.display = "flex";
-
-  } catch(e){
-    alert("Error cargando clase");
-  }
-}
-
-function cerrarModal(){
-  document.getElementById("modal").style.display = "none";
-}
-
-document.getElementById("buscador").addEventListener("input", renderContenido);
-document.getElementById("filtroModulo").addEventListener("change", renderContenido);
-
-cargarClases();
-</script>
-
-</body>
-</html>
+        <span class="pill">Método Sinapsis</span
