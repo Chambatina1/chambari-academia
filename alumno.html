@@ -22,16 +22,19 @@ body{
   padding:20px;
   margin:0;
 }
+
 .container{
   max-width:400px;
   margin:auto;
 }
+
 .card{
   background:white;
   padding:20px;
   border-radius:12px;
   box-shadow:0 10px 20px rgba(0,0,0,0.08);
 }
+
 input{
   width:100%;
   padding:12px;
@@ -40,6 +43,7 @@ input{
   border:1px solid #ccc;
   box-sizing:border-box;
 }
+
 button{
   width:100%;
   padding:12px;
@@ -51,21 +55,26 @@ button{
   font-weight:bold;
   cursor:pointer;
 }
+
 button:hover{
   opacity:0.9;
 }
+
 .sec{
   background:#ddd;
   color:black;
 }
+
 .hidden{
   display:none;
 }
+
 #estado{
   margin-top:10px;
   font-size:14px;
   min-height:20px;
 }
+
 .version-badge{
   background:#62458f;
   color:#fff;
@@ -82,7 +91,7 @@ button:hover{
 
 <div class="container">
 
-  <div class="version-badge">Alumno build limpio</div>
+  <div class="version-badge">Alumno build 05-04-26</div>
 
   <div id="loginBox" class="card">
     <h2>Chambari Academy</h2>
@@ -90,8 +99,8 @@ button:hover{
     <input id="email" type="email" placeholder="Correo">
     <input id="password" type="password" placeholder="Contraseña">
 
-    <button type="button" onclick="login()">Entrar</button>
-    <button type="button" class="sec" onclick="registerUser()">Registrarme</button>
+    <button id="btnLogin" type="button" onclick="login()">Entrar</button>
+    <button id="btnRegister" type="button" class="sec" onclick="registerUser()">Registrarme</button>
 
     <div id="estado"></div>
   </div>
@@ -100,7 +109,7 @@ button:hover{
     <h2>Alumno</h2>
     <p id="user"></p>
     <p id="detalleAlumno"></p>
-    <button type="button" onclick="logout()">Cerrar sesión</button>
+    <button id="btnLogout" type="button" onclick="logout()">Cerrar sesión</button>
   </div>
 
 </div>
@@ -115,6 +124,7 @@ const loginBox = document.getElementById("loginBox");
 const panelBox = document.getElementById("panel");
 const userBox = document.getElementById("user");
 const detalleAlumnoBox = document.getElementById("detalleAlumno");
+const btnLogin = document.getElementById("btnLogin");
 
 function msg(text, color = "red"){
   estadoBox.innerText = text;
@@ -143,9 +153,11 @@ async function registerUser(){
   }
 
   try{
-    const res = await fetch(API + "/api/register",{
-      method:"POST",
-      headers:{"Content-Type":"application/json"},
+    msg("Registrando...", "#7b5ea7");
+
+    const res = await fetch(API + "/api/register", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         nombre: emailVal.split("@")[0],
         email: emailVal,
@@ -153,17 +165,26 @@ async function registerUser(){
       })
     });
 
-    const data = await res.json();
+    const raw = await res.text();
+    let data = {};
+
+    try{
+      data = JSON.parse(raw);
+    }catch(e){
+      console.log("REGISTER RAW:", raw);
+      msg("El servidor respondió mal");
+      return;
+    }
 
     if(!res.ok){
       msg(data.error || "Error registro");
       return;
     }
 
-    msg("Registrado correctamente","green");
+    msg("Registrado correctamente", "green");
 
   }catch(e){
-    console.error(e);
+    console.error("REGISTER ERROR:", e);
     msg("No conecta servidor");
   }
 }
@@ -178,60 +199,76 @@ async function login(){
   }
 
   try{
-    msg("Entrando...", "#7b5ea7");
+    btnLogin.disabled = true;
+    btnLogin.innerText = "Entrando...";
+    msg("Validando acceso...", "#7b5ea7");
 
-    const res = await fetch(API + "/api/login",{
-      method:"POST",
-      headers:{"Content-Type":"application/json"},
+    const res = await fetch(API + "/api/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         email: emailVal,
         password: passVal
       })
     });
 
-    const data = await res.json();
+    const raw = await res.text();
+    let data = null;
+
+    try{
+      data = JSON.parse(raw);
+    }catch(e){
+      console.log("LOGIN RAW:", raw);
+      msg("El servidor respondió mal");
+      return;
+    }
 
     if(!res.ok){
       msg(data.error || "Error login");
       return;
     }
 
-    if(!data.student){
+    const student = data.student || data.user || data.alumno;
+
+    if(!student){
+      console.log("LOGIN DATA:", data);
       msg("No llegaron datos del alumno");
-      console.log(data);
       return;
     }
 
-    localStorage.setItem("user_alumno", JSON.stringify(data.student));
-    mostrarPanel(data.student);
+    localStorage.setItem("user_alumno", JSON.stringify(student));
+    mostrarPanel(student);
     msg("", "green");
 
   }catch(e){
-    console.error(e);
+    console.error("LOGIN ERROR:", e);
     msg("No conecta servidor");
+  }finally{
+    btnLogin.disabled = false;
+    btnLogin.innerText = "Entrar";
   }
 }
 
 function logout(){
   localStorage.removeItem("user_alumno");
   localStorage.removeItem("user");
-  mostrarLogin();
   userBox.innerText = "";
   detalleAlumnoBox.innerText = "";
+  mostrarLogin();
   msg("Sesión cerrada", "green");
 }
 
 window.onload = () => {
   localStorage.removeItem("user");
-  
-  const u = localStorage.getItem("user_alumno");
 
-  if(u){
+  const saved = localStorage.getItem("user_alumno");
+
+  if(saved){
     try{
-      const student = JSON.parse(u);
+      const student = JSON.parse(saved);
       if(student && (student.nombre || student.email)){
         mostrarPanel(student);
-      } else {
+      }else{
         localStorage.removeItem("user_alumno");
         mostrarLogin();
       }
@@ -239,9 +276,13 @@ window.onload = () => {
       localStorage.removeItem("user_alumno");
       mostrarLogin();
     }
-  } else {
+  }else{
     mostrarLogin();
   }
+
+  console.log("Alumno cargado");
+  console.log("URL:", window.location.href);
+  console.log("Standalone:", window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone === true);
 };
 </script>
 
