@@ -22,19 +22,16 @@ body{
   padding:20px;
   margin:0;
 }
-
 .container{
   max-width:400px;
   margin:auto;
 }
-
 .card{
   background:white;
   padding:20px;
   border-radius:12px;
   box-shadow:0 10px 20px rgba(0,0,0,0.08);
 }
-
 input{
   width:100%;
   padding:12px;
@@ -43,7 +40,6 @@ input{
   border:1px solid #ccc;
   box-sizing:border-box;
 }
-
 button{
   width:100%;
   padding:12px;
@@ -55,26 +51,21 @@ button{
   font-weight:bold;
   cursor:pointer;
 }
-
 button:hover{
   opacity:0.9;
 }
-
 .sec{
   background:#ddd;
   color:black;
 }
-
 .hidden{
   display:none;
 }
-
 #estado{
   margin-top:10px;
   font-size:14px;
   min-height:20px;
 }
-
 .version-badge{
   background:#62458f;
   color:#fff;
@@ -91,27 +82,26 @@ button:hover{
 
 <div class="container">
 
-<div class="version-badge">Alumno 05-04-26</div>
+  <div class="version-badge">Alumno build limpio</div>
 
-<div id="loginBox" class="card">
-<h2>Chambari Academy</h2>
+  <div id="loginBox" class="card">
+    <h2>Chambari Academy</h2>
 
-<input id="email" type="email" placeholder="Correo">
-<input id="password" type="password" placeholder="Contraseña">
+    <input id="email" type="email" placeholder="Correo">
+    <input id="password" type="password" placeholder="Contraseña">
 
-<button type="button" onclick="login()">Entrar</button>
-<button type="button" class="sec" onclick="registerUser()">Registrarme</button>
+    <button type="button" onclick="login()">Entrar</button>
+    <button type="button" class="sec" onclick="registerUser()">Registrarme</button>
 
-<div id="estado"></div>
-</div>
+    <div id="estado"></div>
+  </div>
 
-<div id="panel" class="card hidden">
-<h2>Alumno</h2>
-
-<p id="user"></p>
-
-<button type="button" onclick="logout()">Cerrar sesión</button>
-</div>
+  <div id="panel" class="card hidden">
+    <h2>Alumno</h2>
+    <p id="user"></p>
+    <p id="detalleAlumno"></p>
+    <button type="button" onclick="logout()">Cerrar sesión</button>
+  </div>
 
 </div>
 
@@ -124,16 +114,23 @@ const estadoBox = document.getElementById("estado");
 const loginBox = document.getElementById("loginBox");
 const panelBox = document.getElementById("panel");
 const userBox = document.getElementById("user");
+const detalleAlumnoBox = document.getElementById("detalleAlumno");
 
 function msg(text, color = "red"){
   estadoBox.innerText = text;
   estadoBox.style.color = color;
 }
 
+function mostrarLogin(){
+  panelBox.classList.add("hidden");
+  loginBox.classList.remove("hidden");
+}
+
 function mostrarPanel(student){
   loginBox.classList.add("hidden");
   panelBox.classList.remove("hidden");
   userBox.innerText = "Bienvenido " + (student.nombre || student.email || "Alumno");
+  detalleAlumnoBox.innerText = student.email ? ("Correo: " + student.email) : "";
 }
 
 async function registerUser(){
@@ -217,19 +214,33 @@ async function login(){
 
 function logout(){
   localStorage.removeItem("user_alumno");
-  location.reload();
+  localStorage.removeItem("user");
+  mostrarLogin();
+  userBox.innerText = "";
+  detalleAlumnoBox.innerText = "";
+  msg("Sesión cerrada", "green");
 }
 
 window.onload = () => {
+  localStorage.removeItem("user");
+  
   const u = localStorage.getItem("user_alumno");
 
   if(u){
     try{
       const student = JSON.parse(u);
-      mostrarPanel(student);
+      if(student && (student.nombre || student.email)){
+        mostrarPanel(student);
+      } else {
+        localStorage.removeItem("user_alumno");
+        mostrarLogin();
+      }
     }catch(e){
       localStorage.removeItem("user_alumno");
+      mostrarLogin();
     }
+  } else {
+    mostrarLogin();
   }
 };
 </script>
