@@ -35,7 +35,6 @@
 }
 
 * { box-sizing: border-box; }
-
 html { scroll-behavior: smooth; }
 
 body {
@@ -207,11 +206,15 @@ button.secundario,
 button.ver,
 .button-link.ver { background: var(--accent-2); }
 
-button.mini,
-.button-link.mini {
-  width: auto;
-  padding: 10px 12px;
-  margin-top: 8px;
+button.warning,
+.button-link.warning {
+  background: var(--warning);
+  color: #2b2430;
+}
+
+button.danger,
+.button-link.danger {
+  background: var(--danger);
 }
 
 .estado {
@@ -263,7 +266,8 @@ button.mini,
 }
 
 .video-box,
-.viewer-box {
+.viewer-box,
+.live-box {
   position: relative;
   width: 100%;
   border-radius: 16px;
@@ -275,20 +279,32 @@ button.mini,
 
 .video-box-tall iframe {
   width: 100%;
-  height: min(72vh, 760px);
+  height: min(68vh, 720px);
   border: 0;
   display: block;
   background: #000;
 }
 
 .viewer-box-tall iframe,
-.viewer-box-tall img {
+.viewer-box-tall img,
+.live-box iframe {
   width: 100%;
   height: min(78vh, 900px);
   border: 0;
   display: block;
   background: #fff;
   object-fit: contain;
+}
+
+.texto-clase {
+  background: #fbfaf7;
+  padding: 18px;
+  border-radius: 16px;
+  border: 1px solid var(--border);
+  line-height: 1.75;
+  font-size: 16px;
+  white-space: pre-wrap;
+  margin-top: 12px;
 }
 
 .exercise-box {
@@ -343,8 +359,8 @@ textarea {
 }
 
 .modal-content {
-  width: min(980px, 100%);
-  max-height: 90vh;
+  width: min(1100px, 100%);
+  max-height: 92vh;
   overflow: auto;
   background: var(--card);
   border-radius: 20px;
@@ -353,9 +369,13 @@ textarea {
   box-shadow: var(--shadow);
 }
 
-.modal-close {
-  background: var(--danger);
-  color: white;
+.note-box {
+  background: #fff8e6;
+  color: #6b4d00;
+  border: 1px solid #efd48c;
+  border-radius: 14px;
+  padding: 12px;
+  margin-top: 12px;
 }
 
 @media (max-width: 980px) {
@@ -369,9 +389,15 @@ textarea {
   }
 
   .viewer-box-tall iframe,
-  .viewer-box-tall img {
+  .viewer-box-tall img,
+  .live-box iframe {
     height: 52vh;
     min-height: 320px;
+  }
+
+  .texto-clase {
+    font-size: 15px;
+    padding: 14px;
   }
 
   h1 {
@@ -383,7 +409,7 @@ textarea {
 <body>
 
 <div class="header-wrap">
-  <div class="version-badge">Alumno blindado 05-04-26</div>
+  <div class="version-badge">Alumno integrado 05-04-26</div>
 
   <div class="logo-bar">
     <div class="logo-box">
@@ -391,13 +417,13 @@ textarea {
     </div>
     <div class="logo-text">
       <strong>Chambari Academy</strong>
-      <span>Espacio del alumno</span>
+      <span>Clase completa dentro de la app</span>
     </div>
   </div>
 
   <h1>Tu clase</h1>
   <div class="subtitulo">
-    Mira tu video, abre tu documento y practica sin salir de la app ni de la web.
+    Texto, video, documentos, Zoom y ejercicios sin salir de la pantalla.
   </div>
 </div>
 
@@ -442,8 +468,18 @@ textarea {
   </div>
 
   <div class="card">
-    <h2>Video</h2>
+    <h2>Texto de la clase</h2>
+    <div id="textoBox" class="vacio">Esta clase no tiene texto todavía.</div>
+  </div>
+
+  <div class="card">
+    <h2>Video de la clase</h2>
     <div id="videoBox" class="vacio">Esta clase no tiene video todavía.</div>
+  </div>
+
+  <div class="card">
+    <h2>Clase en vivo</h2>
+    <div id="zoomBox" class="vacio">Esta clase no tiene enlace de Zoom todavía.</div>
   </div>
 
   <div class="card">
@@ -460,9 +496,9 @@ textarea {
 
 <div class="modal" id="modalViewer">
   <div class="modal-content">
-    <h2 id="modalViewerTitulo">Documento</h2>
+    <h2 id="modalViewerTitulo">Visor</h2>
     <div id="modalViewerContenido"></div>
-    <button class="modal-close" onclick="cerrarModalViewer()">Cerrar</button>
+    <button class="danger" onclick="cerrarModalViewer()">Cerrar</button>
   </div>
 </div>
 
@@ -525,7 +561,6 @@ function getYoutubeEmbed(url) {
   if (!url) return "";
   try {
     const u = new URL(url);
-
     if (u.hostname.includes("youtube.com")) {
       const v = u.searchParams.get("v");
       if (v) return "https://www.youtube.com/embed/" + v;
@@ -535,12 +570,10 @@ function getYoutubeEmbed(url) {
         return "https://www.youtube.com/embed/" + parts[embedIndex + 1];
       }
     }
-
     if (u.hostname.includes("youtu.be")) {
       const id = u.pathname.replace("/", "").trim();
       if (id) return "https://www.youtube.com/embed/" + id;
     }
-
     return url;
   } catch {
     return url;
@@ -589,6 +622,37 @@ function obtenerDocumentoPrincipal(clase) {
   return null;
 }
 
+function obtenerZoomUrl(clase) {
+  const candidatos = [
+    clase.zoom_url,
+    clase.meeting_url,
+    clase.live_url,
+    clase.link_zoom,
+    clase.link_1,
+    clase.link_2,
+    clase.link_3,
+    clase.link_4,
+    clase.link_5
+  ].filter(Boolean).map(urlAbsoluta);
+
+  return candidatos.find(url => /zoom\.us/i.test(url)) || "";
+}
+
+function obtenerZoomEmbedUrl(url) {
+  try {
+    const u = new URL(url);
+    const pwd = u.searchParams.get("pwd") || "";
+    const match = u.pathname.match(/\/j\/(\d+)/i);
+    if (!match) return "";
+    const meetingId = match[1];
+    let embed = "https://app.zoom.us/wc/join/" + meetingId;
+    if (pwd) embed += "?pwd=" + encodeURIComponent(pwd);
+    return embed;
+  } catch {
+    return "";
+  }
+}
+
 function renderClaseActual(modulo, clase) {
   const box = document.getElementById("claseActualBox");
   const contenido = limpiarContenidoVisible(clase.contenido || clase.text_content || "");
@@ -604,14 +668,30 @@ function renderClaseActual(modulo, clase) {
       <div class="kicker" style="margin-top:12px;">Tu clase de hoy</div>
       <div class="lesson-title">${esc(claseNombre)}</div>
 
-      ${contenido ? `<p>${esc(contenido).replace(/\n/g, "<br>")}</p>` : `<p class="kicker">Esta clase no tiene descripción todavía.</p>`}
+      ${contenido ? `<p>${esc(contenido.slice(0, 220))}${contenido.length > 220 ? "..." : ""}</p>` : `<p class="kicker">Esta clase no tiene descripción todavía.</p>`}
 
       <div class="row">
-        <a href="#videoBox" class="button-link">Ir al video</a>
-        <a href="#documentoBox" class="button-link ver">Ir al documento</a>
+        <a href="#textoBox" class="button-link">Ir al texto</a>
+        <a href="#videoBox" class="button-link ver">Ir al video</a>
+        <a href="#zoomBox" class="button-link secundario">Ir a Zoom</a>
+        <a href="#documentoBox" class="button-link warning">Ir al documento</a>
       </div>
     </div>
   `;
+}
+
+function renderTexto(clase) {
+  const box = document.getElementById("textoBox");
+  const texto = limpiarContenidoVisible(clase.contenido || clase.text_content || "");
+
+  if (!texto.trim()) {
+    box.className = "vacio";
+    box.textContent = "Esta clase no tiene texto todavía.";
+    return;
+  }
+
+  box.className = "";
+  box.innerHTML = `<div class="texto-clase">${esc(texto)}</div>`;
 }
 
 function renderVideo(clase) {
@@ -639,60 +719,39 @@ function renderVideo(clase) {
   `;
 }
 
-function abrirDocumento(url, nombre) {
-  const abs = urlAbsoluta(url);
-  const titulo = nombre || "Documento";
-  const cont = document.getElementById("modalViewerContenido");
-  document.getElementById("modalViewerTitulo").textContent = titulo;
-
-  if (!abs) {
-    cont.innerHTML = `<div class="item">No se pudo abrir el documento.</div>`;
-    document.getElementById("modalViewer").style.display = "flex";
-    return;
-  }
-
-  if (esImagen(abs)) {
-    cont.innerHTML = `
-      <div class="viewer-box viewer-box-tall">
-        <img src="${esc(abs)}" alt="${esc(titulo)}">
-      </div>
-    `;
-  } else if (esPdf(abs)) {
-    cont.innerHTML = `
-      <div class="viewer-box viewer-box-tall">
-        <iframe
-          src="${esc(abs)}#toolbar=1&navpanes=0&scrollbar=1&view=FitH"
-          title="${esc(titulo)}">
-        </iframe>
-      </div>
-    `;
-  } else if (esOffice(abs)) {
-    const officeViewer = "https://view.officeapps.live.com/op/embed.aspx?src=" + encodeURIComponent(abs);
-    cont.innerHTML = `
-      <div class="viewer-box viewer-box-tall">
-        <iframe
-          src="${officeViewer}"
-          title="${esc(titulo)}">
-        </iframe>
-      </div>
-    `;
-  } else {
-    cont.innerHTML = `
-      <div class="viewer-box viewer-box-tall">
-        <iframe
-          src="${esc(abs)}"
-          title="${esc(titulo)}">
-        </iframe>
-      </div>
-    `;
-  }
-
+function abrirModalVisor(titulo, html) {
+  document.getElementById("modalViewerTitulo").textContent = titulo || "Visor";
+  document.getElementById("modalViewerContenido").innerHTML = html || "";
   document.getElementById("modalViewer").style.display = "flex";
 }
 
 function cerrarModalViewer() {
   document.getElementById("modalViewer").style.display = "none";
   document.getElementById("modalViewerContenido").innerHTML = "";
+}
+
+function abrirDocumento(url, nombre) {
+  const abs = urlAbsoluta(url);
+  const titulo = nombre || "Documento";
+
+  if (!abs) {
+    abrirModalVisor(titulo, `<div class="item">No se pudo abrir el documento.</div>`);
+    return;
+  }
+
+  let html = "";
+  if (esImagen(abs)) {
+    html = `<div class="viewer-box viewer-box-tall"><img src="${esc(abs)}" alt="${esc(titulo)}"></div>`;
+  } else if (esPdf(abs)) {
+    html = `<div class="viewer-box viewer-box-tall"><iframe src="${esc(abs)}#toolbar=1&navpanes=0&scrollbar=1&view=FitH" title="${esc(titulo)}"></iframe></div>`;
+  } else if (esOffice(abs)) {
+    const officeViewer = "https://view.officeapps.live.com/op/embed.aspx?src=" + encodeURIComponent(abs);
+    html = `<div class="viewer-box viewer-box-tall"><iframe src="${officeViewer}" title="${esc(titulo)}"></iframe></div>`;
+  } else {
+    html = `<div class="viewer-box viewer-box-tall"><iframe src="${esc(abs)}" title="${esc(titulo)}"></iframe></div>`;
+  }
+
+  abrirModalVisor(titulo, html);
 }
 
 function renderDocumento(clase) {
@@ -717,39 +776,14 @@ function renderDocumento(clase) {
   let visor = "";
 
   if (esImagen(absUrl)) {
-    visor = `
-      <div class="viewer-box viewer-box-tall">
-        <img src="${esc(absUrl)}" alt="${esc(nombre)}">
-      </div>
-    `;
+    visor = `<div class="viewer-box viewer-box-tall"><img src="${esc(absUrl)}" alt="${esc(nombre)}"></div>`;
   } else if (esPdf(absUrl)) {
-    visor = `
-      <div class="viewer-box viewer-box-tall">
-        <iframe
-          src="${esc(absUrl)}#toolbar=1&navpanes=0&scrollbar=1&view=FitH"
-          title="${esc(nombre)}">
-        </iframe>
-      </div>
-    `;
+    visor = `<div class="viewer-box viewer-box-tall"><iframe src="${esc(absUrl)}#toolbar=1&navpanes=0&scrollbar=1&view=FitH" title="${esc(nombre)}"></iframe></div>`;
   } else if (esOffice(absUrl)) {
     const officeViewer = "https://view.officeapps.live.com/op/embed.aspx?src=" + encodeURIComponent(absUrl);
-    visor = `
-      <div class="viewer-box viewer-box-tall">
-        <iframe
-          src="${officeViewer}"
-          title="${esc(nombre)}">
-        </iframe>
-      </div>
-    `;
+    visor = `<div class="viewer-box viewer-box-tall"><iframe src="${officeViewer}" title="${esc(nombre)}"></iframe></div>`;
   } else {
-    visor = `
-      <div class="viewer-box viewer-box-tall">
-        <iframe
-          src="${esc(absUrl)}"
-          title="${esc(nombre)}">
-        </iframe>
-      </div>
-    `;
+    visor = `<div class="viewer-box viewer-box-tall"><iframe src="${esc(absUrl)}" title="${esc(nombre)}"></iframe></div>`;
   }
 
   box.className = "";
@@ -761,6 +795,70 @@ function renderDocumento(clase) {
       <button type="button" class="ver" onclick="abrirDocumento(${JSON.stringify(absUrl)}, ${JSON.stringify(nombre)})">
         Ver grande aquí
       </button>
+    </div>
+  `;
+}
+
+function abrirZoomEnModal(url) {
+  const abs = urlAbsoluta(url);
+  const embed = obtenerZoomEmbedUrl(abs);
+
+  if (!embed) {
+    abrirModalVisor(
+      "Zoom",
+      `
+        <div class="note-box">
+          No se pudo generar visor de Zoom desde este enlace.<br>
+          Se intentará abrir dentro de la misma ventana.
+        </div>
+        <button class="warning" onclick="window.location.href=${JSON.stringify(abs)}">Entrar en esta misma pantalla</button>
+      `
+    );
+    return;
+  }
+
+  abrirModalVisor(
+    "Clase en vivo",
+    `
+      <div class="note-box">
+        Si Zoom bloquea este visor, usa el botón de abajo para entrar en la misma ventana.
+      </div>
+      <div class="live-box">
+        <iframe src="${esc(embed)}" title="Zoom"></iframe>
+      </div>
+      <button class="warning" onclick="window.location.href=${JSON.stringify(abs)}">Entrar en esta misma pantalla</button>
+    `
+  );
+}
+
+function renderZoom(clase) {
+  const box = document.getElementById("zoomBox");
+  const zoomUrl = obtenerZoomUrl(clase);
+
+  if (!zoomUrl) {
+    box.className = "vacio";
+    box.textContent = "Esta clase no tiene enlace de Zoom todavía.";
+    return;
+  }
+
+  const embedUrl = obtenerZoomEmbedUrl(zoomUrl);
+
+  box.className = "";
+  box.innerHTML = `
+    <div class="item">
+      <h4>Clase en vivo</h4>
+      <div class="kicker">Accede al enlace que puso el profesor sin salir de la experiencia de clase.</div>
+
+      ${
+        embedUrl
+          ? `<div class="live-box"><iframe src="${esc(embedUrl)}" title="Zoom"></iframe></div>`
+          : `<div class="note-box">No se pudo incrustar Zoom directamente con este enlace. Igual puedes abrirlo en la misma pantalla.</div>`
+      }
+
+      <div class="row">
+        <button type="button" class="ver" onclick="abrirZoomEnModal(${JSON.stringify(zoomUrl)})">Abrir Zoom aquí</button>
+        <button type="button" class="warning" onclick="window.location.href=${JSON.stringify(zoomUrl)}">Entrar en esta misma ventana</button>
+      </div>
     </div>
   `;
 }
@@ -886,8 +984,12 @@ async function cargarAlumno() {
     if (!modulo) {
       document.getElementById("claseActualBox").className = "vacio";
       document.getElementById("claseActualBox").textContent = "Aún no hay clases disponibles.";
+      document.getElementById("textoBox").className = "vacio";
+      document.getElementById("textoBox").textContent = "Todavía no hay texto disponible.";
       document.getElementById("videoBox").className = "vacio";
       document.getElementById("videoBox").textContent = "Todavía no hay video disponible.";
+      document.getElementById("zoomBox").className = "vacio";
+      document.getElementById("zoomBox").textContent = "Todavía no hay Zoom disponible.";
       document.getElementById("documentoBox").className = "vacio";
       document.getElementById("documentoBox").textContent = "Todavía no hay documento disponible.";
       document.getElementById("ejerciciosBox").className = "vacio";
@@ -905,7 +1007,9 @@ async function cargarAlumno() {
     }
 
     renderClaseActual(modulo, clase);
+    renderTexto(clase);
     renderVideo(clase);
+    renderZoom(clase);
     renderDocumento(clase);
     renderEjercicios(clase);
 
@@ -927,12 +1031,6 @@ async function cargarAlumno() {
 document.getElementById("modalViewer").addEventListener("click", function(e) {
   if (e.target.id === "modalViewer") cerrarModalViewer();
 });
-
-(function diagnosticoHomeScreen() {
-  const standalone = window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone === true;
-  console.log("Modo app:", standalone);
-  console.log("URL actual:", window.location.href);
-})();
 
 cargarAlumno();
 </script>
