@@ -1,20 +1,18 @@
 {
-  "ok": true,
-  "modules": [
-    {
-      "id": 1,
-      "title": "Módulo 1",
-      "description": "Introducción",
-      "lessons": [
-        {
-          "id": 10,
-          "title": "Clase 1",
-          "content": "Texto",
-          "status": "publicado",
-          "file_url": "/files/archivo.pdf"
-        }
-      ]
-    }
-  ],
-  "students": 12
+  "name": "chambari-academy",
+  "version": "1.0.0",
+  "description": "Backend de Chambari Academy con Express, PostgreSQL y subida de archivos al disco de Render",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.21.2",
+    "multer": "^1.4.5-lts.1",
+    "pg": "^8.13.1"
+  }
 }
