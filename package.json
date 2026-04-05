@@ -1,24 +1,21 @@
 {
   "name": "Chambari Academy",
   "short_name": "Chambari",
-  "start_url": "./alumno.html",
-  "scope": "./",
+  "start_url": "/?v=20260405",
+  "scope": "/",
   "display": "standalone",
-  "orientation": "portrait",
-  "background_color": "#ffffff",
-  "theme_color": "#6f54b8",
+  "background_color": "#f5f3f8",
+  "theme_color": "#7b5ea7",
   "icons": [
     {
-      "src": "./CHAMBARI.jpeg",
+      "src": "/CHAMBARI.jpeg?v=20260405",
       "sizes": "192x192",
-      "type": "image/jpeg",
-      "purpose": "any"
+      "type": "image/jpeg"
     },
     {
-      "src": "./CHAMBARI.jpeg",
+      "src": "/CHAMBARI.jpeg?v=20260405",
       "sizes": "512x512",
-      "type": "image/jpeg",
-      "purpose": "any"
+      "type": "image/jpeg"
     }
   ]
 }
