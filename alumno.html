@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Chambari - Alumno</title>
 
   <style>
@@ -44,7 +44,7 @@
     }
 
     .main {
-      max-width: 1200px;
+      max-width: 1250px;
       margin: 0 auto;
     }
 
@@ -53,6 +53,7 @@
       align-items: center;
       gap: 14px;
       margin-bottom: 16px;
+      flex-wrap: wrap;
     }
 
     .logo-box {
@@ -80,6 +81,26 @@
       font-size: 13px;
     }
 
+    .user-chip {
+      margin-left: auto;
+      display: none;
+      align-items: center;
+      gap: 10px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 8px 12px;
+      box-shadow: var(--shadow);
+    }
+
+    .user-chip button {
+      margin: 0;
+      width: auto;
+      padding: 8px 12px;
+      border-radius: 999px;
+      font-size: 13px;
+    }
+
     .hero {
       background: var(--card);
       border: 1px solid var(--border);
@@ -101,15 +122,14 @@
       line-height: 1.5;
     }
 
-    .grid-top {
+    .layout {
       display: grid;
       gap: 18px;
-      margin-bottom: 20px;
     }
 
-    @media (min-width: 920px) {
-      .grid-top {
-        grid-template-columns: 340px 1fr;
+    @media (min-width: 980px) {
+      .layout {
+        grid-template-columns: 360px 1fr;
       }
     }
 
@@ -121,30 +141,46 @@
       padding: 20px;
     }
 
-    h2, h3 {
+    .login-wrap {
+      display: grid;
+      gap: 14px;
+      margin-bottom: 18px;
+    }
+
+    .tabs {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      background: #f4efe7;
+      border-radius: 14px;
+      padding: 6px;
+    }
+
+    .tab-btn {
+      margin: 0;
+      width: 100%;
+      background: transparent;
+      color: var(--muted);
+      border-radius: 10px;
+      padding: 10px;
+    }
+
+    .tab-btn.active {
+      background: var(--primary);
+      color: white;
+    }
+
+    .panel-form {
+      display: none;
+    }
+
+    .panel-form.active {
+      display: block;
+    }
+
+    h2, h3, h4 {
       margin-top: 0;
       color: var(--primary-2);
-    }
-
-    .stats {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 12px;
-    }
-
-    .stat {
-      background: linear-gradient(180deg, #fbf8f4 0%, #ffffff 100%);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 16px;
-      text-align: center;
-    }
-
-    .stat strong {
-      display: block;
-      font-size: 26px;
-      color: var(--primary);
-      margin-bottom: 4px;
     }
 
     label {
@@ -155,7 +191,7 @@
       margin-top: 10px;
     }
 
-    select {
+    input, select, textarea {
       width: 100%;
       padding: 12px;
       border-radius: 12px;
@@ -166,7 +202,7 @@
       outline: none;
     }
 
-    select:focus {
+    input:focus, select:focus, textarea:focus {
       border-color: var(--primary);
       box-shadow: 0 0 0 3px rgba(123, 94, 167, 0.10);
     }
@@ -198,14 +234,26 @@
       background: var(--success);
     }
 
-    .badge {
-      display: inline-block;
-      padding: 6px 10px;
-      border-radius: 999px;
-      background: #efe6ff;
-      color: var(--primary-2);
-      font-size: 12px;
-      font-weight: bold;
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .stat {
+      background: linear-gradient(180deg, #fbf8f4 0%, #ffffff 100%);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 16px;
+      text-align: center;
+    }
+
+    .stat strong {
+      display: block;
+      font-size: 26px;
+      color: var(--primary);
+      margin-bottom: 4px;
     }
 
     .estado {
@@ -215,10 +263,17 @@
       background: #faf8f4;
       border-left: 4px solid var(--success);
       color: var(--text);
+      line-height: 1.5;
     }
 
     .estado.error {
       border-left-color: var(--danger);
+    }
+
+    .small {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.45;
     }
 
     .modulo-lista {
@@ -250,12 +305,6 @@
       display: block;
       margin-bottom: 4px;
       color: var(--primary-2);
-    }
-
-    .small {
-      font-size: 13px;
-      color: var(--muted);
-      line-height: 1.45;
     }
 
     .video-wrap {
@@ -303,6 +352,16 @@
       margin: 0;
       color: var(--primary-2);
       font-size: 28px;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: #efe6ff;
+      color: var(--primary-2);
+      font-size: 12px;
+      font-weight: bold;
     }
 
     .lesson-desc {
@@ -391,10 +450,6 @@
       flex-wrap: wrap;
     }
 
-    .recurso strong {
-      color: var(--text);
-    }
-
     .link-btn {
       display: inline-block;
       background: var(--accent-2);
@@ -431,11 +486,8 @@
       border-color: var(--primary);
     }
 
-    .footer-note {
-      text-align: center;
-      color: var(--muted);
-      font-size: 13px;
-      margin-top: 18px;
+    .hidden {
+      display: none !important;
     }
   </style>
 </head>
@@ -449,52 +501,93 @@
       <strong>Chambari Academy</strong>
       <span>Experiencia del alumno</span>
     </div>
+
+    <div class="user-chip" id="userChip">
+      <div class="small" id="userChipText">Alumno</div>
+      <button class="secundario" onclick="cerrarSesion()">Salir</button>
+    </div>
   </div>
 
   <div class="hero">
     <h1>Continúa tu clase</h1>
     <p>
-      Aprende de forma clara, visual y práctica. Selecciona un módulo,
-      abre tu clase y avanza paso a paso.
+      Entra con tu cuenta, abre tu módulo y sigue aprendiendo con video, documentos y práctica en una sola pantalla.
     </p>
   </div>
 
-  <div class="grid-top">
-    <div class="card">
-      <h3>Tu avance</h3>
-      <div class="stats">
-        <div class="stat">
-          <strong id="statModulos">0</strong>
-          Módulos
+  <div class="layout">
+
+    <div>
+      <div class="card login-wrap" id="authCard">
+        <h3>Acceso del estudiante</h3>
+
+        <div class="tabs">
+          <button id="tabLogin" class="tab-btn active" onclick="mostrarTab('login')">Entrar</button>
+          <button id="tabRegister" class="tab-btn" onclick="mostrarTab('register')">Registrarse</button>
         </div>
-        <div class="stat">
-          <strong id="statClases">0</strong>
-          Clases
+
+        <div id="loginPanel" class="panel-form active">
+          <label>Correo</label>
+          <input id="loginEmail" type="email" placeholder="Tu correo" />
+
+          <label>Contraseña</label>
+          <input id="loginPassword" type="password" placeholder="Tu contraseña" />
+
+          <button onclick="loginAlumno()">Entrar</button>
         </div>
-        <div class="stat">
-          <strong id="statProgreso">0%</strong>
-          Progreso
+
+        <div id="registerPanel" class="panel-form">
+          <label>Nombre</label>
+          <input id="regNombre" type="text" placeholder="Tu nombre" />
+
+          <label>Correo</label>
+          <input id="regEmail" type="email" placeholder="Tu correo" />
+
+          <label>Contraseña</label>
+          <input id="regPassword" type="password" placeholder="Crea tu contraseña" />
+
+          <button onclick="registrarAlumno()">Crear cuenta</button>
         </div>
+
+        <div id="estadoAuth"></div>
       </div>
 
-      <label for="selectorModulo">Selecciona un módulo</label>
-      <select id="selectorModulo">
-        <option value="">Cargando módulos...</option>
-      </select>
+      <div class="card">
+        <h3>Tu avance</h3>
 
-      <button onclick="seleccionarModuloDesdeSelect()">Abrir módulo</button>
-      <button class="secundario" onclick="cargarTodo()">Actualizar contenido</button>
+        <div class="stats">
+          <div class="stat">
+            <strong id="statModulos">0</strong>
+            Módulos
+          </div>
+          <div class="stat">
+            <strong id="statClases">0</strong>
+            Clases
+          </div>
+          <div class="stat">
+            <strong id="statProgreso">0%</strong>
+            Progreso
+          </div>
+        </div>
 
-      <div id="estadoAlumno"></div>
+        <label for="selectorModulo">Selecciona un módulo</label>
+        <select id="selectorModulo">
+          <option value="">Cargando módulos...</option>
+        </select>
 
-      <div class="modulo-lista" id="listaModulos"></div>
+        <button onclick="seleccionarModuloDesdeSelect()">Abrir módulo</button>
+        <button class="secundario" onclick="cargarTodo()">Actualizar contenido</button>
+
+        <div id="estadoAlumno"></div>
+        <div class="modulo-lista" id="listaModulos"></div>
+      </div>
     </div>
 
     <div class="card">
       <div id="zonaClase">
         <div class="video-wrap">
           <div class="video-placeholder">
-            Selecciona un módulo o una clase para comenzar.
+            Inicia sesión y selecciona una clase para comenzar.
           </div>
         </div>
 
@@ -504,22 +597,18 @@
         </div>
 
         <div class="lesson-desc">
-          Aquí verás el video arriba, los documentos debajo y luego el contenido de la clase.
+          El video se muestra arriba, los documentos debajo y luego el contenido de la clase.
         </div>
 
         <div class="contenido-box">
-          Cuando el profesor publique clases, aparecerán aquí de forma organizada.
+          Cuando entres con tu cuenta y el profesor publique clases, todo aparecerá aquí.
         </div>
 
         <div class="lesson-mini-list" id="listaClasesMini"></div>
       </div>
     </div>
-  </div>
 
-  <div class="footer-note">
-    Chambari Academy · interfaz alumno
   </div>
-
 </div>
 
 <script>
@@ -528,6 +617,8 @@
   let modulosGlobal = [];
   let moduloActual = null;
   let claseActualIndex = 0;
+  let alumnoActual = null;
+  let progresoActual = [];
 
   function escapar(texto) {
     return String(texto || "")
@@ -538,8 +629,13 @@
       .replace(/'/g, "&#39;");
   }
 
-  function ponerEstado(texto, tipo = "ok") {
+  function ponerEstadoAlumno(texto, tipo = "ok") {
     document.getElementById("estadoAlumno").innerHTML =
+      '<div class="estado ' + (tipo === "error" ? "error" : "") + '">' + texto + '</div>';
+  }
+
+  function ponerEstadoAuth(texto, tipo = "ok") {
+    document.getElementById("estadoAuth").innerHTML =
       '<div class="estado ' + (tipo === "error" ? "error" : "") + '">' + texto + '</div>';
   }
 
@@ -559,6 +655,174 @@
     return data;
   }
 
+  function mostrarTab(tab) {
+    document.getElementById("tabLogin").classList.remove("active");
+    document.getElementById("tabRegister").classList.remove("active");
+    document.getElementById("loginPanel").classList.remove("active");
+    document.getElementById("registerPanel").classList.remove("active");
+
+    if (tab === "login") {
+      document.getElementById("tabLogin").classList.add("active");
+      document.getElementById("loginPanel").classList.add("active");
+    } else {
+      document.getElementById("tabRegister").classList.add("active");
+      document.getElementById("registerPanel").classList.add("active");
+    }
+  }
+
+  function guardarSesionAlumno(student) {
+    localStorage.setItem("chambari_student", JSON.stringify(student));
+  }
+
+  function leerSesionAlumno() {
+    try {
+      const raw = localStorage.getItem("chambari_student");
+      return raw ? JSON.parse(raw) : null;
+    } catch {
+      return null;
+    }
+  }
+
+  function cerrarSesion() {
+    localStorage.removeItem("chambari_student");
+    alumnoActual = null;
+    progresoActual = [];
+    document.getElementById("userChip").style.display = "none";
+    document.getElementById("authCard").classList.remove("hidden");
+    document.getElementById("selectorModulo").innerHTML = '<option value="">Inicia sesión primero</option>';
+    document.getElementById("listaModulos").innerHTML = "";
+    document.getElementById("statModulos").textContent = "0";
+    document.getElementById("statClases").textContent = "0";
+    document.getElementById("statProgreso").textContent = "0%";
+    document.getElementById("zonaClase").innerHTML = `
+      <div class="video-wrap">
+        <div class="video-placeholder">
+          Inicia sesión para ver tus clases.
+        </div>
+      </div>
+
+      <div class="lesson-header">
+        <h2 class="lesson-title">Sesión cerrada</h2>
+        <span class="badge">Alumno</span>
+      </div>
+
+      <div class="lesson-desc">
+        Entra nuevamente con tu cuenta.
+      </div>
+
+      <div class="contenido-box">
+        Tu contenido aparecerá aquí después de entrar.
+      </div>
+
+      <div class="lesson-mini-list" id="listaClasesMini"></div>
+    `;
+    ponerEstadoAuth("Sesión cerrada.");
+  }
+
+  function actualizarUIUsuario() {
+    if (!alumnoActual) {
+      document.getElementById("userChip").style.display = "none";
+      document.getElementById("authCard").classList.remove("hidden");
+      return;
+    }
+
+    document.getElementById("userChip").style.display = "flex";
+    document.getElementById("authCard").classList.add("hidden");
+    document.getElementById("userChipText").textContent =
+      (alumnoActual.nombre || "Alumno") + " · " + (alumnoActual.email || "");
+  }
+
+  async function registrarAlumno() {
+    try {
+      const nombre = document.getElementById("regNombre").value.trim();
+      const email = document.getElementById("regEmail").value.trim();
+      const password = document.getElementById("regPassword").value.trim();
+
+      const res = await fetch(API + "/api/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ nombre, email, password })
+      });
+
+      const data = await leerJSON(res);
+
+      document.getElementById("regNombre").value = "";
+      document.getElementById("regEmail").value = "";
+      document.getElementById("regPassword").value = "";
+
+      ponerEstadoAuth("Cuenta creada correctamente. Ahora entra con tu correo.");
+      mostrarTab("login");
+      document.getElementById("loginEmail").value = data.student?.email || email;
+    } catch (err) {
+      ponerEstadoAuth("Error en registro: " + err.message, "error");
+    }
+  }
+
+  async function loginAlumno() {
+    try {
+      const email = document.getElementById("loginEmail").value.trim();
+      const password = document.getElementById("loginPassword").value.trim();
+
+      const res = await fetch(API + "/api/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password })
+      });
+
+      const data = await leerJSON(res);
+
+      alumnoActual = data.student || null;
+      guardarSesionAlumno(alumnoActual);
+      actualizarUIUsuario();
+      ponerEstadoAuth("Acceso correcto. Cargando contenido...");
+      await cargarTodo();
+    } catch (err) {
+      ponerEstadoAuth("Error al entrar: " + err.message, "error");
+    }
+  }
+
+  async function cargarProgresoAlumno() {
+    if (!alumnoActual || !alumnoActual.id) {
+      progresoActual = [];
+      return;
+    }
+
+    try {
+      const res = await fetch(API + "/api/progress/" + alumnoActual.id);
+      const data = await leerJSON(res);
+      progresoActual = Array.isArray(data.progress) ? data.progress : [];
+    } catch {
+      progresoActual = [];
+    }
+  }
+
+  function progresoDeClase(lessonId) {
+    const item = progresoActual.find(p => Number(p.lesson_id) === Number(lessonId));
+    return item ? Number(item.progress_percent || 0) : 0;
+  }
+
+  function claseCompletada(lessonId) {
+    const item = progresoActual.find(p => Number(p.lesson_id) === Number(lessonId));
+    return !!(item && item.completed);
+  }
+
+  async function guardarProgresoClase(lessonId, percent, completed = false) {
+    if (!alumnoActual || !alumnoActual.id) return;
+
+    try {
+      await fetch(API + "/api/progress", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          student_id: alumnoActual.id,
+          lesson_id: lessonId,
+          progress_percent: percent,
+          completed: completed
+        })
+      });
+    } catch {}
+  }
+
   function limpiarUrl(url) {
     try {
       const texto = String(url || "").trim();
@@ -568,12 +832,6 @@
     } catch {
       return "";
     }
-  }
-
-  function normalizarDocumentoUrl(url) {
-    if (!url) return "";
-    if (String(url).startsWith("http://") || String(url).startsWith("https://")) return url;
-    return API + url;
   }
 
   function convertirYoutubeEmbed(url) {
@@ -610,415 +868,12 @@
     }
   }
 
-  function esPublicado(valor) {
-    const v = String(valor || "").toLowerCase().trim();
-    return v === "published" || v === "publicado";
-  }
+  function normalizarDocumentoUrl(url) {
+    if (!url) return "";
 
-  function obtenerClasesPublicadas(modulo) {
-    const lessons = Array.isArray(modulo.lessons) ? modulo.lessons : [];
-    return lessons.filter(clase => esPublicado(clase.estado || clase.status || "draft"));
-  }
-
-  function calcularProgreso() {
-    let total = 0;
-    modulosGlobal.forEach(m => {
-      total += obtenerClasesPublicadas(m).length;
-    });
-
-    if (!total) return 0;
-
-    const vista = Number(localStorage.getItem("chambari_clases_vistas") || "0");
-    return Math.min(100, Math.round((vista / total) * 100));
-  }
-
-  function marcarClaseVista(idClase) {
-    const key = "chambari_clases_vistas_ids";
-    const actuales = parseJSONSeguro(localStorage.getItem(key), []);
-    if (!actuales.includes(idClase)) {
-      actuales.push(idClase);
-      localStorage.setItem(key, JSON.stringify(actuales));
-      localStorage.setItem("chambari_clases_vistas", String(actuales.length));
-    }
-  }
-
-  function llenarSelectorModulos(modulos) {
-    const select = document.getElementById("selectorModulo");
-    select.innerHTML = "";
-
-    if (!modulos.length) {
-      select.innerHTML = '<option value="">No hay módulos publicados</option>';
-      return;
-    }
-
-    const base = document.createElement("option");
-    base.value = "";
-    base.textContent = "Selecciona un módulo";
-    select.appendChild(base);
-
-    modulos.forEach(modulo => {
-      const option = document.createElement("option");
-      option.value = modulo.id;
-      option.textContent = modulo.titulo || modulo.title || ("Módulo " + modulo.id);
-      select.appendChild(option);
-    });
-  }
-
-  function renderListaModulos(modulos) {
-    const cont = document.getElementById("listaModulos");
-    cont.innerHTML = "";
-
-    if (!modulos.length) {
-      cont.innerHTML = '<div class="modulo-item"><strong>No hay módulos publicados</strong><div class="small">Aún no hay contenido visible para alumno.</div></div>';
-      return;
-    }
-
-    modulos.forEach(modulo => {
-      const clases = obtenerClasesPublicadas(modulo);
-      const div = document.createElement("div");
-      div.className = "modulo-item" + (moduloActual && moduloActual.id === modulo.id ? " activo" : "");
-      div.innerHTML =
-        '<strong>' + escapar(modulo.titulo || modulo.title || "Sin título") + '</strong>' +
-        '<div class="small">' + escapar(modulo.descripcion || modulo.description || "Sin descripción") + '</div>' +
-        '<div class="small">Clases disponibles: ' + clases.length + '</div>';
-      div.onclick = () => seleccionarModulo(modulo.id);
-      cont.appendChild(div);
-    });
-  }
-
-  function renderVideo(url) {
-    if (!url) {
-      return `
-        <div class="video-wrap">
-          <div class="video-placeholder">
-            Esta clase no tiene video principal todavía.
-          </div>
-        </div>
-      `;
-    }
-
-    const embed = convertirYoutubeEmbed(url);
-
-    if (embed.includes("youtube.com/embed/")) {
-      return `
-        <div class="video-wrap">
-          <iframe class="video-frame" src="${embed}" allowfullscreen></iframe>
-        </div>
-      `;
-    }
-
-    return `
-      <div class="video-wrap">
-        <div class="video-placeholder">
-          <div>
-            <p>El video está disponible en un enlace externo.</p>
-            <p><a class="link-btn" href="${embed}" target="_blank" rel="noopener noreferrer">Abrir video</a></p>
-          </div>
-        </div>
-      </div>
-    `;
-  }
-
-  function esDocumentoEmbebible(url) {
-    const limpia = String(url || "").toLowerCase().split("?")[0];
-    return limpia.endsWith(".pdf");
-  }
-
-  function renderDocumentosEmbebidos(clase) {
-    const docs = parseJSONSeguro(
-      clase.document_urls ||
-      clase.documents_json ||
-      clase.documentos_json ||
-      "[]",
-      []
-    );
-
-    const docsNormalizados = docs.map(d => {
-      if (typeof d === "string") {
-        return { url: d, name: "Documento" };
+    if (String(url).startsWith("http://") || String(url).startsWith("https://")) {
+      const parts = String(url).split("/files/");
+      if (parts.length > 1) {
+        return API + "/viewer/" + parts[1];
       }
-      return {
-        url: d.url || d.file_url || "",
-        name: d.name || d.file_name || "Documento"
-      };
-    }).filter(d => d.url);
-
-    if (!docsNormalizados.length && !clase.file_url) return "";
-
-    let listaFinal = [];
-
-    if (docsNormalizados.length) {
-      listaFinal = docsNormalizados;
-    } else if (clase.file_url) {
-      listaFinal = [{
-        url: clase.file_url,
-        name: clase.file_name || "Documento de la clase"
-      }];
-    }
-
-    let html = '<div class="docs-embed-zone"><h3>Documentos de la clase</h3>';
-
-    html += listaFinal.map((doc, i) => {
-      const urlDoc = normalizarDocumentoUrl(doc.url);
-      const nombre = escapar(doc.name || ("Documento " + (i + 1)));
-
-      if (esDocumentoEmbebible(urlDoc)) {
-        return `
-          <div class="doc-viewer-card">
-            <div class="doc-viewer-head">
-              <strong>${nombre}</strong>
-              <a class="doc-open-link" href="${urlDoc}" target="_blank" rel="noopener noreferrer">Abrir aparte</a>
-            </div>
-            <iframe class="doc-frame" src="${urlDoc}"></iframe>
-          </div>
-        `;
-      }
-
-      return `
-        <div class="doc-viewer-card">
-          <div class="doc-viewer-head">
-            <strong>${nombre}</strong>
-            <a class="doc-open-link" href="${urlDoc}" target="_blank" rel="noopener noreferrer">Abrir archivo</a>
-          </div>
-          <div class="doc-no-preview">
-            Este tipo de archivo no se puede mostrar dentro de la app en todos los navegadores.
-            Puedes abrirlo con el botón superior.
-          </div>
-        </div>
-      `;
-    }).join("");
-
-    html += "</div>";
-    return html;
-  }
-
-  function renderRecursos(clase) {
-    const links = [
-      clase.link_1,
-      clase.link_2,
-      clase.link_3,
-      clase.link_4,
-      clase.link_5
-    ].filter(Boolean);
-
-    if (!links.length) return "";
-
-    let html = '<h3 style="margin-top:18px;">Recursos extra</h3><div class="recursos">';
-
-    html += links.map((link, i) => `
-      <div class="recurso">
-        <div>
-          <strong>Recurso ${i + 1}</strong>
-          <div class="small">${escapar(link)}</div>
-        </div>
-        <a class="link-btn" href="${limpiarUrl(link)}" target="_blank" rel="noopener noreferrer">Abrir</a>
-      </div>
-    `).join("");
-
-    html += "</div>";
-    return html;
-  }
-
-  function renderMiniClases(clases, indexActual) {
-    const cont = document.getElementById("listaClasesMini");
-    if (!cont) return;
-
-    cont.innerHTML = "";
-
-    if (!clases.length) return;
-
-    clases.forEach((clase, i) => {
-      const div = document.createElement("div");
-      div.className = "lesson-mini" + (i === indexActual ? " activa" : "");
-      div.innerHTML =
-        '<strong>' + escapar(clase.titulo || clase.title || ("Clase " + (i + 1))) + '</strong>' +
-        '<div class="small">' + escapar(clase.descripcion || clase.description || "Sin descripción") + '</div>';
-      div.onclick = () => {
-        claseActualIndex = i;
-        renderClaseActual();
-      };
-      cont.appendChild(div);
-    });
-  }
-
-  function renderClaseActual() {
-    if (!moduloActual) return;
-
-    const clases = obtenerClasesPublicadas(moduloActual);
-
-    if (!clases.length) {
-      document.getElementById("zonaClase").innerHTML = `
-        <div class="video-wrap">
-          <div class="video-placeholder">
-            Este módulo todavía no tiene clases publicadas.
-          </div>
-        </div>
-
-        <div class="lesson-header">
-          <h2 class="lesson-title">${escapar(moduloActual.titulo || moduloActual.title || "Módulo")}</h2>
-          <span class="badge">Sin clases</span>
-        </div>
-
-        <div class="lesson-desc">
-          El profesor aún no ha publicado contenido visible para este módulo.
-        </div>
-
-        <div class="contenido-box">
-          En cuanto el profesor publique clases, aparecerán aquí.
-        </div>
-
-        <div class="lesson-mini-list" id="listaClasesMini"></div>
-      `;
-      return;
-    }
-
-    if (claseActualIndex < 0) claseActualIndex = 0;
-    if (claseActualIndex >= clases.length) claseActualIndex = clases.length - 1;
-
-    const clase = clases[claseActualIndex];
-    marcarClaseVista(clase.id);
-
-    const titulo = clase.titulo || clase.title || "Sin título";
-    const descripcion = clase.descripcion || clase.description || "";
-    const contenido = clase.contenido || clase.text_content || "Esta clase no tiene contenido escrito todavía.";
-    const youtube = clase.youtube_url || "";
-
-    const puedeAnterior = claseActualIndex > 0;
-    const puedeSiguiente = claseActualIndex < (clases.length - 1);
-
-    document.getElementById("zonaClase").innerHTML = `
-      ${renderVideo(youtube)}
-
-      ${renderDocumentosEmbebidos(clase)}
-
-      <div class="lesson-header" style="margin-top:18px;">
-        <h2 class="lesson-title">${escapar(titulo)}</h2>
-        <span class="badge">Clase ${claseActualIndex + 1} de ${clases.length}</span>
-      </div>
-
-      <div class="lesson-desc">
-        ${escapar(descripcion || "Sigue esta lección paso a paso y usa los recursos al final.")}
-      </div>
-
-      <div class="contenido-box">${escapar(contenido)}</div>
-
-      ${renderRecursos(clase)}
-
-      <div class="lesson-nav">
-        <button class="secundario" ${!puedeAnterior ? "disabled style='opacity:.55;cursor:not-allowed;'" : ""} onclick="irClaseAnterior()">Clase anterior</button>
-        <button class="success" ${!puedeSiguiente ? "disabled style='opacity:.55;cursor:not-allowed;'" : ""} onclick="irClaseSiguiente()">Siguiente clase</button>
-      </div>
-
-      <div class="lesson-mini-list" id="listaClasesMini"></div>
-    `;
-
-    renderMiniClases(clases, claseActualIndex);
-    document.getElementById("statProgreso").textContent = calcularProgreso() + "%";
-  }
-
-  function irClaseAnterior() {
-    if (!moduloActual) return;
-    const clases = obtenerClasesPublicadas(moduloActual);
-    if (claseActualIndex > 0 && clases.length) {
-      claseActualIndex--;
-      renderClaseActual();
-    }
-  }
-
-  function irClaseSiguiente() {
-    if (!moduloActual) return;
-    const clases = obtenerClasesPublicadas(moduloActual);
-    if (claseActualIndex < clases.length - 1) {
-      claseActualIndex++;
-      renderClaseActual();
-    }
-  }
-
-  function seleccionarModulo(id) {
-    const modulo = modulosGlobal.find(m => String(m.id) === String(id));
-    if (!modulo) return;
-
-    moduloActual = modulo;
-    claseActualIndex = 0;
-
-    document.getElementById("selectorModulo").value = String(modulo.id);
-    renderListaModulos(modulosGlobal);
-    renderClaseActual();
-  }
-
-  function seleccionarModuloDesdeSelect() {
-    const id = document.getElementById("selectorModulo").value;
-    if (!id) {
-      ponerEstado("Debes seleccionar un módulo.", "error");
-      return;
-    }
-    seleccionarModulo(id);
-  }
-
-  async function cargarTodo() {
-    try {
-      const res = await fetch(API + "/api/dashboard");
-      const data = await leerJSON(res);
-
-      const modulos = Array.isArray(data.modules) ? data.modules : [];
-      modulosGlobal = modulos.filter(m => {
-        const clases = obtenerClasesPublicadas(m);
-        return clases.length > 0 || esPublicado(m.estado || m.status || "published");
-      });
-
-      const totalClases = modulosGlobal.reduce((acc, m) => acc + obtenerClasesPublicadas(m).length, 0);
-
-      document.getElementById("statModulos").textContent = modulosGlobal.length;
-      document.getElementById("statClases").textContent = totalClases;
-      document.getElementById("statProgreso").textContent = calcularProgreso() + "%";
-
-      llenarSelectorModulos(modulosGlobal);
-      renderListaModulos(modulosGlobal);
-
-      if (modulosGlobal.length) {
-        if (!moduloActual) {
-          moduloActual = modulosGlobal[0];
-          claseActualIndex = 0;
-        } else {
-          const actualizado = modulosGlobal.find(m => String(m.id) === String(moduloActual.id));
-          moduloActual = actualizado || modulosGlobal[0];
-        }
-
-        renderListaModulos(modulosGlobal);
-        renderClaseActual();
-        ponerEstado("Contenido cargado correctamente.");
-      } else {
-        document.getElementById("zonaClase").innerHTML = `
-          <div class="video-wrap">
-            <div class="video-placeholder">
-              No hay clases publicadas todavía.
-            </div>
-          </div>
-
-          <div class="lesson-header">
-            <h2 class="lesson-title">Sin contenido disponible</h2>
-            <span class="badge">Alumno</span>
-          </div>
-
-          <div class="lesson-desc">
-            Cuando el profesor publique módulos y clases, aparecerán aquí automáticamente.
-          </div>
-
-          <div class="contenido-box">
-            Verifica más tarde o publica una clase desde el panel del profesor.
-          </div>
-
-          <div class="lesson-mini-list" id="listaClasesMini"></div>
-        `;
-        ponerEstado("Todavía no hay módulos con clases publicadas.", "error");
-      }
-    } catch (err) {
-      ponerEstado("Error cargando alumno: " + err.message, "error");
-    }
-  }
-
-  cargarTodo();
-</script>
-
-</body>
-</html>
+      return url
