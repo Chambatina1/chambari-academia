@@ -1,9 +1,9 @@
 {
-  "id": "/chambari-academia/profesor.html",
+  "id": "/chambari-academia/profesor.html?v=20260406",
   "name": "Chambari Profesor",
   "short_name": "Profesor",
   "start_url": "/chambari-academia/profesor.html?v=20260406",
-  "scope": "/chambari-academia/profesor/",
+  "scope": "/chambari-academia/",
   "display": "standalone",
   "background_color": "#f5f3f8",
   "theme_color": "#7b5ea7",
