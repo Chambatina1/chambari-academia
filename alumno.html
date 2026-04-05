@@ -1,394 +1,443 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Chambari - Alumno</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chambari - Alumno</title>
 
-<style>
-:root{
-  --bg: #f7f4ef;
-  --bg-2: #f3efe7;
-  --card: #ffffff;
-  --card-soft: #f6f1e8;
-  --text: #2b2430;
-  --muted: #6f6472;
+  <style>
+    :root{
+      --bg: #f7f4ef;
+      --bg-2: #f3efe7;
+      --card: #ffffff;
+      --card-soft: #f6f1e8;
+      --text: #2b2430;
+      --muted: #6f6472;
 
-  --primary: #7b5ea7;
-  --primary-2: #62458f;
+      --primary: #7b5ea7;
+      --primary-2: #62458f;
 
-  --accent: #a8c3a0;
-  --accent-2: #7ea172;
+      --accent: #a8c3a0;
+      --accent-2: #7ea172;
 
-  --wood: #c7a27c;
-  --wood-2: #a67c52;
+      --wood: #c7a27c;
+      --wood-2: #a67c52;
 
-  --warning: #e0b35b;
-  --danger: #c85c5c;
-  --success: #6f9f6f;
+      --warning: #e0b35b;
+      --danger: #c85c5c;
+      --success: #6f9f6f;
 
-  --border: #e6ddd2;
-  --shadow: 0 10px 26px rgba(66, 40, 80, 0.08);
-}
+      --border: #e6ddd2;
+      --shadow: 0 10px 26px rgba(66, 40, 80, 0.08);
+    }
 
-* { box-sizing: border-box; }
+    * { box-sizing: border-box; }
 
-body {
-  font-family: Arial, sans-serif;
-  background:
-    radial-gradient(circle at top right, #efe6ff 0%, transparent 22%),
-    linear-gradient(180deg, var(--bg) 0%, var(--bg-2) 100%);
-  color: var(--text);
-  margin: 0;
-  padding: 20px;
-}
+    body {
+      font-family: Arial, sans-serif;
+      background:
+        radial-gradient(circle at top right, #efe6ff 0%, transparent 22%),
+        linear-gradient(180deg, var(--bg) 0%, var(--bg-2) 100%);
+      color: var(--text);
+      margin: 0;
+      padding: 20px;
+    }
 
-.main {
-  max-width: 1200px;
-  margin: 0 auto;
-}
+    .main {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
 
-.logo-bar {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  margin-bottom: 16px;
-}
+    .logo-bar {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 16px;
+    }
 
-.logo-box {
-  width: 58px;
-  height: 58px;
-  border-radius: 16px;
-  background: linear-gradient(135deg, var(--primary), var(--wood));
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  font-size: 24px;
-  font-weight: bold;
-  box-shadow: var(--shadow);
-}
+    .logo-box {
+      width: 58px;
+      height: 58px;
+      border-radius: 16px;
+      background: linear-gradient(135deg, var(--primary), var(--wood));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 24px;
+      font-weight: bold;
+      box-shadow: var(--shadow);
+    }
 
-.logo-text strong {
-  display: block;
-  font-size: 22px;
-  color: var(--primary-2);
-}
+    .logo-text strong {
+      display: block;
+      font-size: 22px;
+      color: var(--primary-2);
+    }
 
-.logo-text span {
-  color: var(--muted);
-  font-size: 13px;
-}
+    .logo-text span {
+      color: var(--muted);
+      font-size: 13px;
+    }
 
-.hero {
-  background: var(--card);
-  border: 1px solid var(--border);
-  box-shadow: var(--shadow);
-  border-radius: 22px;
-  padding: 24px;
-  margin-bottom: 20px;
-}
+    .hero {
+      background: var(--card);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+      border-radius: 22px;
+      padding: 24px;
+      margin-bottom: 20px;
+    }
 
-.hero h1 {
-  margin: 0 0 8px 0;
-  color: var(--primary-2);
-  font-size: 34px;
-}
+    .hero h1 {
+      margin: 0 0 8px 0;
+      color: var(--primary-2);
+      font-size: 34px;
+    }
 
-.hero p {
-  margin: 0;
-  color: var(--muted);
-  line-height: 1.5;
-}
+    .hero p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.5;
+    }
 
-.grid-top {
-  display: grid;
-  gap: 18px;
-  margin-bottom: 20px;
-}
+    .grid-top {
+      display: grid;
+      gap: 18px;
+      margin-bottom: 20px;
+    }
 
-@media (min-width: 920px) {
-  .grid-top {
-    grid-template-columns: 340px 1fr;
-  }
-}
+    @media (min-width: 920px) {
+      .grid-top {
+        grid-template-columns: 340px 1fr;
+      }
+    }
 
-.card {
-  background: var(--card);
-  border: 1px solid var(--border);
-  box-shadow: var(--shadow);
-  border-radius: 20px;
-  padding: 20px;
-}
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+      border-radius: 20px;
+      padding: 20px;
+    }
 
-h2, h3 {
-  margin-top: 0;
-  color: var(--primary-2);
-}
+    h2, h3 {
+      margin-top: 0;
+      color: var(--primary-2);
+    }
 
-.stats {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 12px;
-}
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
 
-.stat {
-  background: linear-gradient(180deg, #fbf8f4 0%, #ffffff 100%);
-  border: 1px solid var(--border);
-  border-radius: 16px;
-  padding: 16px;
-  text-align: center;
-}
+    .stat {
+      background: linear-gradient(180deg, #fbf8f4 0%, #ffffff 100%);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 16px;
+      text-align: center;
+    }
 
-.stat strong {
-  display: block;
-  font-size: 26px;
-  color: var(--primary);
-  margin-bottom: 4px;
-}
+    .stat strong {
+      display: block;
+      font-size: 26px;
+      color: var(--primary);
+      margin-bottom: 4px;
+    }
 
-label {
-  display: block;
-  font-size: 14px;
-  color: var(--muted);
-  margin-bottom: 6px;
-  margin-top: 10px;
-}
+    label {
+      display: block;
+      font-size: 14px;
+      color: var(--muted);
+      margin-bottom: 6px;
+      margin-top: 10px;
+    }
 
-select, input, textarea {
-  width: 100%;
-  padding: 12px;
-  border-radius: 12px;
-  border: 1px solid var(--border);
-  background: #fff;
-  color: var(--text);
-  font-size: 15px;
-  outline: none;
-}
+    select {
+      width: 100%;
+      padding: 12px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: #fff;
+      color: var(--text);
+      font-size: 15px;
+      outline: none;
+    }
 
-select:focus, input:focus, textarea:focus {
-  border-color: var(--primary);
-  box-shadow: 0 0 0 3px rgba(123, 94, 167, 0.10);
-}
+    select:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(123, 94, 167, 0.10);
+    }
 
-button {
-  margin-top: 12px;
-  padding: 12px 14px;
-  width: 100%;
-  background: var(--primary);
-  border: none;
-  color: white;
-  font-weight: bold;
-  border-radius: 12px;
-  cursor: pointer;
-  font-size: 15px;
-  transition: .18s ease;
-}
+    button {
+      margin-top: 12px;
+      padding: 12px 14px;
+      width: 100%;
+      background: var(--primary);
+      border: none;
+      color: white;
+      font-weight: bold;
+      border-radius: 12px;
+      cursor: pointer;
+      font-size: 15px;
+      transition: .18s ease;
+    }
 
-button:hover {
-  transform: translateY(-1px);
-  opacity: .97;
-}
+    button:hover {
+      transform: translateY(-1px);
+      opacity: .97;
+    }
 
-button.secundario {
-  background: #7e8798;
-}
+    button.secundario {
+      background: #7e8798;
+    }
 
-button.success {
-  background: var(--success);
-}
+    button.success {
+      background: var(--success);
+    }
 
-.badge {
-  display: inline-block;
-  padding: 6px 10px;
-  border-radius: 999px;
-  background: #efe6ff;
-  color: var(--primary-2);
-  font-size: 12px;
-  font-weight: bold;
-}
+    .badge {
+      display: inline-block;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: #efe6ff;
+      color: var(--primary-2);
+      font-size: 12px;
+      font-weight: bold;
+    }
 
-.estado {
-  margin-top: 12px;
-  padding: 12px;
-  border-radius: 12px;
-  background: #faf8f4;
-  border-left: 4px solid var(--success);
-  color: var(--text);
-}
+    .estado {
+      margin-top: 12px;
+      padding: 12px;
+      border-radius: 12px;
+      background: #faf8f4;
+      border-left: 4px solid var(--success);
+      color: var(--text);
+    }
 
-.error {
-  border-left-color: var(--danger);
-}
+    .estado.error {
+      border-left-color: var(--danger);
+    }
 
-.modulo-lista {
-  display: grid;
-  gap: 10px;
-  margin-top: 14px;
-}
+    .modulo-lista {
+      display: grid;
+      gap: 10px;
+      margin-top: 14px;
+    }
 
-.modulo-item {
-  border: 1px solid var(--border);
-  background: #fbfaf7;
-  border-radius: 14px;
-  padding: 14px;
-  cursor: pointer;
-  transition: .18s ease;
-}
+    .modulo-item {
+      border: 1px solid var(--border);
+      background: #fbfaf7;
+      border-radius: 14px;
+      padding: 14px;
+      cursor: pointer;
+      transition: .18s ease;
+    }
 
-.modulo-item:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 6px 16px rgba(66, 40, 80, 0.06);
-}
+    .modulo-item:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 16px rgba(66, 40, 80, 0.06);
+    }
 
-.modulo-item.activo {
-  border-color: var(--primary);
-  background: #f4effb;
-}
+    .modulo-item.activo {
+      border-color: var(--primary);
+      background: #f4effb;
+    }
 
-.modulo-item strong {
-  display: block;
-  margin-bottom: 4px;
-  color: var(--primary-2);
-}
+    .modulo-item strong {
+      display: block;
+      margin-bottom: 4px;
+      color: var(--primary-2);
+    }
 
-.small {
-  font-size: 13px;
-  color: var(--muted);
-  line-height: 1.45;
-}
+    .small {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.45;
+    }
 
-.video-wrap {
-  background: #f7f1ff;
-  border: 1px solid var(--border);
-  border-radius: 18px;
-  overflow: hidden;
-  margin-bottom: 18px;
-}
+    .video-wrap {
+      background: #f7f1ff;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      overflow: hidden;
+      margin-bottom: 18px;
+    }
 
-.video-placeholder {
-  min-height: 280px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 26px;
-  text-align: center;
-  color: var(--muted);
-}
+    .video-placeholder {
+      min-height: 280px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 26px;
+      text-align: center;
+      color: var(--muted);
+    }
 
-.video-frame {
-  width: 100%;
-  height: 420px;
-  border: none;
-  display: block;
-  background: #000;
-}
+    .video-frame {
+      width: 100%;
+      height: 420px;
+      border: none;
+      display: block;
+      background: #000;
+    }
 
-@media (max-width: 768px) {
-  .video-frame {
-    height: 240px;
-  }
-}
+    @media (max-width: 768px) {
+      .video-frame {
+        height: 240px;
+      }
+    }
 
-.lesson-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 12px;
-  flex-wrap: wrap;
-  margin-bottom: 10px;
-}
+    .lesson-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 10px;
+    }
 
-.lesson-title {
-  margin: 0;
-  color: var(--primary-2);
-  font-size: 28px;
-}
+    .lesson-title {
+      margin: 0;
+      color: var(--primary-2);
+      font-size: 28px;
+    }
 
-.lesson-desc {
-  color: var(--muted);
-  margin-bottom: 18px;
-  line-height: 1.55;
-}
+    .lesson-desc {
+      color: var(--muted);
+      margin-bottom: 18px;
+      line-height: 1.55;
+    }
 
-.contenido-box {
-  background: var(--card-soft);
-  border: 1px solid var(--border);
-  border-radius: 16px;
-  padding: 16px;
-  white-space: pre-wrap;
-  line-height: 1.65;
-}
+    .contenido-box {
+      background: var(--card-soft);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 16px;
+      white-space: pre-wrap;
+      line-height: 1.65;
+    }
 
-.recursos {
-  margin-top: 18px;
-  display: grid;
-  gap: 10px;
-}
+    .docs-embed-zone {
+      margin-top: 18px;
+    }
 
-.recurso {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 14px;
-  border: 1px solid var(--border);
-  background: #fbfaf7;
-  border-radius: 14px;
-  padding: 14px;
-  flex-wrap: wrap;
-}
+    .doc-viewer-card {
+      margin-top: 14px;
+      background: #fbfaf7;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      overflow: hidden;
+    }
 
-.recurso strong {
-  color: var(--text);
-}
+    .doc-viewer-head {
+      padding: 14px 16px;
+      background: #f2ece4;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
 
-.link-btn {
-  display: inline-block;
-  background: var(--accent-2);
-  color: white;
-  text-decoration: none;
-  padding: 10px 14px;
-  border-radius: 12px;
-  font-weight: bold;
-}
+    .doc-viewer-head strong {
+      color: var(--primary-2);
+      font-size: 15px;
+    }
 
-.doc-btn {
-  background: var(--wood-2);
-}
+    .doc-open-link {
+      display: inline-block;
+      background: var(--wood-2);
+      color: white;
+      text-decoration: none;
+      padding: 9px 12px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: bold;
+    }
 
-.lesson-nav {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
-  margin-top: 18px;
-}
+    .doc-frame {
+      width: 100%;
+      height: 520px;
+      border: none;
+      display: block;
+      background: white;
+    }
 
-.lesson-mini-list {
-  margin-top: 18px;
-  display: grid;
-  gap: 10px;
-}
+    .doc-no-preview {
+      padding: 22px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
 
-.lesson-mini {
-  padding: 14px;
-  border-radius: 14px;
-  border: 1px solid var(--border);
-  background: #fbfaf7;
-  cursor: pointer;
-}
+    .recursos {
+      margin-top: 18px;
+      display: grid;
+      gap: 10px;
+    }
 
-.lesson-mini.activa {
-  background: #f4effb;
-  border-color: var(--primary);
-}
+    .recurso {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      border: 1px solid var(--border);
+      background: #fbfaf7;
+      border-radius: 14px;
+      padding: 14px;
+      flex-wrap: wrap;
+    }
 
-.footer-note {
-  text-align: center;
-  color: var(--muted);
-  font-size: 13px;
-  margin-top: 18px;
-}
-</style>
+    .recurso strong {
+      color: var(--text);
+    }
+
+    .link-btn {
+      display: inline-block;
+      background: var(--accent-2);
+      color: white;
+      text-decoration: none;
+      padding: 10px 14px;
+      border-radius: 12px;
+      font-weight: bold;
+    }
+
+    .lesson-nav {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 18px;
+    }
+
+    .lesson-mini-list {
+      margin-top: 18px;
+      display: grid;
+      gap: 10px;
+    }
+
+    .lesson-mini {
+      padding: 14px;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      background: #fbfaf7;
+      cursor: pointer;
+    }
+
+    .lesson-mini.activa {
+      background: #f4effb;
+      border-color: var(--primary);
+    }
+
+    .footer-note {
+      text-align: center;
+      color: var(--muted);
+      font-size: 13px;
+      margin-top: 18px;
+    }
+  </style>
 </head>
 <body>
 
@@ -405,8 +454,8 @@ button.success {
   <div class="hero">
     <h1>Continúa tu clase</h1>
     <p>
-      Aprende de forma clara, visual y práctica. Selecciona un módulo, abre tu clase
-      y avanza paso a paso con el método Chambari.
+      Aprende de forma clara, visual y práctica. Selecciona un módulo,
+      abre tu clase y avanza paso a paso.
     </p>
   </div>
 
@@ -455,11 +504,11 @@ button.success {
         </div>
 
         <div class="lesson-desc">
-          Aquí verás el video principal arriba y el contenido de la clase debajo.
+          Aquí verás el video arriba, los documentos debajo y luego el contenido de la clase.
         </div>
 
         <div class="contenido-box">
-          Cuando el profesor publique clases, aparecerán aquí de forma organizada y visual.
+          Cuando el profesor publique clases, aparecerán aquí de forma organizada.
         </div>
 
         <div class="lesson-mini-list" id="listaClasesMini"></div>
@@ -474,234 +523,288 @@ button.success {
 </div>
 
 <script>
-const API = "https://chambari-academia.onrender.com";
+  const API = "https://chambari-academia.onrender.com";
 
-let modulosGlobal = [];
-let moduloActual = null;
-let claseActualIndex = 0;
+  let modulosGlobal = [];
+  let moduloActual = null;
+  let claseActualIndex = 0;
 
-function escapar(texto) {
-  return String(texto || "")
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#39;");
-}
-
-function ponerEstado(texto, tipo = "ok") {
-  document.getElementById("estadoAlumno").innerHTML =
-    `<div class="estado ${tipo === "error" ? "error" : ""}">${texto}</div>`;
-}
-
-async function leerJSON(res) {
-  const texto = await res.text();
-  let data;
-  try {
-    data = JSON.parse(texto);
-  } catch {
-    throw new Error("Respuesta no válida del servidor: " + texto);
+  function escapar(texto) {
+    return String(texto || "")
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#39;");
   }
 
-  if (!res.ok || !data.ok) {
-    throw new Error(data?.error || `Error HTTP ${res.status}`);
+  function ponerEstado(texto, tipo = "ok") {
+    document.getElementById("estadoAlumno").innerHTML =
+      '<div class="estado ' + (tipo === "error" ? "error" : "") + '">' + texto + '</div>';
   }
 
-  return data;
-}
-
-function limpiarUrl(url) {
-  try {
-    const texto = String(url || "").trim();
-    if (!texto) return "";
-    if (texto.startsWith("http://") || texto.startsWith("https://")) return texto;
-    return "https://" + texto.replace(/^\/+/, "");
-  } catch {
-    return "";
-  }
-}
-
-function normalizarDocumentoUrl(url) {
-  if (!url) return "";
-  if (String(url).startsWith("http://") || String(url).startsWith("https://")) return url;
-  return API + url;
-}
-
-function convertirYoutubeEmbed(url) {
-  const limpio = limpiarUrl(url);
-  if (!limpio) return "";
-
-  try {
-    const u = new URL(limpio);
-
-    if (u.hostname.includes("youtu.be")) {
-      const id = u.pathname.replace("/", "").trim();
-      return id ? `https://www.youtube.com/embed/${id}` : "";
+  async function leerJSON(res) {
+    const texto = await res.text();
+    let data;
+    try {
+      data = JSON.parse(texto);
+    } catch {
+      throw new Error("Respuesta no válida del servidor: " + texto);
     }
 
-    if (u.hostname.includes("youtube.com")) {
-      const id = u.searchParams.get("v");
-      if (id) return `https://www.youtube.com/embed/${id}`;
-      if (u.pathname.includes("/embed/")) return limpio;
+    if (!res.ok || !data.ok) {
+      throw new Error(data?.error || ("Error HTTP " + res.status));
     }
 
-    return limpio;
-  } catch {
-    return limpio;
-  }
-}
-
-function parseJSONSeguro(valor, fallback = []) {
-  try {
-    if (!valor) return fallback;
-    if (Array.isArray(valor)) return valor;
-    return JSON.parse(valor);
-  } catch {
-    return fallback;
-  }
-}
-
-function esPublicado(valor) {
-  const v = String(valor || "").toLowerCase().trim();
-  return v === "published" || v === "publicado";
-}
-
-function obtenerClasesPublicadas(modulo) {
-  const lessons = Array.isArray(modulo.lessons) ? modulo.lessons : [];
-  return lessons.filter(clase => esPublicado(clase.estado || clase.status || "draft"));
-}
-
-function calcularProgreso() {
-  let total = 0;
-  modulosGlobal.forEach(m => {
-    total += obtenerClasesPublicadas(m).length;
-  });
-
-  if (!total) return 0;
-
-  const vista = Number(localStorage.getItem("chambari_clases_vistas") || "0");
-  return Math.min(100, Math.round((vista / total) * 100));
-}
-
-function marcarClaseVista(idClase) {
-  const key = "chambari_clases_vistas_ids";
-  const actuales = parseJSONSeguro(localStorage.getItem(key), []);
-  if (!actuales.includes(idClase)) {
-    actuales.push(idClase);
-    localStorage.setItem(key, JSON.stringify(actuales));
-    localStorage.setItem("chambari_clases_vistas", String(actuales.length));
-  }
-}
-
-function llenarSelectorModulos(modulos) {
-  const select = document.getElementById("selectorModulo");
-  select.innerHTML = "";
-
-  if (!modulos.length) {
-    select.innerHTML = `<option value="">No hay módulos publicados</option>`;
-    return;
+    return data;
   }
 
-  const base = document.createElement("option");
-  base.value = "";
-  base.textContent = "Selecciona un módulo";
-  select.appendChild(base);
-
-  modulos.forEach(modulo => {
-    const option = document.createElement("option");
-    option.value = modulo.id;
-    option.textContent = modulo.titulo || modulo.title || `Módulo ${modulo.id}`;
-    select.appendChild(option);
-  });
-}
-
-function renderListaModulos(modulos) {
-  const cont = document.getElementById("listaModulos");
-  cont.innerHTML = "";
-
-  if (!modulos.length) {
-    cont.innerHTML = `<div class="modulo-item"><strong>No hay módulos publicados</strong><div class="small">Aún no hay contenido visible para alumno.</div></div>`;
-    return;
+  function limpiarUrl(url) {
+    try {
+      const texto = String(url || "").trim();
+      if (!texto) return "";
+      if (texto.startsWith("http://") || texto.startsWith("https://")) return texto;
+      return "https://" + texto.replace(/^\/+/, "");
+    } catch {
+      return "";
+    }
   }
 
-  modulos.forEach(modulo => {
-    const clases = obtenerClasesPublicadas(modulo);
-    const div = document.createElement("div");
-    div.className = "modulo-item" + (moduloActual && moduloActual.id === modulo.id ? " activo" : "");
-    div.innerHTML = `
-      <strong>${escapar(modulo.titulo || modulo.title || "Sin título")}</strong>
-      <div class="small">${escapar(modulo.descripcion || modulo.description || "Sin descripción")}</div>
-      <div class="small">Clases disponibles: ${clases.length}</div>
-    `;
-    div.onclick = () => seleccionarModulo(modulo.id);
-    cont.appendChild(div);
-  });
-}
+  function normalizarDocumentoUrl(url) {
+    if (!url) return "";
+    if (String(url).startsWith("http://") || String(url).startsWith("https://")) return url;
+    return API + url;
+  }
 
-function renderVideo(url) {
-  if (!url) {
+  function convertirYoutubeEmbed(url) {
+    const limpio = limpiarUrl(url);
+    if (!limpio) return "";
+
+    try {
+      const u = new URL(limpio);
+
+      if (u.hostname.includes("youtu.be")) {
+        const id = u.pathname.replace("/", "").trim();
+        return id ? "https://www.youtube.com/embed/" + id : "";
+      }
+
+      if (u.hostname.includes("youtube.com")) {
+        const id = u.searchParams.get("v");
+        if (id) return "https://www.youtube.com/embed/" + id;
+        if (u.pathname.includes("/embed/")) return limpio;
+      }
+
+      return limpio;
+    } catch {
+      return limpio;
+    }
+  }
+
+  function parseJSONSeguro(valor, fallback = []) {
+    try {
+      if (!valor) return fallback;
+      if (Array.isArray(valor)) return valor;
+      return JSON.parse(valor);
+    } catch {
+      return fallback;
+    }
+  }
+
+  function esPublicado(valor) {
+    const v = String(valor || "").toLowerCase().trim();
+    return v === "published" || v === "publicado";
+  }
+
+  function obtenerClasesPublicadas(modulo) {
+    const lessons = Array.isArray(modulo.lessons) ? modulo.lessons : [];
+    return lessons.filter(clase => esPublicado(clase.estado || clase.status || "draft"));
+  }
+
+  function calcularProgreso() {
+    let total = 0;
+    modulosGlobal.forEach(m => {
+      total += obtenerClasesPublicadas(m).length;
+    });
+
+    if (!total) return 0;
+
+    const vista = Number(localStorage.getItem("chambari_clases_vistas") || "0");
+    return Math.min(100, Math.round((vista / total) * 100));
+  }
+
+  function marcarClaseVista(idClase) {
+    const key = "chambari_clases_vistas_ids";
+    const actuales = parseJSONSeguro(localStorage.getItem(key), []);
+    if (!actuales.includes(idClase)) {
+      actuales.push(idClase);
+      localStorage.setItem(key, JSON.stringify(actuales));
+      localStorage.setItem("chambari_clases_vistas", String(actuales.length));
+    }
+  }
+
+  function llenarSelectorModulos(modulos) {
+    const select = document.getElementById("selectorModulo");
+    select.innerHTML = "";
+
+    if (!modulos.length) {
+      select.innerHTML = '<option value="">No hay módulos publicados</option>';
+      return;
+    }
+
+    const base = document.createElement("option");
+    base.value = "";
+    base.textContent = "Selecciona un módulo";
+    select.appendChild(base);
+
+    modulos.forEach(modulo => {
+      const option = document.createElement("option");
+      option.value = modulo.id;
+      option.textContent = modulo.titulo || modulo.title || ("Módulo " + modulo.id);
+      select.appendChild(option);
+    });
+  }
+
+  function renderListaModulos(modulos) {
+    const cont = document.getElementById("listaModulos");
+    cont.innerHTML = "";
+
+    if (!modulos.length) {
+      cont.innerHTML = '<div class="modulo-item"><strong>No hay módulos publicados</strong><div class="small">Aún no hay contenido visible para alumno.</div></div>';
+      return;
+    }
+
+    modulos.forEach(modulo => {
+      const clases = obtenerClasesPublicadas(modulo);
+      const div = document.createElement("div");
+      div.className = "modulo-item" + (moduloActual && moduloActual.id === modulo.id ? " activo" : "");
+      div.innerHTML =
+        '<strong>' + escapar(modulo.titulo || modulo.title || "Sin título") + '</strong>' +
+        '<div class="small">' + escapar(modulo.descripcion || modulo.description || "Sin descripción") + '</div>' +
+        '<div class="small">Clases disponibles: ' + clases.length + '</div>';
+      div.onclick = () => seleccionarModulo(modulo.id);
+      cont.appendChild(div);
+    });
+  }
+
+  function renderVideo(url) {
+    if (!url) {
+      return `
+        <div class="video-wrap">
+          <div class="video-placeholder">
+            Esta clase no tiene video principal todavía.
+          </div>
+        </div>
+      `;
+    }
+
+    const embed = convertirYoutubeEmbed(url);
+
+    if (embed.includes("youtube.com/embed/")) {
+      return `
+        <div class="video-wrap">
+          <iframe class="video-frame" src="${embed}" allowfullscreen></iframe>
+        </div>
+      `;
+    }
+
     return `
       <div class="video-wrap">
         <div class="video-placeholder">
-          Esta clase no tiene video principal todavía.
+          <div>
+            <p>El video está disponible en un enlace externo.</p>
+            <p><a class="link-btn" href="${embed}" target="_blank" rel="noopener noreferrer">Abrir video</a></p>
+          </div>
         </div>
       </div>
     `;
   }
 
-  const embed = convertirYoutubeEmbed(url);
-
-  if (embed.includes("youtube.com/embed/")) {
-    return `
-      <div class="video-wrap">
-        <iframe class="video-frame" src="${embed}" allowfullscreen></iframe>
-      </div>
-    `;
+  function esDocumentoEmbebible(url) {
+    const limpia = String(url || "").toLowerCase().split("?")[0];
+    return limpia.endsWith(".pdf");
   }
 
-  return `
-    <div class="video-wrap">
-      <div class="video-placeholder">
-        <div>
-          <p>El video está disponible en un enlace externo.</p>
-          <p><a class="link-btn" href="${embed}" target="_blank" rel="noopener noreferrer">Abrir video</a></p>
-        </div>
-      </div>
-    </div>
-  `;
-}
+  function renderDocumentosEmbebidos(clase) {
+    const docs = parseJSONSeguro(
+      clase.document_urls ||
+      clase.documents_json ||
+      clase.documentos_json ||
+      "[]",
+      []
+    );
 
-function renderRecursos(clase) {
-  const links = [
-    clase.link_1,
-    clase.link_2,
-    clase.link_3,
-    clase.link_4,
-    clase.link_5
-  ].filter(Boolean);
+    const docsNormalizados = docs.map(d => {
+      if (typeof d === "string") {
+        return { url: d, name: "Documento" };
+      }
+      return {
+        url: d.url || d.file_url || "",
+        name: d.name || d.file_name || "Documento"
+      };
+    }).filter(d => d.url);
 
-  const docs = parseJSONSeguro(
-    clase.document_urls ||
-    clase.documents_json ||
-    clase.documentos_json ||
-    "[]",
-    []
-  );
+    if (!docsNormalizados.length && !clase.file_url) return "";
 
-  const docsNormalizados = docs.map(d => {
-    if (typeof d === "string") {
-      return { url: d, name: "Documento" };
+    let listaFinal = [];
+
+    if (docsNormalizados.length) {
+      listaFinal = docsNormalizados;
+    } else if (clase.file_url) {
+      listaFinal = [{
+        url: clase.file_url,
+        name: clase.file_name || "Documento de la clase"
+      }];
     }
-    return {
-      url: d.url || d.file_url || "",
-      name: d.name || d.file_name || "Documento"
-    };
-  }).filter(d => d.url);
 
-  let html = "";
+    let html = '<div class="docs-embed-zone"><h3>Documentos de la clase</h3>';
 
-  if (links.length) {
-    html += `<h3>Recursos extra</h3><div class="recursos">`;
+    html += listaFinal.map((doc, i) => {
+      const urlDoc = normalizarDocumentoUrl(doc.url);
+      const nombre = escapar(doc.name || ("Documento " + (i + 1)));
+
+      if (esDocumentoEmbebible(urlDoc)) {
+        return `
+          <div class="doc-viewer-card">
+            <div class="doc-viewer-head">
+              <strong>${nombre}</strong>
+              <a class="doc-open-link" href="${urlDoc}" target="_blank" rel="noopener noreferrer">Abrir aparte</a>
+            </div>
+            <iframe class="doc-frame" src="${urlDoc}"></iframe>
+          </div>
+        `;
+      }
+
+      return `
+        <div class="doc-viewer-card">
+          <div class="doc-viewer-head">
+            <strong>${nombre}</strong>
+            <a class="doc-open-link" href="${urlDoc}" target="_blank" rel="noopener noreferrer">Abrir archivo</a>
+          </div>
+          <div class="doc-no-preview">
+            Este tipo de archivo no se puede mostrar dentro de la app en todos los navegadores.
+            Puedes abrirlo con el botón superior.
+          </div>
+        </div>
+      `;
+    }).join("");
+
+    html += "</div>";
+    return html;
+  }
+
+  function renderRecursos(clase) {
+    const links = [
+      clase.link_1,
+      clase.link_2,
+      clase.link_3,
+      clase.link_4,
+      clase.link_5
+    ].filter(Boolean);
+
+    if (!links.length) return "";
+
+    let html = '<h3 style="margin-top:18px;">Recursos extra</h3><div class="recursos">';
+
     html += links.map((link, i) => `
       <div class="recurso">
         <div>
@@ -711,236 +814,211 @@ function renderRecursos(clase) {
         <a class="link-btn" href="${limpiarUrl(link)}" target="_blank" rel="noopener noreferrer">Abrir</a>
       </div>
     `).join("");
-    html += `</div>`;
+
+    html += "</div>";
+    return html;
   }
 
-  if (docsNormalizados.length || clase.file_url) {
-    html += `<h3 style="margin-top:18px;">Documentos</h3><div class="recursos">`;
+  function renderMiniClases(clases, indexActual) {
+    const cont = document.getElementById("listaClasesMini");
+    if (!cont) return;
 
-    if (docsNormalizados.length) {
-      html += docsNormalizados.map((doc, i) => `
-        <div class="recurso">
-          <div>
-            <strong>${escapar(doc.name || `Documento ${i + 1}`)}</strong>
-            <div class="small">Material de apoyo de la clase</div>
-          </div>
-          <a class="link-btn doc-btn" href="${normalizarDocumentoUrl(doc.url)}" target="_blank" rel="noopener noreferrer">Abrir PDF</a>
-        </div>
-      `).join("");
-    } else if (clase.file_url) {
-      html += `
-        <div class="recurso">
-          <div>
-            <strong>${escapar(clase.file_name || "Documento de la clase")}</strong>
-            <div class="small">Material de apoyo de la clase</div>
-          </div>
-          <a class="link-btn doc-btn" href="${normalizarDocumentoUrl(clase.file_url)}" target="_blank" rel="noopener noreferrer">Abrir PDF</a>
-        </div>
-      `;
-    }
+    cont.innerHTML = "";
 
-    html += `</div>`;
-  }
+    if (!clases.length) return;
 
-  return html;
-}
-
-function renderMiniClases(clases, indexActual) {
-  const cont = document.getElementById("listaClasesMini");
-  cont.innerHTML = "";
-
-  if (!clases.length) return;
-
-  clases.forEach((clase, i) => {
-    const div = document.createElement("div");
-    div.className = "lesson-mini" + (i === indexActual ? " activa" : "");
-    div.innerHTML = `
-      <strong>${escapar(clase.titulo || clase.title || `Clase ${i + 1}`)}</strong>
-      <div class="small">${escapar(clase.descripcion || clase.description || "Sin descripción")}</div>
-    `;
-    div.onclick = () => {
-      claseActualIndex = i;
-      renderClaseActual();
-    };
-    cont.appendChild(div);
-  });
-}
-
-function renderClaseActual() {
-  if (!moduloActual) return;
-
-  const clases = obtenerClasesPublicadas(moduloActual);
-
-  if (!clases.length) {
-    document.getElementById("zonaClase").innerHTML = `
-      <div class="video-wrap">
-        <div class="video-placeholder">
-          Este módulo todavía no tiene clases publicadas.
-        </div>
-      </div>
-
-      <div class="lesson-header">
-        <h2 class="lesson-title">${escapar(moduloActual.titulo || moduloActual.title || "Módulo")}</h2>
-        <span class="badge">Sin clases</span>
-      </div>
-
-      <div class="lesson-desc">
-        El profesor aún no ha publicado contenido visible para este módulo.
-      </div>
-
-      <div class="contenido-box">
-        En cuanto el profesor publique clases, aparecerán aquí.
-      </div>
-
-      <div class="lesson-mini-list" id="listaClasesMini"></div>
-    `;
-    return;
-  }
-
-  if (claseActualIndex < 0) claseActualIndex = 0;
-  if (claseActualIndex >= clases.length) claseActualIndex = clases.length - 1;
-
-  const clase = clases[claseActualIndex];
-  marcarClaseVista(clase.id);
-
-  const titulo = clase.titulo || clase.title || "Sin título";
-  const descripcion = clase.descripcion || clase.description || "";
-  const contenido = clase.contenido || clase.text_content || "Esta clase no tiene contenido escrito todavía.";
-  const youtube = clase.youtube_url || "";
-
-  const puedeAnterior = claseActualIndex > 0;
-  const puedeSiguiente = claseActualIndex < (clases.length - 1);
-
-  document.getElementById("zonaClase").innerHTML = `
-    ${renderVideo(youtube)}
-
-    <div class="lesson-header">
-      <h2 class="lesson-title">${escapar(titulo)}</h2>
-      <span class="badge">Clase ${claseActualIndex + 1} de ${clases.length}</span>
-    </div>
-
-    <div class="lesson-desc">
-      ${escapar(descripcion || "Sigue esta lección paso a paso y usa los recursos al final.")}
-    </div>
-
-    <div class="contenido-box">${escapar(contenido)}</div>
-
-    ${renderRecursos(clase)}
-
-    <div class="lesson-nav">
-      <button class="secundario" ${!puedeAnterior ? "disabled style='opacity:.55;cursor:not-allowed;'" : ""} onclick="irClaseAnterior()">Clase anterior</button>
-      <button class="success" ${!puedeSiguiente ? "disabled style='opacity:.55;cursor:not-allowed;'" : ""} onclick="irClaseSiguiente()">Siguiente clase</button>
-    </div>
-
-    <div class="lesson-mini-list" id="listaClasesMini"></div>
-  `;
-
-  renderMiniClases(clases, claseActualIndex);
-
-  document.getElementById("statProgreso").textContent = calcularProgreso() + "%";
-}
-
-function irClaseAnterior() {
-  if (!moduloActual) return;
-  const clases = obtenerClasesPublicadas(moduloActual);
-  if (claseActualIndex > 0 && clases.length) {
-    claseActualIndex--;
-    renderClaseActual();
-  }
-}
-
-function irClaseSiguiente() {
-  if (!moduloActual) return;
-  const clases = obtenerClasesPublicadas(moduloActual);
-  if (claseActualIndex < clases.length - 1) {
-    claseActualIndex++;
-    renderClaseActual();
-  }
-}
-
-function seleccionarModulo(id) {
-  const modulo = modulosGlobal.find(m => String(m.id) === String(id));
-  if (!modulo) return;
-
-  moduloActual = modulo;
-  claseActualIndex = 0;
-
-  document.getElementById("selectorModulo").value = String(modulo.id);
-  renderListaModulos(modulosGlobal);
-  renderClaseActual();
-}
-
-function seleccionarModuloDesdeSelect() {
-  const id = document.getElementById("selectorModulo").value;
-  if (!id) {
-    ponerEstado("Debes seleccionar un módulo.", "error");
-    return;
-  }
-  seleccionarModulo(id);
-}
-
-async function cargarTodo() {
-  try {
-    const res = await fetch(API + "/api/dashboard");
-    const data = await leerJSON(res);
-
-    const modulos = Array.isArray(data.modules) ? data.modules : [];
-    modulosGlobal = modulos.filter(m => {
-      const clases = obtenerClasesPublicadas(m);
-      return clases.length > 0 || esPublicado(m.estado || m.status || "published");
+    clases.forEach((clase, i) => {
+      const div = document.createElement("div");
+      div.className = "lesson-mini" + (i === indexActual ? " activa" : "");
+      div.innerHTML =
+        '<strong>' + escapar(clase.titulo || clase.title || ("Clase " + (i + 1))) + '</strong>' +
+        '<div class="small">' + escapar(clase.descripcion || clase.description || "Sin descripción") + '</div>';
+      div.onclick = () => {
+        claseActualIndex = i;
+        renderClaseActual();
+      };
+      cont.appendChild(div);
     });
+  }
 
-    const totalClases = modulosGlobal.reduce((acc, m) => acc + obtenerClasesPublicadas(m).length, 0);
+  function renderClaseActual() {
+    if (!moduloActual) return;
 
-    document.getElementById("statModulos").textContent = modulosGlobal.length;
-    document.getElementById("statClases").textContent = totalClases;
-    document.getElementById("statProgreso").textContent = calcularProgreso() + "%";
+    const clases = obtenerClasesPublicadas(moduloActual);
 
-    llenarSelectorModulos(modulosGlobal);
-    renderListaModulos(modulosGlobal);
-
-    if (modulosGlobal.length) {
-      if (!moduloActual) {
-        moduloActual = modulosGlobal[0];
-        claseActualIndex = 0;
-      } else {
-        const actualizado = modulosGlobal.find(m => String(m.id) === String(moduloActual.id));
-        moduloActual = actualizado || modulosGlobal[0];
-      }
-      renderListaModulos(modulosGlobal);
-      renderClaseActual();
-      ponerEstado("Contenido cargado correctamente.");
-    } else {
+    if (!clases.length) {
       document.getElementById("zonaClase").innerHTML = `
         <div class="video-wrap">
           <div class="video-placeholder">
-            No hay clases publicadas todavía.
+            Este módulo todavía no tiene clases publicadas.
           </div>
         </div>
 
         <div class="lesson-header">
-          <h2 class="lesson-title">Sin contenido disponible</h2>
-          <span class="badge">Alumno</span>
+          <h2 class="lesson-title">${escapar(moduloActual.titulo || moduloActual.title || "Módulo")}</h2>
+          <span class="badge">Sin clases</span>
         </div>
 
         <div class="lesson-desc">
-          Cuando el profesor publique módulos y clases, aparecerán aquí automáticamente.
+          El profesor aún no ha publicado contenido visible para este módulo.
         </div>
 
         <div class="contenido-box">
-          Verifica más tarde o publica una clase desde el panel del profesor.
+          En cuanto el profesor publique clases, aparecerán aquí.
         </div>
 
         <div class="lesson-mini-list" id="listaClasesMini"></div>
       `;
-      ponerEstado("Todavía no hay módulos con clases publicadas.", "error");
+      return;
     }
-  } catch (err) {
-    ponerEstado("Error cargando alumno: " + err.message, "error");
-  }
-}
 
-cargarTodo();
+    if (claseActualIndex < 0) claseActualIndex = 0;
+    if (claseActualIndex >= clases.length) claseActualIndex = clases.length - 1;
+
+    const clase = clases[claseActualIndex];
+    marcarClaseVista(clase.id);
+
+    const titulo = clase.titulo || clase.title || "Sin título";
+    const descripcion = clase.descripcion || clase.description || "";
+    const contenido = clase.contenido || clase.text_content || "Esta clase no tiene contenido escrito todavía.";
+    const youtube = clase.youtube_url || "";
+
+    const puedeAnterior = claseActualIndex > 0;
+    const puedeSiguiente = claseActualIndex < (clases.length - 1);
+
+    document.getElementById("zonaClase").innerHTML = `
+      ${renderVideo(youtube)}
+
+      ${renderDocumentosEmbebidos(clase)}
+
+      <div class="lesson-header" style="margin-top:18px;">
+        <h2 class="lesson-title">${escapar(titulo)}</h2>
+        <span class="badge">Clase ${claseActualIndex + 1} de ${clases.length}</span>
+      </div>
+
+      <div class="lesson-desc">
+        ${escapar(descripcion || "Sigue esta lección paso a paso y usa los recursos al final.")}
+      </div>
+
+      <div class="contenido-box">${escapar(contenido)}</div>
+
+      ${renderRecursos(clase)}
+
+      <div class="lesson-nav">
+        <button class="secundario" ${!puedeAnterior ? "disabled style='opacity:.55;cursor:not-allowed;'" : ""} onclick="irClaseAnterior()">Clase anterior</button>
+        <button class="success" ${!puedeSiguiente ? "disabled style='opacity:.55;cursor:not-allowed;'" : ""} onclick="irClaseSiguiente()">Siguiente clase</button>
+      </div>
+
+      <div class="lesson-mini-list" id="listaClasesMini"></div>
+    `;
+
+    renderMiniClases(clases, claseActualIndex);
+    document.getElementById("statProgreso").textContent = calcularProgreso() + "%";
+  }
+
+  function irClaseAnterior() {
+    if (!moduloActual) return;
+    const clases = obtenerClasesPublicadas(moduloActual);
+    if (claseActualIndex > 0 && clases.length) {
+      claseActualIndex--;
+      renderClaseActual();
+    }
+  }
+
+  function irClaseSiguiente() {
+    if (!moduloActual) return;
+    const clases = obtenerClasesPublicadas(moduloActual);
+    if (claseActualIndex < clases.length - 1) {
+      claseActualIndex++;
+      renderClaseActual();
+    }
+  }
+
+  function seleccionarModulo(id) {
+    const modulo = modulosGlobal.find(m => String(m.id) === String(id));
+    if (!modulo) return;
+
+    moduloActual = modulo;
+    claseActualIndex = 0;
+
+    document.getElementById("selectorModulo").value = String(modulo.id);
+    renderListaModulos(modulosGlobal);
+    renderClaseActual();
+  }
+
+  function seleccionarModuloDesdeSelect() {
+    const id = document.getElementById("selectorModulo").value;
+    if (!id) {
+      ponerEstado("Debes seleccionar un módulo.", "error");
+      return;
+    }
+    seleccionarModulo(id);
+  }
+
+  async function cargarTodo() {
+    try {
+      const res = await fetch(API + "/api/dashboard");
+      const data = await leerJSON(res);
+
+      const modulos = Array.isArray(data.modules) ? data.modules : [];
+      modulosGlobal = modulos.filter(m => {
+        const clases = obtenerClasesPublicadas(m);
+        return clases.length > 0 || esPublicado(m.estado || m.status || "published");
+      });
+
+      const totalClases = modulosGlobal.reduce((acc, m) => acc + obtenerClasesPublicadas(m).length, 0);
+
+      document.getElementById("statModulos").textContent = modulosGlobal.length;
+      document.getElementById("statClases").textContent = totalClases;
+      document.getElementById("statProgreso").textContent = calcularProgreso() + "%";
+
+      llenarSelectorModulos(modulosGlobal);
+      renderListaModulos(modulosGlobal);
+
+      if (modulosGlobal.length) {
+        if (!moduloActual) {
+          moduloActual = modulosGlobal[0];
+          claseActualIndex = 0;
+        } else {
+          const actualizado = modulosGlobal.find(m => String(m.id) === String(moduloActual.id));
+          moduloActual = actualizado || modulosGlobal[0];
+        }
+
+        renderListaModulos(modulosGlobal);
+        renderClaseActual();
+        ponerEstado("Contenido cargado correctamente.");
+      } else {
+        document.getElementById("zonaClase").innerHTML = `
+          <div class="video-wrap">
+            <div class="video-placeholder">
+              No hay clases publicadas todavía.
+            </div>
+          </div>
+
+          <div class="lesson-header">
+            <h2 class="lesson-title">Sin contenido disponible</h2>
+            <span class="badge">Alumno</span>
+          </div>
+
+          <div class="lesson-desc">
+            Cuando el profesor publique módulos y clases, aparecerán aquí automáticamente.
+          </div>
+
+          <div class="contenido-box">
+            Verifica más tarde o publica una clase desde el panel del profesor.
+          </div>
+
+          <div class="lesson-mini-list" id="listaClasesMini"></div>
+        `;
+        ponerEstado("Todavía no hay módulos con clases publicadas.", "error");
+      }
+    } catch (err) {
+      ponerEstado("Error cargando alumno: " + err.message, "error");
+    }
+  }
+
+  cargarTodo();
 </script>
+
 </body>
 </html>
