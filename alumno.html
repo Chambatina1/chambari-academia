@@ -130,12 +130,6 @@ h2, h3, h4 {
   gap: 20px;
 }
 
-.grid-3 {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 14px;
-}
-
 .stats {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
@@ -170,7 +164,6 @@ h2, h3, h4 {
   color: var(--primary-2);
 }
 
-.item small,
 .kicker {
   color: var(--muted);
   font-size: 13px;
@@ -213,12 +206,6 @@ button.secundario,
 
 button.ver,
 .button-link.ver { background: var(--accent-2); }
-
-button.warning,
-.button-link.warning {
-  background: var(--warning);
-  color: #2b2430;
-}
 
 button.mini,
 .button-link.mini {
@@ -275,19 +262,6 @@ button.mini,
   transition: width .3s ease;
 }
 
-.link-list a,
-.doc-list a {
-  color: var(--primary-2);
-  text-decoration: none;
-  display: block;
-  margin-top: 8px;
-  word-break: break-word;
-  padding: 12px;
-  background: #f8f4fc;
-  border: 1px solid #e8def5;
-  border-radius: 12px;
-}
-
 .video-box,
 .viewer-box {
   position: relative;
@@ -299,11 +273,18 @@ button.mini,
   margin-top: 12px;
 }
 
-.video-box iframe,
-.viewer-box iframe,
-.viewer-box img {
+.video-box-tall iframe {
   width: 100%;
-  height: 420px;
+  height: min(72vh, 760px);
+  border: 0;
+  display: block;
+  background: #000;
+}
+
+.viewer-box-tall iframe,
+.viewer-box-tall img {
+  width: 100%;
+  height: min(78vh, 900px);
   border: 0;
   display: block;
   background: #fff;
@@ -377,20 +358,20 @@ textarea {
   color: white;
 }
 
-.hidden {
-  display: none !important;
-}
-
 @media (max-width: 980px) {
-  .grid-2,
-  .grid-3 {
+  .grid-2 {
     grid-template-columns: 1fr;
   }
 
-  .video-box iframe,
-  .viewer-box iframe,
-  .viewer-box img {
-    height: 260px;
+  .video-box-tall iframe {
+    height: 38vh;
+    min-height: 240px;
+  }
+
+  .viewer-box-tall iframe,
+  .viewer-box-tall img {
+    height: 52vh;
+    min-height: 320px;
   }
 
   h1 {
@@ -416,7 +397,7 @@ textarea {
 
   <h1>Tu clase</h1>
   <div class="subtitulo">
-    Mira tu video, abre tu documento y practica sin complicaciones.
+    Mira tu video, abre tu documento y practica sin salir de la app ni de la web.
   </div>
 </div>
 
@@ -465,16 +446,9 @@ textarea {
     <div id="videoBox" class="vacio">Esta clase no tiene video todavía.</div>
   </div>
 
-  <div class="grid-2">
-    <div class="card">
-      <h2>Documento o archivo</h2>
-      <div id="documentoBox" class="vacio">Esta clase no tiene documento todavía.</div>
-    </div>
-
-    <div class="card">
-      <h2>Enlaces</h2>
-      <div id="linksBox" class="vacio">No hay enlaces adicionales.</div>
-    </div>
+  <div class="card">
+    <h2>Documento o archivo</h2>
+    <div id="documentoBox" class="vacio">Esta clase no tiene documento todavía.</div>
   </div>
 
   <div class="card">
@@ -581,6 +555,10 @@ function esPdf(url) {
   return /\.pdf(\?.*)?$/i.test(String(url || ""));
 }
 
+function esOffice(url) {
+  return /\.(doc|docx|xls|xlsx|ppt|pptx)(\?.*)?$/i.test(String(url || ""));
+}
+
 function urlAbsoluta(url) {
   const texto = String(url || "").trim();
   if (!texto) return "";
@@ -649,17 +627,14 @@ function renderVideo(clase) {
   const embed = getYoutubeEmbed(youtube);
   box.className = "";
   box.innerHTML = `
-    <div class="video-box">
+    <div class="video-box video-box-tall">
       <iframe
         src="${esc(embed)}"
         title="Video de la clase"
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
         allowfullscreen
         referrerpolicy="strict-origin-when-cross-origin">
       </iframe>
-    </div>
-    <div class="row">
-      <a class="button-link ver" href="${esc(youtube)}" target="_blank" rel="noopener noreferrer">Abrir video</a>
     </div>
   `;
 }
@@ -678,20 +653,36 @@ function abrirDocumento(url, nombre) {
 
   if (esImagen(abs)) {
     cont.innerHTML = `
-      <div class="viewer-box">
+      <div class="viewer-box viewer-box-tall">
         <img src="${esc(abs)}" alt="${esc(titulo)}">
       </div>
-      <div class="row">
-        <a class="button-link ver" href="${esc(abs)}" target="_blank" rel="noopener noreferrer">Abrir en otra pestaña</a>
+    `;
+  } else if (esPdf(abs)) {
+    cont.innerHTML = `
+      <div class="viewer-box viewer-box-tall">
+        <iframe
+          src="${esc(abs)}#toolbar=1&navpanes=0&scrollbar=1&view=FitH"
+          title="${esc(titulo)}">
+        </iframe>
+      </div>
+    `;
+  } else if (esOffice(abs)) {
+    const officeViewer = "https://view.officeapps.live.com/op/embed.aspx?src=" + encodeURIComponent(abs);
+    cont.innerHTML = `
+      <div class="viewer-box viewer-box-tall">
+        <iframe
+          src="${officeViewer}"
+          title="${esc(titulo)}">
+        </iframe>
       </div>
     `;
   } else {
     cont.innerHTML = `
-      <div class="viewer-box">
-        <iframe src="${esc(abs)}" title="${esc(titulo)}"></iframe>
-      </div>
-      <div class="row">
-        <a class="button-link ver" href="${esc(abs)}" target="_blank" rel="noopener noreferrer">Abrir en otra pestaña</a>
+      <div class="viewer-box viewer-box-tall">
+        <iframe
+          src="${esc(abs)}"
+          title="${esc(titulo)}">
+        </iframe>
       </div>
     `;
   }
@@ -714,49 +705,64 @@ function renderDocumento(clase) {
     return;
   }
 
-  const previewUrl = doc.url;
-  const openUrl = doc.rawUrl || doc.url;
+  const nombre = doc.name || "Documento";
+  const absUrl = urlAbsoluta(doc.url || doc.rawUrl || "");
+
+  if (!absUrl) {
+    box.className = "vacio";
+    box.textContent = "No se pudo cargar el documento.";
+    return;
+  }
+
+  let visor = "";
+
+  if (esImagen(absUrl)) {
+    visor = `
+      <div class="viewer-box viewer-box-tall">
+        <img src="${esc(absUrl)}" alt="${esc(nombre)}">
+      </div>
+    `;
+  } else if (esPdf(absUrl)) {
+    visor = `
+      <div class="viewer-box viewer-box-tall">
+        <iframe
+          src="${esc(absUrl)}#toolbar=1&navpanes=0&scrollbar=1&view=FitH"
+          title="${esc(nombre)}">
+        </iframe>
+      </div>
+    `;
+  } else if (esOffice(absUrl)) {
+    const officeViewer = "https://view.officeapps.live.com/op/embed.aspx?src=" + encodeURIComponent(absUrl);
+    visor = `
+      <div class="viewer-box viewer-box-tall">
+        <iframe
+          src="${officeViewer}"
+          title="${esc(nombre)}">
+        </iframe>
+      </div>
+    `;
+  } else {
+    visor = `
+      <div class="viewer-box viewer-box-tall">
+        <iframe
+          src="${esc(absUrl)}"
+          title="${esc(nombre)}">
+        </iframe>
+      </div>
+    `;
+  }
 
   box.className = "";
   box.innerHTML = `
     <div class="item">
-      <h4>${esc(doc.name)}</h4>
-      <div class="kicker">Vista rápida del material</div>
-
-      ${
-        esImagen(previewUrl)
-          ? `<div class="viewer-box"><img src="${esc(previewUrl)}" alt="${esc(doc.name)}"></div>`
-          : `<div class="viewer-box"><iframe src="${esc(previewUrl)}" title="${esc(doc.name)}"></iframe></div>`
-      }
-
-      <div class="row">
-        <button type="button" class="ver" onclick="abrirDocumento('${esc(openUrl)}', '${esc(doc.name)}')">Ver grande</button>
-        <a class="button-link secundario" href="${esc(openUrl)}" target="_blank" rel="noopener noreferrer">Abrir documento</a>
-      </div>
+      <h4>${esc(nombre)}</h4>
+      <div class="kicker">Documento dentro de la clase</div>
+      ${visor}
+      <button type="button" class="ver" onclick="abrirDocumento(${JSON.stringify(absUrl)}, ${JSON.stringify(nombre)})">
+        Ver grande aquí
+      </button>
     </div>
   `;
-}
-
-function renderLinks(clase) {
-  const box = document.getElementById("linksBox");
-  const links = [
-    clase.link_1,
-    clase.link_2,
-    clase.link_3,
-    clase.link_4,
-    clase.link_5
-  ].filter(Boolean);
-
-  if (!links.length) {
-    box.className = "vacio";
-    box.textContent = "No hay enlaces adicionales.";
-    return;
-  }
-
-  box.className = "link-list";
-  box.innerHTML = links.map((link, index) => `
-    <a href="${esc(link)}" target="_blank" rel="noopener noreferrer">Abrir enlace ${index + 1}</a>
-  `).join("");
 }
 
 function renderEjercicios(clase) {
@@ -884,8 +890,6 @@ async function cargarAlumno() {
       document.getElementById("videoBox").textContent = "Todavía no hay video disponible.";
       document.getElementById("documentoBox").className = "vacio";
       document.getElementById("documentoBox").textContent = "Todavía no hay documento disponible.";
-      document.getElementById("linksBox").className = "vacio";
-      document.getElementById("linksBox").textContent = "Todavía no hay enlaces.";
       document.getElementById("ejerciciosBox").className = "vacio";
       document.getElementById("ejerciciosBox").textContent = "Todavía no hay ejercicios.";
       return;
@@ -903,7 +907,6 @@ async function cargarAlumno() {
     renderClaseActual(modulo, clase);
     renderVideo(clase);
     renderDocumento(clase);
-    renderLinks(clase);
     renderEjercicios(clase);
 
     const progreso = calcularProgreso(claseInfo.total || 1, claseInfo.index || 0);
