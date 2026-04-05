@@ -14,19 +14,16 @@ body{
   padding:20px;
   margin:0;
 }
-
 .container{
   max-width:400px;
   margin:auto;
 }
-
 .card{
   background:white;
   padding:20px;
   border-radius:12px;
   box-shadow:0 10px 20px rgba(0,0,0,0.08);
 }
-
 input{
   width:100%;
   padding:12px;
@@ -35,7 +32,6 @@ input{
   border:1px solid #ccc;
   box-sizing:border-box;
 }
-
 button{
   width:100%;
   padding:12px;
@@ -47,52 +43,45 @@ button{
   font-weight:bold;
   cursor:pointer;
 }
-
 button:hover{
   opacity:0.9;
 }
-
 .sec{
   background:#ddd;
   color:black;
 }
-
 .hidden{
   display:none;
 }
-
 #estado{
   margin-top:10px;
   font-size:14px;
   min-height:20px;
+  white-space:pre-wrap;
 }
 </style>
 </head>
-
 <body>
 
 <div class="container">
+  <div id="loginBox" class="card">
+    <h2>Chambari Academy</h2>
 
-<div id="loginBox" class="card">
-<h2>Chambari Academy</h2>
+    <input id="email" type="email" placeholder="Correo">
+    <input id="password" type="password" placeholder="Contraseña">
 
-<input id="email" type="email" placeholder="Correo">
-<input id="password" type="password" placeholder="Contraseña">
+    <button type="button" onclick="login()">Entrar</button>
+    <button type="button" class="sec" onclick="registerUser()">Registrarme</button>
+    <button type="button" class="sec" onclick="probarServidor()">Probar servidor</button>
 
-<button type="button" onclick="login()">Entrar</button>
-<button type="button" class="sec" onclick="registerUser()">Registrarme</button>
+    <div id="estado"></div>
+  </div>
 
-<div id="estado"></div>
-</div>
-
-<div id="panel" class="card hidden">
-<h2>Alumno</h2>
-
-<p id="user"></p>
-
-<button type="button" onclick="logout()">Cerrar sesión</button>
-</div>
-
+  <div id="panel" class="card hidden">
+    <h2>Alumno</h2>
+    <p id="user"></p>
+    <button type="button" onclick="logout()">Cerrar sesión</button>
+  </div>
 </div>
 
 <script>
@@ -105,9 +94,37 @@ const loginBox = document.getElementById("loginBox");
 const panelBox = document.getElementById("panel");
 const userBox = document.getElementById("user");
 
-function msg(text, color = "red"){
+function msg(text, color="red"){
   estadoBox.innerText = text;
   estadoBox.style.color = color;
+  console.log(text);
+}
+
+function mostrarPanel(student){
+  loginBox.classList.add("hidden");
+  panelBox.classList.remove("hidden");
+  userBox.innerText = "Bienvenido " + (student.nombre || student.email || "Alumno");
+}
+
+function mostrarLogin(){
+  panelBox.classList.add("hidden");
+  loginBox.classList.remove("hidden");
+}
+
+async function probarServidor(){
+  msg("Probando servidor...", "#7b5ea7");
+
+  try{
+    const res = await fetch(API + "/api/modules", {
+      method: "GET"
+    });
+
+    const raw = await res.text();
+    msg("Servidor respondió.\nStatus: " + res.status + "\nRespuesta: " + raw.slice(0, 300), "green");
+  }catch(e){
+    console.error(e);
+    msg("Fallo de conexión con Render.\n" + e.message);
+  }
 }
 
 async function registerUser(){
@@ -118,6 +135,8 @@ async function registerUser(){
     msg("Completa los campos");
     return;
   }
+
+  msg("Registrando...", "#7b5ea7");
 
   try{
     const res = await fetch(API + "/api/register",{
@@ -130,18 +149,25 @@ async function registerUser(){
       })
     });
 
-    const data = await res.json();
+    const raw = await res.text();
+    let data = {};
+
+    try{
+      data = JSON.parse(raw);
+    }catch(err){
+      msg("Registro: el servidor no devolvió JSON.\n" + raw.slice(0, 300));
+      return;
+    }
 
     if(!res.ok){
       msg(data.error || "Error registro");
       return;
     }
 
-    msg("Registrado correctamente","green");
-
+    msg("Registrado correctamente", "green");
   }catch(e){
     console.error(e);
-    msg("No conecta servidor");
+    msg("No conecta servidor.\n" + e.message);
   }
 }
 
@@ -154,6 +180,8 @@ async function login(){
     return;
   }
 
+  msg("Entrando...", "#7b5ea7");
+
   try{
     const res = await fetch(API + "/api/login",{
       method:"POST",
@@ -164,7 +192,15 @@ async function login(){
       })
     });
 
-    const data = await res.json();
+    const raw = await res.text();
+    let data = {};
+
+    try{
+      data = JSON.parse(raw);
+    }catch(err){
+      msg("Login: el servidor no devolvió JSON.\nStatus: " + res.status + "\n" + raw.slice(0, 300));
+      return;
+    }
 
     if(!res.ok){
       msg(data.error || "Error login");
@@ -172,25 +208,25 @@ async function login(){
     }
 
     if(!data.student){
-      msg("No llegaron datos del alumno");
+      msg("Login sin student.\n" + JSON.stringify(data).slice(0, 300));
       return;
     }
 
     localStorage.setItem("user_alumno", JSON.stringify(data.student));
-
-    loginBox.classList.add("hidden");
-    panelBox.classList.remove("hidden");
-    userBox.innerText = "Bienvenido " + (data.student.nombre || data.student.email || "Alumno");
+    mostrarPanel(data.student);
+    msg("", "green");
 
   }catch(e){
     console.error(e);
-    msg("No conecta servidor");
+    msg("No conecta servidor.\n" + e.message);
   }
 }
 
 function logout(){
   localStorage.removeItem("user_alumno");
-  location.reload();
+  userBox.innerText = "";
+  mostrarLogin();
+  msg("Sesión cerrada", "green");
 }
 
 window.onload = () => {
@@ -199,14 +235,15 @@ window.onload = () => {
   if(u){
     try{
       const student = JSON.parse(u);
-      loginBox.classList.add("hidden");
-      panelBox.classList.remove("hidden");
-      userBox.innerText = "Bienvenido " + (student.nombre || student.email || "Alumno");
+      mostrarPanel(student);
     }catch(e){
       localStorage.removeItem("user_alumno");
+      mostrarLogin();
     }
+  }else{
+    mostrarLogin();
   }
-}
+};
 </script>
 
 </body>
