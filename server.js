@@ -12,9 +12,27 @@ app.use(cors());
 app.use(express.json({ limit: "20mb" }));
 app.use(express.urlencoded({ extended: true, limit: "20mb" }));
 
+// =========================
+// ARCHIVOS ESTÁTICOS
+// =========================
 app.use("/public", express.static(path.join(__dirname, "public")));
-app.use("/files", express.static(path.join(__dirname, "public", "files")));
 
+// IMPORTANTE:
+// Esta ruta debe ser el mount path real del DISCO en Render.
+// Si defines la variable RENDER_DISK_PATH en Render, usará esa.
+// Si no, usa /var/data/chambari-files por defecto.
+const DISK_FILES_DIR =
+  process.env.RENDER_DISK_PATH || "/var/data/chambari-files";
+
+// Crear carpeta si no existe
+fs.mkdirSync(DISK_FILES_DIR, { recursive: true });
+
+// Exponer archivos del disco públicamente
+app.use("/files", express.static(DISK_FILES_DIR));
+
+// =========================
+// BASE DE DATOS POSTGRES
+// =========================
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
   ssl: process.env.DATABASE_URL ? { rejectUnauthorized: false } : false
@@ -79,6 +97,9 @@ function normalizeLessonRow(row) {
   };
 }
 
+// =========================
+// ASEGURAR ESQUEMA
+// =========================
 async function ensureSchema() {
   const client = await pool.connect();
   try {
@@ -228,11 +249,11 @@ async function ensureSchema() {
   }
 }
 
-const filesDir = path.join(__dirname, "public", "files");
-fs.mkdirSync(filesDir, { recursive: true });
-
+// =========================
+// MULTER EN DISCO RENDER
+// =========================
 const storage = multer.diskStorage({
-  destination: (req, file, cb) => cb(null, filesDir),
+  destination: (req, file, cb) => cb(null, DISK_FILES_DIR),
   filename: (req, file, cb) => cb(null, safeFileName(file.originalname))
 });
 
@@ -241,12 +262,24 @@ const upload = multer({
   limits: { fileSize: 30 * 1024 * 1024 }
 });
 
+// =========================
+// RUTAS BÁSICAS
+// =========================
 app.get("/", (req, res) => {
-  res.json({ ok: true, message: "Servidor Chambari Academy activo" });
+  res.json({
+    ok: true,
+    message: "Servidor Chambari Academy activo",
+    disk_files_dir: DISK_FILES_DIR
+  });
 });
 
 app.get("/api/test", (req, res) => {
-  res.json({ ok: true, server: "Chambari Academy", time: new Date().toISOString() });
+  res.json({
+    ok: true,
+    server: "Chambari Academy",
+    time: new Date().toISOString(),
+    disk_files_dir: DISK_FILES_DIR
+  });
 });
 
 app.get("/api/test-db", async (req, res) => {
@@ -258,6 +291,9 @@ app.get("/api/test-db", async (req, res) => {
   }
 });
 
+// =========================
+// DASHBOARD PROFESOR
+// =========================
 app.get("/api/dashboard", async (req, res) => {
   try {
     const [modulesResult, lessonsResult, studentsCount] = await Promise.all([
@@ -354,6 +390,9 @@ app.delete("/api/modules/:id", async (req, res) => {
   }
 });
 
+// =========================
+// LESSONS
+// =========================
 app.get("/api/lessons/:moduleId", async (req, res) => {
   try {
     const moduleId = Number(req.params.moduleId);
@@ -532,6 +571,9 @@ app.delete("/api/lessons/:id", async (req, res) => {
   }
 });
 
+// =========================
+// STUDENTS
+// =========================
 app.get("/api/students", async (req, res) => {
   try {
     const result = await pool.query(`
@@ -606,12 +648,18 @@ app.post("/api/login", async (req, res) => {
   }
 });
 
+// =========================
+// PROGRESS
+// =========================
 app.post("/api/progress", async (req, res) => {
   try {
     const studentId = Number(req.body.student_id || req.body.studentId);
     const lessonId = Number(req.body.lesson_id || req.body.lessonId);
     const completed = Boolean(req.body.completed);
-    const progressPercent = Math.max(0, Math.min(100, Number(req.body.progress_percent || req.body.progressPercent || 0)));
+    const progressPercent = Math.max(
+      0,
+      Math.min(100, Number(req.body.progress_percent || req.body.progressPercent || 0))
+    );
 
     if (!studentId || !lessonId) {
       return res.status(400).json({ ok: false, error: "student_id y lesson_id son obligatorios" });
@@ -658,13 +706,17 @@ app.get("/api/progress/:studentId", async (req, res) => {
   }
 });
 
+// =========================
+// SUBIDA DE ARCHIVOS AL DISCO
+// =========================
 app.post("/api/upload-file", upload.single("file"), async (req, res) => {
   try {
     if (!req.file) {
       return res.status(400).json({ ok: false, error: "No se recibió ningún archivo" });
     }
 
-    const fileUrl = `/files/${req.file.filename}`;
+    const baseUrl = `${req.protocol}://${req.get("host")}`;
+    const fileUrl = `${baseUrl}/files/${req.file.filename}`;
 
     res.json({
       ok: true,
@@ -673,7 +725,8 @@ app.post("/api/upload-file", upload.single("file"), async (req, res) => {
         savedName: req.file.filename,
         size: req.file.size,
         mimetype: req.file.mimetype,
-        url: fileUrl
+        url: fileUrl,
+        diskPath: req.file.path
       },
       file_url: fileUrl,
       file_name: req.file.originalname,
@@ -684,6 +737,9 @@ app.post("/api/upload-file", upload.single("file"), async (req, res) => {
   }
 });
 
+// =========================
+// API PÚBLICA ALUMNO
+// =========================
 app.get("/api/public/modules", async (req, res) => {
   try {
     const result = await pool.query(`
@@ -755,6 +811,9 @@ app.get("/api/student-dashboard", async (req, res) => {
   }
 });
 
+// =========================
+// 404 Y ERRORES
+// =========================
 app.use((req, res) => {
   res.status(404).json({ ok: false, error: "Ruta no encontrada" });
 });
@@ -764,11 +823,15 @@ app.use((error, req, res, next) => {
   res.status(500).json({ ok: false, error: error.message || "Error interno del servidor" });
 });
 
+// =========================
+// INICIO SERVIDOR
+// =========================
 async function startServer() {
   try {
     await ensureSchema();
     app.listen(PORT, () => {
       console.log(`✅ Servidor corriendo en puerto ${PORT}`);
+      console.log(`✅ Disk path activo: ${DISK_FILES_DIR}`);
     });
   } catch (error) {
     console.error("❌ No se pudo iniciar el servidor:", error.message);
