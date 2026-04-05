@@ -5,15 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Chambari - Alumno</title>
 
-<link rel="icon" type="image/jpeg" href="https://chambatina1.github.io/chambari-academia/CHAMBARI.jpeg?v=20260405">
-<link rel="apple-touch-icon" href="https://chambatina1.github.io/chambari-academia/CHAMBARI.jpeg?v=20260405">
-<link rel="manifest" href="https://chambatina1.github.io/chambari-academia/manifest-alumno.json?v=20260405">
-
-<meta name="theme-color" content="#7b5ea7">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="Alumno">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="icon" href="./CHAMBARI.jpeg">
 
 <style>
 body{
@@ -74,16 +66,6 @@ button:hover{
   font-size:14px;
   min-height:20px;
 }
-
-.version-badge{
-  background:#62458f;
-  color:#fff;
-  padding:8px 12px;
-  border-radius:12px;
-  font-size:12px;
-  display:inline-block;
-  margin-bottom:12px;
-}
 </style>
 </head>
 
@@ -91,26 +73,25 @@ button:hover{
 
 <div class="container">
 
-  <div class="version-badge">Alumno build 05-04-26</div>
+<div id="loginBox" class="card">
+<h2>Chambari Academy</h2>
 
-  <div id="loginBox" class="card">
-    <h2>Chambari Academy</h2>
+<input id="email" type="email" placeholder="Correo">
+<input id="password" type="password" placeholder="Contraseña">
 
-    <input id="email" type="email" placeholder="Correo">
-    <input id="password" type="password" placeholder="Contraseña">
+<button type="button" onclick="login()">Entrar</button>
+<button type="button" class="sec" onclick="registerUser()">Registrarme</button>
 
-    <button id="btnLogin" type="button" onclick="login()">Entrar</button>
-    <button id="btnRegister" type="button" class="sec" onclick="registerUser()">Registrarme</button>
+<div id="estado"></div>
+</div>
 
-    <div id="estado"></div>
-  </div>
+<div id="panel" class="card hidden">
+<h2>Alumno</h2>
 
-  <div id="panel" class="card hidden">
-    <h2>Alumno</h2>
-    <p id="user"></p>
-    <p id="detalleAlumno"></p>
-    <button id="btnLogout" type="button" onclick="logout()">Cerrar sesión</button>
-  </div>
+<p id="user"></p>
+
+<button type="button" onclick="logout()">Cerrar sesión</button>
+</div>
 
 </div>
 
@@ -123,24 +104,10 @@ const estadoBox = document.getElementById("estado");
 const loginBox = document.getElementById("loginBox");
 const panelBox = document.getElementById("panel");
 const userBox = document.getElementById("user");
-const detalleAlumnoBox = document.getElementById("detalleAlumno");
-const btnLogin = document.getElementById("btnLogin");
 
 function msg(text, color = "red"){
   estadoBox.innerText = text;
   estadoBox.style.color = color;
-}
-
-function mostrarLogin(){
-  panelBox.classList.add("hidden");
-  loginBox.classList.remove("hidden");
-}
-
-function mostrarPanel(student){
-  loginBox.classList.add("hidden");
-  panelBox.classList.remove("hidden");
-  userBox.innerText = "Bienvenido " + (student.nombre || student.email || "Alumno");
-  detalleAlumnoBox.innerText = student.email ? ("Correo: " + student.email) : "";
 }
 
 async function registerUser(){
@@ -153,11 +120,9 @@ async function registerUser(){
   }
 
   try{
-    msg("Registrando...", "#7b5ea7");
-
-    const res = await fetch(API + "/api/register", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
+    const res = await fetch(API + "/api/register",{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
       body: JSON.stringify({
         nombre: emailVal.split("@")[0],
         email: emailVal,
@@ -165,26 +130,17 @@ async function registerUser(){
       })
     });
 
-    const raw = await res.text();
-    let data = {};
-
-    try{
-      data = JSON.parse(raw);
-    }catch(e){
-      console.log("REGISTER RAW:", raw);
-      msg("El servidor respondió mal");
-      return;
-    }
+    const data = await res.json();
 
     if(!res.ok){
       msg(data.error || "Error registro");
       return;
     }
 
-    msg("Registrado correctamente", "green");
+    msg("Registrado correctamente","green");
 
   }catch(e){
-    console.error("REGISTER ERROR:", e);
+    console.error(e);
     msg("No conecta servidor");
   }
 }
@@ -199,91 +155,58 @@ async function login(){
   }
 
   try{
-    btnLogin.disabled = true;
-    btnLogin.innerText = "Entrando...";
-    msg("Validando acceso...", "#7b5ea7");
-
-    const res = await fetch(API + "/api/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
+    const res = await fetch(API + "/api/login",{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
       body: JSON.stringify({
         email: emailVal,
         password: passVal
       })
     });
 
-    const raw = await res.text();
-    let data = null;
-
-    try{
-      data = JSON.parse(raw);
-    }catch(e){
-      console.log("LOGIN RAW:", raw);
-      msg("El servidor respondió mal");
-      return;
-    }
+    const data = await res.json();
 
     if(!res.ok){
       msg(data.error || "Error login");
       return;
     }
 
-    const student = data.student || data.user || data.alumno;
-
-    if(!student){
-      console.log("LOGIN DATA:", data);
+    if(!data.student){
       msg("No llegaron datos del alumno");
       return;
     }
 
-    localStorage.setItem("user_alumno", JSON.stringify(student));
-    mostrarPanel(student);
-    msg("", "green");
+    localStorage.setItem("user_alumno", JSON.stringify(data.student));
+
+    loginBox.classList.add("hidden");
+    panelBox.classList.remove("hidden");
+    userBox.innerText = "Bienvenido " + (data.student.nombre || data.student.email || "Alumno");
 
   }catch(e){
-    console.error("LOGIN ERROR:", e);
+    console.error(e);
     msg("No conecta servidor");
-  }finally{
-    btnLogin.disabled = false;
-    btnLogin.innerText = "Entrar";
   }
 }
 
 function logout(){
   localStorage.removeItem("user_alumno");
-  localStorage.removeItem("user");
-  userBox.innerText = "";
-  detalleAlumnoBox.innerText = "";
-  mostrarLogin();
-  msg("Sesión cerrada", "green");
+  location.reload();
 }
 
 window.onload = () => {
-  localStorage.removeItem("user");
+  const u = localStorage.getItem("user_alumno");
 
-  const saved = localStorage.getItem("user_alumno");
-
-  if(saved){
+  if(u){
     try{
-      const student = JSON.parse(saved);
-      if(student && (student.nombre || student.email)){
-        mostrarPanel(student);
-      }else{
-        localStorage.removeItem("user_alumno");
-        mostrarLogin();
-      }
+      const student = JSON.parse(u);
+      loginBox.classList.add("hidden");
+      panelBox.classList.remove("hidden");
+      userBox.innerText = "Bienvenido " + (student.nombre || student.email || "Alumno");
     }catch(e){
       localStorage.removeItem("user_alumno");
-      mostrarLogin();
     }
-  }else{
-    mostrarLogin();
   }
-
-  console.log("Alumno cargado");
-  console.log("URL:", window.location.href);
-  console.log("Standalone:", window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone === true);
-};
+}
 </script>
 
 </body>
