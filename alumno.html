@@ -1,599 +1,856 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Chambari - Alumno</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chambari - Alumno</title>
 
-  <style>
-    * { box-sizing: border-box; }
+<style>
+:root{
+  --bg: #f7f4ef;
+  --bg-2: #f2ede5;
+  --card: #ffffff;
+  --card-soft: #f8f4ee;
+  --text: #2b2430;
+  --muted: #6f6472;
 
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: #0f0f0f;
-      color: white;
-    }
+  --primary: #7b5ea7;
+  --primary-2: #62458f;
 
-    header {
-      background: linear-gradient(135deg, #ff8a00, #ffb347);
-      color: black;
-      padding: 24px 18px;
-    }
+  --accent: #a8c3a0;
+  --accent-2: #7ea172;
 
-    header h1 {
-      margin: 0 0 8px 0;
-      font-size: 28px;
-    }
+  --wood: #c7a27c;
+  --wood-2: #a67c52;
 
-    header p {
-      margin: 0;
-      font-size: 15px;
-      font-weight: bold;
-    }
+  --danger: #c85c5c;
+  --success: #6f9f6f;
+  --info: #8ca6c1;
 
-    .wrap {
-      max-width: 1100px;
-      margin: 0 auto;
-      padding: 20px;
-    }
+  --border: #e6ddd2;
+  --shadow: 0 10px 26px rgba(66, 40, 80, 0.08);
+}
 
-    .card {
-      background: #1b1b1b;
-      border-radius: 16px;
-      padding: 18px;
-      margin-bottom: 18px;
-    }
+* { box-sizing: border-box; }
 
-    .top-actions {
-      display: grid;
-      gap: 12px;
-      grid-template-columns: 1fr;
-      margin-bottom: 18px;
-    }
+body {
+  font-family: Arial, sans-serif;
+  background:
+    radial-gradient(circle at top right, #efe6ff 0%, transparent 22%),
+    linear-gradient(180deg, var(--bg) 0%, var(--bg-2) 100%);
+  color: var(--text);
+  margin: 0;
+  padding: 20px;
+}
 
-    .search, .select {
-      width: 100%;
-      padding: 12px;
-      border: none;
-      border-radius: 10px;
-      font-size: 15px;
-    }
+.main {
+  max-width: 1250px;
+  margin: 0 auto;
+}
 
-    .btn {
-      width: 100%;
-      padding: 12px;
-      border: none;
-      border-radius: 10px;
-      font-weight: bold;
-      cursor: pointer;
-      font-size: 15px;
-      background: #ff8a00;
-      color: black;
-    }
+.logo-bar {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 16px;
+}
 
-    .btn.sec {
-      background: #2a2a2a;
-      color: white;
-    }
+.logo-box {
+  width: 58px;
+  height: 58px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, var(--primary), var(--wood));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 24px;
+  font-weight: bold;
+  box-shadow: var(--shadow);
+}
 
-    .module {
-      background: #171717;
-      border-radius: 14px;
-      padding: 16px;
-      margin-bottom: 16px;
-      border: 1px solid #2a2a2a;
-    }
+.logo-text strong {
+  display: block;
+  font-size: 20px;
+  color: var(--primary-2);
+}
 
-    .module h2 {
-      margin: 0 0 8px 0;
-      color: #ff8a00;
-      font-size: 22px;
-    }
+.logo-text span {
+  color: var(--muted);
+  font-size: 13px;
+}
 
-    .module p {
-      margin: 0 0 14px 0;
-      color: #d0d0d0;
-    }
+h1 {
+  color: var(--primary-2);
+  margin: 0 0 6px 0;
+  font-size: 34px;
+}
 
-    .lesson {
-      background: #222;
-      border-radius: 12px;
-      padding: 14px;
-      margin-top: 12px;
-    }
+.subtitulo {
+  color: var(--muted);
+  margin-bottom: 22px;
+  font-size: 15px;
+  line-height: 1.45;
+}
 
-    .lesson h3 {
-      margin: 0 0 8px 0;
-      font-size: 18px;
-      color: #fff;
-    }
+h2, h3, h4 {
+  color: var(--primary-2);
+  margin-top: 0;
+}
 
-    .small {
-      font-size: 13px;
-      color: #bbb;
-      margin-top: 5px;
-    }
+.card {
+  background: var(--card);
+  padding: 22px;
+  border-radius: 20px;
+  margin-bottom: 20px;
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border);
+}
 
-    .lesson-actions {
-      display: grid;
-      gap: 8px;
-      margin-top: 12px;
-    }
+.grid-top {
+  display: grid;
+  gap: 18px;
+  margin-bottom: 20px;
+}
 
-    .lesson-actions .btn {
-      margin: 0;
-    }
+.pill {
+  display: inline-block;
+  padding: 7px 12px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: bold;
+  background: #efe6ff;
+  color: var(--primary-2);
+}
 
-    .link-btn {
-      display: inline-block;
-      background: #ff8a00;
-      color: black;
-      text-decoration: none;
-      padding: 10px 14px;
-      border-radius: 8px;
-      font-weight: bold;
-      margin: 8px 8px 0 0;
-    }
+.stats {
+  display: grid;
+  gap: 14px;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+}
 
-    .empty {
-      text-align: center;
-      color: #bbb;
-      padding: 30px 10px;
-    }
+.stat {
+  background: linear-gradient(180deg, #fbf8f4 0%, #ffffff 100%);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 16px;
+  text-align: center;
+}
 
-    .estado {
-      margin-top: 10px;
-      padding: 12px;
-      border-radius: 10px;
-      background: #111;
-      border-left: 4px solid #ff8a00;
-    }
+.stat strong {
+  display: block;
+  font-size: 28px;
+  margin-bottom: 4px;
+  color: var(--primary);
+}
 
-    .progress-box {
-      margin-top: 10px;
-      background: #111;
-      border-radius: 999px;
-      height: 12px;
-      overflow: hidden;
-    }
+.toolbar {
+  display: grid;
+  gap: 12px;
+}
 
-    .progress-bar {
-      height: 100%;
-      background: linear-gradient(90deg, #ff8a00, #ffd180);
-      width: 0%;
-      transition: width .3s ease;
-    }
+input, select {
+  width: 100%;
+  padding: 12px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: white;
+  color: var(--text);
+  font-size: 15px;
+  outline: none;
+}
 
-    .modal {
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,.8);
-      display: none;
-      align-items: center;
-      justify-content: center;
-      padding: 18px;
-      z-index: 999;
-    }
+input:focus, select:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(123, 94, 167, 0.10);
+}
 
-    .modal-content {
-      width: min(980px, 100%);
-      max-height: 90vh;
-      overflow: auto;
-      background: #1a1a1a;
-      border-radius: 18px;
-      padding: 20px;
-    }
+button {
+  width: 100%;
+  margin-top: 0;
+  padding: 12px 14px;
+  border: none;
+  border-radius: 12px;
+  background: var(--primary);
+  color: white;
+  font-weight: bold;
+  font-size: 15px;
+  cursor: pointer;
+  transition: .18s ease;
+}
 
-    .modal-content h2 {
-      margin-top: 0;
-      color: #ff8a00;
-    }
+button:hover {
+  transform: translateY(-1px);
+  opacity: .97;
+}
 
-    .bloque {
-      margin-top: 18px;
-      padding-top: 12px;
-      border-top: 1px solid #333;
-    }
+button.secundario {
+  background: #7e8798;
+}
 
-    pre {
-      white-space: pre-wrap;
-      background: #101010;
-      border-radius: 12px;
-      padding: 12px;
-      overflow: auto;
-      color: #f4f4f4;
-    }
+button.ver {
+  background: var(--accent-2);
+}
 
-    iframe {
-      width: 100%;
-      min-height: 300px;
-      border: none;
-      border-radius: 12px;
-      margin-top: 10px;
-      background: #000;
-    }
+button.sinapsis {
+  background: var(--wood-2);
+}
 
-    @media (min-width: 800px) {
-      .top-actions {
-        grid-template-columns: 1.3fr 1fr 180px;
-      }
+.estado {
+  padding: 12px;
+  border-radius: 12px;
+  background: #faf8f4;
+  border-left: 4px solid var(--primary);
+  color: var(--text);
+  font-size: 14px;
+}
 
-      .lesson-actions {
-        grid-template-columns: repeat(2, 1fr);
-      }
-    }
-  </style>
+.modulo {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  box-shadow: var(--shadow);
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.modulo-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+  margin-bottom: 10px;
+}
+
+.modulo-desc {
+  color: var(--muted);
+  line-height: 1.5;
+  margin-bottom: 12px;
+}
+
+.clases-grid {
+  display: grid;
+  gap: 12px;
+}
+
+.clase {
+  background: var(--card-soft);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 16px;
+}
+
+.clase-title {
+  font-weight: bold;
+  font-size: 18px;
+  color: var(--text);
+}
+
+.small {
+  font-size: 13px;
+  color: var(--muted);
+  margin-top: 6px;
+  line-height: 1.45;
+}
+
+.actions {
+  display: grid;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.link-btn {
+  display: inline-block;
+  background: var(--wood);
+  color: white;
+  text-decoration: none;
+  padding: 10px 14px;
+  border-radius: 12px;
+  font-weight: bold;
+  margin-top: 10px;
+  margin-right: 8px;
+}
+
+.sinapsis-box {
+  margin-top: 16px;
+  background: #f1ece4;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 14px;
+}
+
+.sinapsis-grid {
+  display: grid;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.sinapsis-item {
+  border-radius: 14px;
+  padding: 12px;
+  background: white;
+  border: 1px solid var(--border);
+}
+
+.sinapsis-item strong {
+  display: block;
+  color: var(--primary-2);
+  margin-bottom: 4px;
+}
+
+.empty {
+  text-align: center;
+  color: var(--muted);
+  padding: 22px;
+  background: var(--card);
+  border: 1px dashed var(--border);
+  border-radius: 16px;
+}
+
+.progress-wrap {
+  margin-top: 10px;
+}
+
+.progress-bar {
+  height: 12px;
+  width: 100%;
+  border-radius: 999px;
+  background: #eee6db;
+  overflow: hidden;
+  border: 1px solid var(--border);
+}
+
+.progress-bar > div {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, var(--primary), var(--accent-2));
+  transition: width .25s ease;
+}
+
+.modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(43, 36, 48, 0.58);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  z-index: 999;
+}
+
+.modal-content {
+  width: min(980px, 100%);
+  max-height: 90vh;
+  overflow: auto;
+  background: white;
+  border-radius: 20px;
+  padding: 24px;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+}
+
+.modal-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.close-btn {
+  width: auto;
+  padding: 10px 16px;
+  background: var(--danger);
+}
+
+.content-box {
+  margin-top: 16px;
+}
+
+pre {
+  white-space: pre-wrap;
+  background: #f8f4ee;
+  border-radius: 14px;
+  padding: 12px;
+  overflow: auto;
+  border: 1px solid var(--border);
+  color: var(--text);
+  line-height: 1.5;
+}
+
+.bloque {
+  margin-top: 18px;
+  padding-top: 14px;
+  border-top: 1px solid var(--border);
+}
+
+.doc-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #efe7db;
+  color: #6d5036;
+  padding: 8px 12px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: bold;
+  margin-top: 10px;
+  margin-right: 8px;
+  border: 1px solid #e3d3c1;
+}
+
+@media (min-width: 900px) {
+  .grid-top {
+    grid-template-columns: 1.15fr 0.85fr;
+  }
+
+  .toolbar {
+    grid-template-columns: 1.2fr 1fr 180px;
+    align-items: center;
+  }
+
+  .actions {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .sinapsis-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+</style>
 </head>
 <body>
 
-  <header>
-    <h1>Chambari Academy</h1>
-    <p>Área del alumno</p>
-  </header>
+<div class="main">
 
-  <div class="wrap">
+  <div class="logo-bar">
+    <div class="logo-box">C</div>
+    <div class="logo-text">
+      <strong>Chambari Academy</strong>
+      <span>Pantalla del alumno</span>
+    </div>
+  </div>
+
+  <h1>Área del Alumno</h1>
+  <div class="subtitulo">
+    Aquí puedes ver tus módulos, abrir clases publicadas, revisar materiales y seguir tu progreso visual.
+  </div>
+
+  <div class="grid-top">
     <div class="card">
-      <div class="top-actions">
-        <input id="busqueda" class="search" placeholder="Buscar clase o módulo" />
-        <select id="filtroModulo" class="select">
+      <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:12px;">
+        <h2 style="margin-bottom:0;">Tu avance</h2>
+        <span class="pill">Método Sinapsis</span>
+      </div>
+
+      <div class="stats">
+        <div class="stat"><strong id="statModulos">0</strong>Módulos disponibles</div>
+        <div class="stat"><strong id="statClases">0</strong>Clases publicadas</div>
+        <div class="stat"><strong id="statVistas">0</strong>Clases abiertas</div>
+      </div>
+
+      <div class="progress-wrap">
+        <div class="small">Progreso visual de esta sesión</div>
+        <div class="progress-bar">
+          <div id="barraProgreso"></div>
+        </div>
+        <div class="small" id="textoProgreso">0%</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Explorar</h2>
+      <div class="toolbar">
+        <input id="buscador" placeholder="Buscar por módulo o clase">
+        <select id="filtroModulo">
           <option value="">Todos los módulos</option>
         </select>
-        <button class="btn sec" onclick="cargarTodo()">Actualizar</button>
+        <button class="secundario" onclick="cargarClases()">Actualizar</button>
       </div>
-
-      <div id="estadoGeneral"></div>
-    </div>
-
-    <div class="card">
-      <h2 style="margin-top:0;">Tu progreso</h2>
-      <div class="small">Porcentaje de clases abiertas en esta sesión</div>
-      <div class="progress-box">
-        <div id="barraProgreso" class="progress-bar"></div>
-      </div>
-      <div id="textoProgreso" class="small" style="margin-top:8px;">0%</div>
-    </div>
-
-    <div id="contenedorModulos"></div>
-  </div>
-
-  <div class="modal" id="modalClase">
-    <div class="modal-content">
-      <h2 id="modalTitulo">Clase</h2>
-      <div id="modalContenido"></div>
-      <button class="btn sec" onclick="cerrarModal()" style="margin-top:18px;">Cerrar</button>
+      <div id="estado" class="estado" style="margin-top:12px;">Cargando información...</div>
     </div>
   </div>
 
-  <script>
-    const API = "https://chambari-academia.onrender.com";
-    let modulosGlobal = [];
-    let clasesAbiertas = new Set();
+  <div id="contenido"></div>
 
-    function escapar(texto) {
-      return String(texto || "")
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#39;");
-    }
+</div>
 
-    function limpiarUrl(url) {
-      try {
-        const texto = String(url || "").trim();
-        if (!texto) return "";
-        if (texto.startsWith("http://") || texto.startsWith("https://")) return texto;
-        return "https://" + texto.replace(/^\/+/, "");
-      } catch {
-        return "";
-      }
-    }
+<div class="modal" id="modal">
+  <div class="modal-content">
+    <div class="modal-top">
+      <h2 id="tituloClase" style="margin-bottom:0;">Clase</h2>
+      <button class="close-btn" onclick="cerrarModal()">Cerrar</button>
+    </div>
+    <div id="detalleClase" class="content-box"></div>
+  </div>
+</div>
 
-    async function leerJSON(res) {
-      const texto = await res.text();
-      let data;
-      try {
-        data = JSON.parse(texto);
-      } catch {
-        throw new Error("Respuesta inválida del servidor: " + texto);
-      }
-      if (!res.ok || !data.ok) {
-        throw new Error(data?.error || `Error HTTP ${res.status}`);
-      }
-      return data;
-    }
+<script>
+const API = "https://chambari-academia.onrender.com";
 
-    function ponerEstado(texto) {
-      document.getElementById("estadoGeneral").innerHTML =
-        `<div class="estado">${escapar(texto)}</div>`;
-    }
+let modulosGlobales = [];
+let clasesAbiertas = new Set();
 
-    function esPublicado(item) {
-      const e = String(item?.estado || item?.status || "").toLowerCase();
-      return e === "published" || e === "publicado";
-    }
+function escapar(texto){
+  return String(texto || "")
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;")
+    .replace(/'/g,"&#39;");
+}
 
-    function youtubeEmbed(url) {
-      const limpio = limpiarUrl(url);
-      if (!limpio) return "";
-      try {
-        const u = new URL(limpio);
-        if (u.hostname.includes("youtube.com")) {
-          const id = u.searchParams.get("v");
-          if (id) return `https://www.youtube.com/embed/${id}`;
-        }
-        if (u.hostname.includes("youtu.be")) {
-          const id = u.pathname.replace("/", "").trim();
-          if (id) return `https://www.youtube.com/embed/${id}`;
-        }
-      } catch {}
-      return "";
-    }
+function limpiarUrl(url){
+  const texto = String(url || "").trim();
+  if(!texto) return "";
+  if(texto.startsWith("http://") || texto.startsWith("https://")) return texto;
+  return "https://" + texto.replace(/^\/+/, "");
+}
 
-    async function cargarDashboard() {
-      const res = await fetch(API + "/api/dashboard");
-      const data = await leerJSON(res);
-      return data.modules || [];
-    }
+function normalizarDocumentoUrl(url){
+  const texto = String(url || "").trim();
+  if(!texto) return "";
+  if(texto.startsWith("http://") || texto.startsWith("https://")) return texto;
+  return API + texto;
+}
 
-    function llenarFiltroModulos(modulos) {
-      const select = document.getElementById("filtroModulo");
-      const actual = select.value;
-      select.innerHTML = `<option value="">Todos los módulos</option>`;
+function estadoBonito(estado) {
+  const e = String(estado || "").toLowerCase();
+  if (e === "published" || e === "publicado") return "Publicado";
+  if (e === "draft" || e === "borrador") return "Borrador";
+  if (e === "archived" || e === "archivado") return "Archivado";
+  return estado || "Borrador";
+}
 
-      modulos.forEach(m => {
-        const titulo = m.titulo || m.title || "Sin título";
-        const option = document.createElement("option");
-        option.value = String(m.id);
-        option.textContent = titulo;
-        select.appendChild(option);
+function parseJSONSeguro(valor, fallback = []) {
+  try {
+    if (!valor) return fallback;
+    if (Array.isArray(valor)) return valor;
+    return JSON.parse(valor);
+  } catch {
+    return fallback;
+  }
+}
+
+function ponerEstado(texto){
+  document.getElementById("estado").textContent = texto;
+}
+
+function clasePublicada(c){
+  const estado = String(c?.estado || c?.status || "").toLowerCase();
+  return estado === "published" || estado === "publicado";
+}
+
+function actualizarStats() {
+  const modulosConClases = modulosGlobales.filter(m => {
+    const lessons = Array.isArray(m.lessons) ? m.lessons.filter(clasePublicada) : [];
+    return lessons.length > 0;
+  });
+
+  const totalClases = modulosConClases.reduce((acc, m) => {
+    const lessons = Array.isArray(m.lessons) ? m.lessons.filter(clasePublicada) : [];
+    return acc + lessons.length;
+  }, 0);
+
+  document.getElementById("statModulos").textContent = modulosConClases.length;
+  document.getElementById("statClases").textContent = totalClases;
+  document.getElementById("statVistas").textContent = clasesAbiertas.size;
+
+  const porcentaje = totalClases ? Math.round((clasesAbiertas.size / totalClases) * 100) : 0;
+  document.getElementById("barraProgreso").style.width = porcentaje + "%";
+  document.getElementById("textoProgreso").textContent = porcentaje + "%";
+}
+
+function llenarFiltroModulos(modulos){
+  const select = document.getElementById("filtroModulo");
+  const valorActual = select.value;
+  select.innerHTML = `<option value="">Todos los módulos</option>`;
+
+  modulos.forEach(m => {
+    const lessons = Array.isArray(m.lessons) ? m.lessons.filter(clasePublicada) : [];
+    if (!lessons.length) return;
+
+    const option = document.createElement("option");
+    option.value = String(m.id);
+    option.textContent = m.titulo || m.title || "Sin título";
+    select.appendChild(option);
+  });
+
+  select.value = valorActual;
+}
+
+function obtenerModulosFiltrados() {
+  const texto = document.getElementById("buscador").value.trim().toLowerCase();
+  const moduloSeleccionado = document.getElementById("filtroModulo").value;
+
+  return modulosGlobales
+    .map(m => {
+      const lessons = Array.isArray(m.lessons) ? m.lessons.filter(clasePublicada) : [];
+
+      const filtradas = lessons.filter(c => {
+        if (!texto) return true;
+
+        const moduloTexto = String(m.titulo || m.title || "").toLowerCase();
+        const moduloDesc = String(m.descripcion || m.description || "").toLowerCase();
+        const claseTexto = String(c.titulo || c.title || "").toLowerCase();
+        const claseDesc = String(c.descripcion || c.description || "").toLowerCase();
+        const claseContenido = String(c.contenido || c.text_content || "").toLowerCase();
+
+        return (
+          moduloTexto.includes(texto) ||
+          moduloDesc.includes(texto) ||
+          claseTexto.includes(texto) ||
+          claseDesc.includes(texto) ||
+          claseContenido.includes(texto)
+        );
       });
 
-      select.value = actual;
-    }
+      return { ...m, lessons: filtradas };
+    })
+    .filter(m => {
+      const okModulo = !moduloSeleccionado || String(m.id) === moduloSeleccionado;
+      return okModulo && Array.isArray(m.lessons) && m.lessons.length > 0;
+    });
+}
 
-    function actualizarProgreso() {
-      let total = 0;
-      modulosGlobal.forEach(m => {
-        const lessons = Array.isArray(m.lessons) ? m.lessons.filter(esPublicado) : [];
-        total += lessons.length;
-      });
+function renderSinapsisSimple(clase) {
+  const titulo = clase.titulo || clase.title || "esta clase";
+  return `
+    <div class="sinapsis-box">
+      <h4>Ruta Sinapsis para ${escapar(titulo)}</h4>
+      <div class="sinapsis-grid">
+        <div class="sinapsis-item">
+          <strong>Lo que ya sabes</strong>
+          Revisa el título y la idea principal antes de comenzar.
+        </div>
+        <div class="sinapsis-item">
+          <strong>Practica ahora</strong>
+          Explica con tus palabras lo que entendiste del contenido.
+        </div>
+        <div class="sinapsis-item">
+          <strong>Habla en esta situación</strong>
+          Imagina una conversación real donde usarías esta lección.
+        </div>
+        <div class="sinapsis-item">
+          <strong>Refuerza</strong>
+          Vuelve a abrir los documentos y links más importantes para fijar lo aprendido.
+        </div>
+      </div>
+    </div>
+  `;
+}
 
-      const abiertas = clasesAbiertas.size;
-      const porcentaje = total ? Math.round((abiertas / total) * 100) : 0;
+function renderContenido() {
+  const cont = document.getElementById("contenido");
+  const modulos = obtenerModulosFiltrados();
+  cont.innerHTML = "";
 
-      document.getElementById("barraProgreso").style.width = porcentaje + "%";
-      document.getElementById("textoProgreso").textContent = `${porcentaje}%`;
-    }
+  if (!modulos.length) {
+    cont.innerHTML = `<div class="empty">No hay clases publicadas para mostrar con este filtro.</div>`;
+    return;
+  }
 
-    function filtrarModulos(modulos) {
-      const texto = document.getElementById("busqueda").value.trim().toLowerCase();
-      const moduloId = document.getElementById("filtroModulo").value;
+  modulos.forEach(m => {
+    const box = document.createElement("div");
+    box.className = "modulo";
 
-      return modulos
-        .filter(m => !moduloId || String(m.id) === moduloId)
-        .map(m => {
-          const tituloModulo = (m.titulo || m.title || "").toLowerCase();
-          const descModulo = (m.descripcion || m.description || "").toLowerCase();
-          const lessons = Array.isArray(m.lessons) ? m.lessons.filter(esPublicado) : [];
+    const tituloModulo = m.titulo || m.title || "Módulo sin título";
+    const descModulo = m.descripcion || m.description || "";
+    const lessons = Array.isArray(m.lessons) ? m.lessons : [];
 
-          const lessonsFiltradas = lessons.filter(c => {
-            if (!texto) return true;
-            const tituloClase = (c.titulo || c.title || "").toLowerCase();
-            const descClase = (c.descripcion || c.description || "").toLowerCase();
-            const contClase = (c.contenido || c.text_content || "").toLowerCase();
-            return (
-              tituloModulo.includes(texto) ||
-              descModulo.includes(texto) ||
-              tituloClase.includes(texto) ||
-              descClase.includes(texto) ||
-              contClase.includes(texto)
-            );
-          });
+    let clasesHtml = "";
+    lessons.forEach(c => {
+      const tituloClase = c.titulo || c.title || "Clase sin título";
+      const descClase = c.descripcion || c.description || "";
+      const linksCount = [c.link_1, c.link_2, c.link_3, c.link_4, c.link_5].filter(Boolean).length;
 
-          return { ...m, lessons: lessonsFiltradas };
-        })
-        .filter(m => {
-          const texto = document.getElementById("busqueda").value.trim().toLowerCase();
-          if (!texto) return Array.isArray(m.lessons) && m.lessons.length > 0;
-          const tituloModulo = (m.titulo || m.title || "").toLowerCase();
-          const descModulo = (m.descripcion || m.description || "").toLowerCase();
-          return tituloModulo.includes(texto) || descModulo.includes(texto) || m.lessons.length > 0;
-        });
-    }
+      const docs = parseJSONSeguro(
+        c.document_urls ||
+        c.documents_json ||
+        c.documentos_json ||
+        "[]",
+        []
+      );
+      const docsCount = docs.length || (c.file_url ? 1 : 0);
 
-    function renderModulos() {
-      const cont = document.getElementById("contenedorModulos");
-      const modulos = filtrarModulos(modulosGlobal);
-      cont.innerHTML = "";
+      clasesHtml += `
+        <div class="clase">
+          <div class="clase-title">${escapar(tituloClase)}</div>
+          ${descClase ? `<div class="small">${escapar(descClase)}</div>` : ""}
+          <div class="small">Estado: ${escapar(estadoBonito(c.estado || c.status || "Publicado"))}</div>
+          <div class="small">Links: ${linksCount} | Documentos: ${docsCount} | Video: ${c.youtube_url ? "Sí" : "No"}</div>
 
-      if (!modulos.length) {
-        cont.innerHTML = `<div class="card empty">No hay clases publicadas para mostrar.</div>`;
-        return;
-      }
+          <div class="actions">
+            <button class="ver" onclick="verClase(${c.id})">Abrir clase</button>
+            <button class="sinapsis" onclick="marcarVista(${c.id})">Marcar como vista</button>
+          </div>
+        </div>
+      `;
+    });
 
-      modulos.forEach(modulo => {
-        const tituloModulo = modulo.titulo || modulo.title || "Sin título";
-        const descModulo = modulo.descripcion || modulo.description || "";
-        const lessons = Array.isArray(modulo.lessons) ? modulo.lessons : [];
-
-        const div = document.createElement("div");
-        div.className = "module";
-
-        let lessonsHtml = "";
-        if (!lessons.length) {
-          lessonsHtml = `<div class="lesson"><div class="small">No hay clases publicadas en este módulo.</div></div>`;
-        } else {
-          lessonsHtml = lessons.map(clase => {
-            const tituloClase = clase.titulo || clase.title || "Sin título";
-            const descripcionClase = clase.descripcion || clase.description || "";
-            const hasSong = !!(clase.song_title || clase.song_url || clase.song_lyrics || clase.song_translation);
-            const hasFile = !!clase.file_url;
-            const hasVideo = !!clase.youtube_url;
-            const extraLinks = [clase.link_1, clase.link_2, clase.link_3, clase.link_4, clase.link_5].filter(Boolean).length;
-
-            return `
-              <div class="lesson">
-                <h3>${escapar(tituloClase)}</h3>
-                ${descripcionClase ? `<div class="small">${escapar(descripcionClase)}</div>` : ""}
-                <div class="small">Video: ${hasVideo ? "Sí" : "No"}</div>
-                <div class="small">Archivo: ${hasFile ? "Sí" : "No"}</div>
-                <div class="small">Links extra: ${extraLinks}</div>
-                <div class="small">Canción didáctica: ${hasSong ? "Sí" : "No"}</div>
-
-                <div class="lesson-actions">
-                  <button class="btn" onclick="verClase(${clase.id})">Abrir clase</button>
-                  <button class="btn sec" onclick="marcarVista(${clase.id})">Marcar como vista</button>
-                </div>
-              </div>
-            `;
-          }).join("");
-        }
-
-        div.innerHTML = `
+    box.innerHTML = `
+      <div class="modulo-header">
+        <div>
           <h2>${escapar(tituloModulo)}</h2>
-          ${descModulo ? `<p>${escapar(descModulo)}</p>` : ""}
-          ${lessonsHtml}
-        `;
+          ${descModulo ? `<div class="modulo-desc">${escapar(descModulo)}</div>` : ""}
+        </div>
+        <span class="pill">${lessons.length} clase(s)</span>
+      </div>
+      <div class="clases-grid">${clasesHtml}</div>
+    `;
 
-        cont.appendChild(div);
-      });
+    cont.appendChild(box);
+  });
+}
+
+async function cargarClases(){
+  ponerEstado("Cargando clases publicadas...");
+  const cont = document.getElementById("contenido");
+  cont.innerHTML = "";
+
+  try{
+    const res = await fetch(API + "/api/dashboard");
+    const data = await res.json();
+
+    modulosGlobales = Array.isArray(data.modules) ? data.modules : [];
+
+    llenarFiltroModulos(modulosGlobales);
+    actualizarStats();
+    renderContenido();
+
+    const totalClases = modulosGlobales.reduce((acc, m) => {
+      const lessons = Array.isArray(m.lessons) ? m.lessons.filter(clasePublicada) : [];
+      return acc + lessons.length;
+    }, 0);
+
+    ponerEstado(`Se cargaron ${totalClases} clases publicadas.`);
+  } catch(e){
+    cont.innerHTML = `<div class="empty">Error cargando datos del alumno.</div>`;
+    ponerEstado("No se pudo cargar la información.");
+  }
+}
+
+function marcarVista(id){
+  clasesAbiertas.add(Number(id));
+  actualizarStats();
+}
+
+function renderLinksClase(c) {
+  const links = [c.link_1, c.link_2, c.link_3, c.link_4, c.link_5].filter(Boolean);
+  if (!links.length) return "";
+
+  return `
+    <div class="bloque">
+      <h4>Links adicionales</h4>
+      ${links.map((l, i) => `
+        <p><a class="link-btn" href="${limpiarUrl(l)}" target="_blank" rel="noopener noreferrer">Abrir recurso ${i + 1}</a></p>
+      `).join("")}
+    </div>
+  `;
+}
+
+function renderDocumentosClase(c) {
+  const docs = parseJSONSeguro(
+    c.document_urls ||
+    c.documents_json ||
+    c.documentos_json ||
+    "[]",
+    []
+  );
+
+  const docsNormalizados = docs.map(d => {
+    if (typeof d === "string") {
+      return { url: d, name: "Documento" };
+    }
+    return {
+      url: d.url || d.file_url || "",
+      name: d.name || d.file_name || "Documento"
+    };
+  }).filter(d => d.url);
+
+  if (!docsNormalizados.length && !c.file_url) return "";
+
+  let html = `<div class="bloque"><h4>Documentos de la clase</h4>`;
+
+  if (docsNormalizados.length) {
+    html += docsNormalizados.map((doc, i) => `
+      <p>
+        <a class="link-btn" href="${normalizarDocumentoUrl(doc.url)}" target="_blank" rel="noopener noreferrer">
+          Abrir documento ${i + 1}${doc.name ? " - " + escapar(doc.name) : ""}
+        </a>
+      </p>
+    `).join("");
+  } else if (c.file_url) {
+    html += `
+      <p>
+        <a class="link-btn" href="${normalizarDocumentoUrl(c.file_url)}" target="_blank" rel="noopener noreferrer">
+          Abrir archivo${c.file_name ? " - " + escapar(c.file_name) : ""}
+        </a>
+      </p>
+    `;
+  }
+
+  html += `</div>`;
+  return html;
+}
+
+async function verClase(id){
+  try{
+    const res = await fetch(API + "/api/lesson/" + id);
+    const data = await res.json();
+    const c = data.lesson || {};
+
+    marcarVista(id);
+
+    const titulo = c.titulo || c.title || "Clase";
+    const descripcion = c.descripcion || c.description || "";
+    const contenido = c.contenido || c.text_content || "";
+    const modulo = c.module_titulo || c.module_title || "";
+    const youtube = c.youtube_url || "";
+
+    let html = `
+      <div class="small"><strong>Módulo:</strong> ${escapar(modulo)}</div>
+      <div class="small"><strong>Estado:</strong> ${escapar(estadoBonito(c.estado || c.status || "Publicado"))}</div>
+    `;
+
+    if (descripcion) {
+      html += `<div class="bloque"><h4>Descripción</h4><p>${escapar(descripcion)}</p></div>`;
     }
 
-    function linksExtraHtml(clase) {
-      const links = [
-        clase.link_1,
-        clase.link_2,
-        clase.link_3,
-        clase.link_4,
-        clase.link_5
-      ].filter(Boolean);
+    if (contenido) {
+      html += `<div class="bloque"><h4>Contenido</h4><pre>${escapar(contenido)}</pre></div>`;
+    }
 
-      if (!links.length) return "";
-
-      return `
+    if (youtube) {
+      html += `
         <div class="bloque">
-          <h3>Links adicionales</h3>
-          ${links.map((l, i) => `
-            <a class="link-btn" href="${limpiarUrl(l)}" target="_blank" rel="noopener noreferrer">
-              Abrir link ${i + 1}
-            </a>
-          `).join("")}
+          <h4>Video principal</h4>
+          <p><a class="link-btn" href="${limpiarUrl(youtube)}" target="_blank" rel="noopener noreferrer">Abrir video</a></p>
         </div>
       `;
     }
 
-    function cancionHtml(clase) {
-      const title = clase.song_title || "";
-      const url = clase.song_url || "";
-      const lyrics = clase.song_lyrics || "";
-      const translation = clase.song_translation || "";
-      const notes = clase.song_notes || "";
+    html += renderLinksClase(c);
+    html += renderDocumentosClase(c);
+    html += renderSinapsisSimple(c);
 
-      if (!title && !url && !lyrics && !translation && !notes) return "";
+    document.getElementById("tituloClase").textContent = titulo;
+    document.getElementById("detalleClase").innerHTML = html;
+    document.getElementById("modal").style.display = "flex";
 
-      return `
-        <div class="bloque">
-          <h3>Canción didáctica</h3>
-          ${title ? `<p><strong>Título:</strong> ${escapar(title)}</p>` : ""}
-          ${url ? `<p><a class="link-btn" href="${limpiarUrl(url)}" target="_blank" rel="noopener noreferrer">Abrir canción</a></p>` : ""}
-          ${lyrics ? `<p><strong>Letra original</strong></p><pre>${escapar(lyrics)}</pre>` : ""}
-          ${translation ? `<p><strong>Traducción</strong></p><pre>${escapar(translation)}</pre>` : ""}
-          ${notes ? `<p><strong>Notas didácticas</strong></p><pre>${escapar(notes)}</pre>` : ""}
-        </div>
-      `;
-    }
+  } catch(e){
+    alert("Error cargando clase");
+  }
+}
 
-    async function verClase(id) {
-      try {
-        const res = await fetch(API + "/api/lesson/" + id);
-        const data = await leerJSON(res);
-        const clase = data.lesson || {};
+function cerrarModal(){
+  document.getElementById("modal").style.display = "none";
+}
 
-        const titulo = clase.titulo || clase.title || "Sin título";
-        const descripcion = clase.descripcion || clase.description || "";
-        const contenido = clase.contenido || clase.text_content || "";
-        const fileUrl = clase.file_url || "";
-        const fileName = clase.file_name || "archivo";
-        const videoUrl = clase.youtube_url || "";
-        const embed = youtubeEmbed(videoUrl);
+document.getElementById("buscador").addEventListener("input", renderContenido);
+document.getElementById("filtroModulo").addEventListener("change", renderContenido);
 
-        document.getElementById("modalTitulo").textContent = titulo;
-        document.getElementById("modalContenido").innerHTML = `
-          ${descripcion ? `<p><strong>Descripción:</strong><br>${escapar(descripcion)}</p>` : ""}
-          
-          ${contenido ? `
-            <div class="bloque">
-              <h3>Contenido</h3>
-              <pre>${escapar(contenido)}</pre>
-            </div>
-          ` : ""}
+cargarClases();
+</script>
 
-          ${videoUrl ? `
-            <div class="bloque">
-              <h3>Video principal</h3>
-              <a class="link-btn" href="${limpiarUrl(videoUrl)}" target="_blank" rel="noopener noreferrer">Abrir video</a>
-              ${embed ? `<iframe src="${embed}" allowfullscreen></iframe>` : ""}
-            </div>
-          ` : ""}
-
-          ${fileUrl ? `
-            <div class="bloque">
-              <h3>Archivo</h3>
-              <a class="link-btn" href="${limpiarUrl(fileUrl)}" target="_blank" rel="noopener noreferrer">
-                Abrir ${escapar(fileName)}
-              </a>
-            </div>
-          ` : ""}
-
-          ${linksExtraHtml(clase)}
-          ${cancionHtml(clase)}
-        `;
-
-        document.getElementById("modalClase").style.display = "flex";
-        marcarVista(id, false);
-      } catch (err) {
-        ponerEstado("Error abriendo clase: " + err.message);
-      }
-    }
-
-    function cerrarModal() {
-      document.getElementById("modalClase").style.display = "none";
-    }
-
-    function marcarVista(id, volverARender = true) {
-      clasesAbiertas.add(Number(id));
-      actualizarProgreso();
-      if (volverARender) renderModulos();
-    }
-
-    async function cargarTodo() {
-      try {
-        ponerEstado("Cargando clases publicadas...");
-        const modulos = await cargarDashboard();
-
-        modulosGlobal = Array.isArray(modulos) ? modulos : [];
-        llenarFiltroModulos(modulosGlobal);
-        renderModulos();
-        actualizarProgreso();
-
-        const totalPublicadas = modulosGlobal.reduce((acc, m) => {
-          const lessons = Array.isArray(m.lessons) ? m.lessons.filter(esPublicado) : [];
-          return acc + lessons.length;
-        }, 0);
-
-        ponerEstado(`Se cargaron ${totalPublicadas} clases publicadas.`);
-      } catch (err) {
-        document.getElementById("contenedorModulos").innerHTML =
-          `<div class="card empty">Error cargando clases: ${escapar(err.message)}</div>`;
-      }
-    }
-
-    document.getElementById("busqueda").addEventListener("input", renderModulos);
-    document.getElementById("filtroModulo").addEventListener("change", renderModulos);
-
-    cargarTodo();
-  </script>
 </body>
 </html>
