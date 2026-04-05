@@ -5,11 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Chambari - Alumno</title>
 
-  <!-- LOGO GLOBAL -->
   <link rel="icon" type="image/jpeg" href="./CHAMBARI.jpeg">
   <link rel="apple-touch-icon" href="./CHAMBARI.jpeg">
   <link rel="manifest" href="./manifest.json">
-
   <meta name="theme-color" content="#7b5ea7">
 
   <style>
@@ -17,25 +15,14 @@
       --bg: #f7f4ef;
       --bg-2: #f3efe7;
       --card: #ffffff;
-      --card-soft: #f6f1e8;
       --text: #2b2430;
       --muted: #6f6472;
-
       --primary: #7b5ea7;
       --primary-2: #62458f;
-
-      --accent: #a8c3a0;
-      --accent-2: #7ea172;
-
-      --wood: #c7a27c;
-      --wood-2: #a67c52;
-
-      --warning: #e0b35b;
-      --danger: #c85c5c;
-      --success: #6f9f6f;
-
       --border: #e6ddd2;
       --shadow: 0 10px 26px rgba(66, 40, 80, 0.08);
+      --danger: #c85c5c;
+      --success: #6f9f6f;
     }
 
     * { box-sizing: border-box; }
@@ -48,6 +35,7 @@
       color: var(--text);
       margin: 0;
       padding: 20px;
+      min-height: 100vh;
     }
 
     .main {
@@ -55,7 +43,11 @@
       margin: 0 auto;
     }
 
-    /* 🔥 LOGO REAL */
+    .login-wrap {
+      max-width: 480px;
+      margin: 60px auto;
+    }
+
     .logo-bar {
       display: flex;
       align-items: center;
@@ -69,6 +61,7 @@
       border-radius: 16px;
       overflow: hidden;
       box-shadow: var(--shadow);
+      background: white;
     }
 
     .logo-box img {
@@ -88,7 +81,111 @@
       font-size: 13px;
     }
 
-    /* resto del CSS igual */
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      box-shadow: var(--shadow);
+      padding: 24px;
+    }
+
+    h2 {
+      margin-top: 0;
+      color: var(--text);
+    }
+
+    label {
+      display: block;
+      margin-top: 14px;
+      margin-bottom: 6px;
+      font-weight: bold;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px 14px;
+      border: 1px solid #d7ccdb;
+      border-radius: 10px;
+      font-size: 15px;
+      outline: none;
+      background: #fffefc;
+    }
+
+    input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(123, 94, 167, 0.12);
+    }
+
+    button {
+      width: 100%;
+      margin-top: 14px;
+      padding: 12px 14px;
+      border: none;
+      border-radius: 10px;
+      background: var(--primary);
+      color: white;
+      font-size: 15px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    button:hover {
+      opacity: 0.95;
+    }
+
+    button.secundario {
+      background: #ece4f8;
+      color: var(--primary-2);
+    }
+
+    #estadoLogin {
+      margin-top: 14px;
+      padding: 12px;
+      border-radius: 10px;
+      font-size: 14px;
+      display: none;
+    }
+
+    .ok {
+      display: block !important;
+      background: #eef8ee;
+      color: var(--success);
+      border: 1px solid #cfe4cf;
+    }
+
+    .error {
+      display: block !important;
+      background: #fff1f1;
+      color: var(--danger);
+      border: 1px solid #efc5c5;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .app-card {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      box-shadow: var(--shadow);
+      padding: 24px;
+      margin-top: 18px;
+    }
+
+    .top-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .logout-btn {
+      width: auto;
+      padding: 10px 16px;
+      margin-top: 0;
+    }
   </style>
 </head>
 <body>
@@ -98,7 +195,7 @@
   <div id="loginScreen" class="login-wrap">
     <div class="logo-bar">
       <div class="logo-box">
-        <img src="./CHAMBARI.jpeg">
+        <img src="./CHAMBARI.jpeg" alt="Chambari">
       </div>
       <div class="logo-text">
         <strong>Chambari Academy</strong>
@@ -110,10 +207,10 @@
       <h2>Iniciar sesión</h2>
 
       <label for="loginEmail">Correo</label>
-      <input id="loginEmail" type="email">
+      <input id="loginEmail" type="email" placeholder="correo@ejemplo.com">
 
       <label for="loginPassword">Contraseña</label>
-      <input id="loginPassword" type="password">
+      <input id="loginPassword" type="password" placeholder="Tu contraseña">
 
       <button onclick="loginAlumno()">Entrar</button>
       <button class="secundario" onclick="registrarAlumno()">Registrarme</button>
@@ -125,7 +222,7 @@
   <div id="appScreen" class="hidden">
     <div class="logo-bar">
       <div class="logo-box">
-        <img src="./CHAMBARI.jpeg">
+        <img src="./CHAMBARI.jpeg" alt="Chambari">
       </div>
       <div class="logo-text">
         <strong>Chambari Academy</strong>
@@ -133,13 +230,174 @@
       </div>
     </div>
 
-    <!-- TODO TU RESTO DEL CÓDIGO SIGUE IGUAL -->
-
+    <div class="app-card">
+      <div class="top-row">
+        <div>
+          <h2 style="margin:0;">Panel del alumno</h2>
+          <p id="saludoAlumno" style="margin:8px 0 0; color:#6f6472;">Cargando perfil...</p>
+        </div>
+        <button class="logout-btn" onclick="cerrarSesion()">Cerrar sesión</button>
+      </div>
+    </div>
   </div>
+
 </div>
 
 <script>
-/* TODO TU JS EXACTAMENTE IGUAL */
+  const API_URL = "https://TU-BACKEND-REAL.onrender.com";
+
+  function mostrarEstado(texto, tipo) {
+    const box = document.getElementById("estadoLogin");
+    box.textContent = texto;
+    box.className = "";
+    box.id = "estadoLogin";
+    box.classList.add(tipo);
+  }
+
+  function limpiarEstado() {
+    const box = document.getElementById("estadoLogin");
+    box.textContent = "";
+    box.className = "";
+    box.id = "estadoLogin";
+    box.style.display = "none";
+  }
+
+  async function registrarAlumno() {
+    limpiarEstado();
+
+    const email = document.getElementById("loginEmail").value.trim().toLowerCase();
+    const password = document.getElementById("loginPassword").value.trim();
+
+    if (!email || !password) {
+      mostrarEstado("Escribe correo y contraseña para registrarte.", "error");
+      return;
+    }
+
+    const nombreBase = email.split("@")[0] || "Alumno";
+
+    try {
+      const res = await fetch(`${API_URL}/api/alumnos/register`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          nombre: nombreBase,
+          email,
+          password
+        })
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        mostrarEstado(data.message || "No se pudo registrar el alumno.", "error");
+        return;
+      }
+
+      mostrarEstado("Cuenta creada correctamente. Ahora entra con tus datos.", "ok");
+    } catch (error) {
+      console.error(error);
+      mostrarEstado("Error conectando con el servidor.", "error");
+    }
+  }
+
+  async function loginAlumno() {
+    limpiarEstado();
+
+    const email = document.getElementById("loginEmail").value.trim().toLowerCase();
+    const password = document.getElementById("loginPassword").value.trim();
+
+    if (!email || !password) {
+      mostrarEstado("Debes escribir tu correo y tu contraseña.", "error");
+      return;
+    }
+
+    try {
+      const res = await fetch(`${API_URL}/api/alumnos/login`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ email, password })
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        mostrarEstado(data.message || "Correo o contraseña incorrectos.", "error");
+        return;
+      }
+
+      localStorage.setItem("chambari_token", data.token);
+      localStorage.setItem("chambari_alumno", JSON.stringify(data.alumno));
+
+      mostrarEstado("Acceso correcto. Entrando...", "ok");
+
+      document.getElementById("loginScreen").classList.add("hidden");
+      document.getElementById("appScreen").classList.remove("hidden");
+
+      cargarPerfil();
+    } catch (error) {
+      console.error(error);
+      mostrarEstado("No se pudo conectar con el backend.", "error");
+    }
+  }
+
+  async function cargarPerfil() {
+    const token = localStorage.getItem("chambari_token");
+
+    if (!token) {
+      document.getElementById("loginScreen").classList.remove("hidden");
+      document.getElementById("appScreen").classList.add("hidden");
+      return;
+    }
+
+    try {
+      const res = await fetch(`${API_URL}/api/alumnos/perfil`, {
+        headers: {
+          "Authorization": `Bearer ${token}`
+        }
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        localStorage.removeItem("chambari_token");
+        localStorage.removeItem("chambari_alumno");
+        document.getElementById("loginScreen").classList.remove("hidden");
+        document.getElementById("appScreen").classList.add("hidden");
+        mostrarEstado("Tu sesión expiró. Vuelve a entrar.", "error");
+        return;
+      }
+
+      document.getElementById("saludoAlumno").textContent =
+        `Bienvenido, ${data.nombre}. Tu correo es ${data.email}.`;
+    } catch (error) {
+      console.error(error);
+      document.getElementById("saludoAlumno").textContent =
+        "No se pudo cargar el perfil del alumno.";
+    }
+  }
+
+  function cerrarSesion() {
+    localStorage.removeItem("chambari_token");
+    localStorage.removeItem("chambari_alumno");
+    document.getElementById("loginScreen").classList.remove("hidden");
+    document.getElementById("appScreen").classList.add("hidden");
+    document.getElementById("loginEmail").value = "";
+    document.getElementById("loginPassword").value = "";
+    limpiarEstado();
+  }
+
+  window.addEventListener("load", () => {
+    const token = localStorage.getItem("chambari_token");
+    if (token) {
+      document.getElementById("loginScreen").classList.add("hidden");
+      document.getElementById("appScreen").classList.remove("hidden");
+      cargarPerfil();
+    }
+  });
 </script>
 
 </body>
