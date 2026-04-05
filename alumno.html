@@ -296,6 +296,38 @@ button.danger,
   object-fit: contain;
 }
 
+.embed-box {
+  position: relative;
+  width: 100%;
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  background: #fff;
+  margin-top: 12px;
+}
+
+.embed-box iframe {
+  width: 100%;
+  height: min(78vh, 900px);
+  border: 0;
+  display: block;
+  background: #fff;
+}
+
+.embed-head {
+  padding: 12px 14px;
+  background: #f6f1e8;
+  border-bottom: 1px solid var(--border);
+  color: var(--primary-2);
+  font-weight: bold;
+}
+
+.embed-note {
+  margin-top: 10px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
 .texto-clase {
   background: #fbfaf7;
   padding: 18px;
@@ -390,7 +422,8 @@ textarea {
 
   .viewer-box-tall iframe,
   .viewer-box-tall img,
-  .live-box iframe {
+  .live-box iframe,
+  .embed-box iframe {
     height: 52vh;
     min-height: 320px;
   }
@@ -600,6 +633,36 @@ function urlAbsoluta(url) {
   return texto;
 }
 
+function esLinkEjerciciosEmbebible(url) {
+  const texto = String(url || "").trim().toLowerCase();
+  return texto.startsWith("https://chambatina1.github.io/ejercicios");
+}
+
+function obtenerLinkEjercicios(clase) {
+  const candidatos = [
+    clase.link_1,
+    clase.link_2,
+    clase.link_3,
+    clase.link_4,
+    clase.link_5
+  ].filter(Boolean).map(urlAbsoluta);
+
+  return candidatos.find(esLinkEjerciciosEmbebible) || "";
+}
+
+function obtenerLinksNormales(clase) {
+  return [
+    clase.link_1,
+    clase.link_2,
+    clase.link_3,
+    clase.link_4,
+    clase.link_5
+  ]
+    .filter(Boolean)
+    .map(urlAbsoluta)
+    .filter(url => !esLinkEjerciciosEmbebible(url));
+}
+
 function obtenerDocumentoPrincipal(clase) {
   const docs = Array.isArray(clase.documents) ? clase.documents : [];
   if (docs.length) {
@@ -629,12 +692,7 @@ function obtenerZoomUrl(clase) {
     clase.meeting_url,
     clase.live_url,
     clase.link_jitsi,
-    clase.link_zoom,
-    clase.link_1,
-    clase.link_2,
-    clase.link_3,
-    clase.link_4,
-    clase.link_5
+    clase.link_zoom
   ].filter(Boolean).map(urlAbsoluta);
 
   return candidatos[0] || "";
@@ -695,6 +753,7 @@ function renderClaseActual(modulo, clase) {
         <a href="#videoBox" class="button-link ver">Ir al video</a>
         <a href="#zoomBox" class="button-link secundario">Ir a clase en vivo</a>
         <a href="#documentoBox" class="button-link warning">Ir al documento</a>
+        <a href="#ejerciciosBox" class="button-link ver">Ir a práctica</a>
       </div>
     </div>
   `;
@@ -964,44 +1023,93 @@ function renderZoom(clase) {
 function renderEjercicios(clase) {
   const box = document.getElementById("ejerciciosBox");
   const ejercicios = extraerEjerciciosDesdeContenido(clase.contenido || clase.text_content || "");
+  const linkEjercicios = obtenerLinkEjercicios(clase);
+  const linksNormales = obtenerLinksNormales(clase);
 
-  if (!ejercicios.length) {
+  const bloques = [];
+
+  if (linkEjercicios) {
+    bloques.push(`
+      <div class="item">
+        <h4>Práctica interactiva</h4>
+        <div class="kicker">Haz tus ejercicios aquí mismo, sin salir de Chambari.</div>
+
+        <div class="embed-box">
+          <div class="embed-head">Practica ahora</div>
+          <iframe
+            src="${esc(linkEjercicios)}"
+            title="Ejercicios interactivos"
+            loading="lazy"
+            referrerpolicy="strict-origin-when-cross-origin"
+            allowfullscreen>
+          </iframe>
+        </div>
+
+        <div class="embed-note">
+          Si la actividad tarda un poco en cargar, espera dentro de esta misma pantalla.
+        </div>
+      </div>
+    `);
+  }
+
+  if (ejercicios.length) {
+    bloques.push(
+      ejercicios.map((ej, index) => {
+        const opciones = Array.isArray(ej.opciones) ? ej.opciones : [];
+
+        if (ej.tipo === "opcion_multiple" || ej.tipo === "verdadero_falso") {
+          return `
+            <div class="exercise-box">
+              <div class="exercise-chip">${esc(ej.tipo)}</div>
+              <h4>${index + 1}. ${esc(ej.pregunta || "Pregunta")}</h4>
+              <div class="row">
+                ${opciones.map(op => `
+                  <button type="button" class="secundario" onclick="responderOpcion(this, ${JSON.stringify(String(ej.respuesta || ""))}, ${JSON.stringify(String(op || ""))})">
+                    ${esc(op)}
+                  </button>
+                `).join("")}
+              </div>
+              <div class="kicker respuesta-box" style="margin-top:10px;"></div>
+            </div>
+          `;
+        }
+
+        return `
+          <div class="exercise-box">
+            <div class="exercise-chip">${esc(ej.tipo || "respuesta_corta")}</div>
+            <h4>${index + 1}. ${esc(ej.pregunta || "Pregunta")}</h4>
+            <textarea placeholder="Escribe tu respuesta aquí"></textarea>
+            <button type="button" onclick="revisarRespuestaCorta(this, ${JSON.stringify(String(ej.respuesta || ""))})">Revisar</button>
+            <div class="kicker respuesta-box" style="margin-top:10px;"></div>
+          </div>
+        `;
+      }).join("")
+    );
+  }
+
+  if (linksNormales.length) {
+    bloques.push(`
+      <div class="item">
+        <h4>Recursos adicionales</h4>
+        ${linksNormales.map(link => `
+          <div style="margin-top:10px;">
+            <a href="${esc(link)}" class="button-link secundario" target="_blank" rel="noopener noreferrer">
+              Abrir recurso adicional
+            </a>
+          </div>
+        `).join("")}
+      </div>
+    `);
+  }
+
+  if (!bloques.length) {
     box.className = "vacio";
     box.textContent = "No hay ejercicios en esta clase.";
     return;
   }
 
   box.className = "";
-  box.innerHTML = ejercicios.map((ej, index) => {
-    const opciones = Array.isArray(ej.opciones) ? ej.opciones : [];
-
-    if (ej.tipo === "opcion_multiple" || ej.tipo === "verdadero_falso") {
-      return `
-        <div class="exercise-box">
-          <div class="exercise-chip">${esc(ej.tipo)}</div>
-          <h4>${index + 1}. ${esc(ej.pregunta || "Pregunta")}</h4>
-          <div class="row">
-            ${opciones.map(op => `
-              <button type="button" class="secundario" onclick="responderOpcion(this, ${JSON.stringify(String(ej.respuesta || ""))}, ${JSON.stringify(String(op || ""))})">
-                ${esc(op)}
-              </button>
-            `).join("")}
-          </div>
-          <div class="kicker respuesta-box" style="margin-top:10px;"></div>
-        </div>
-      `;
-    }
-
-    return `
-      <div class="exercise-box">
-        <div class="exercise-chip">${esc(ej.tipo || "respuesta_corta")}</div>
-        <h4>${index + 1}. ${esc(ej.pregunta || "Pregunta")}</h4>
-        <textarea placeholder="Escribe tu respuesta aquí"></textarea>
-        <button type="button" onclick="revisarRespuestaCorta(this, ${JSON.stringify(String(ej.respuesta || ""))})">Revisar</button>
-        <div class="kicker respuesta-box" style="margin-top:10px;"></div>
-      </div>
-    `;
-  }).join("");
+  box.innerHTML = bloques.join("");
 }
 
 function responderOpcion(btn, correcta, elegida) {
