@@ -36,6 +36,8 @@
 
 * { box-sizing: border-box; }
 
+html { scroll-behavior: smooth; }
+
 body {
   font-family: Arial, sans-serif;
   background:
@@ -47,7 +49,7 @@ body {
 }
 
 .main, .header-wrap {
-  max-width: 1100px;
+  max-width: 1180px;
   margin: 0 auto;
 }
 
@@ -65,6 +67,7 @@ body {
   overflow: hidden;
   box-shadow: var(--shadow);
   background: white;
+  flex-shrink: 0;
 }
 
 .logo-box img {
@@ -84,13 +87,24 @@ body {
   font-size: 13px;
 }
 
+.version-badge{
+  background:#62458f;
+  color:#fff;
+  padding:8px 12px;
+  border-radius:12px;
+  font-size:12px;
+  display:inline-block;
+  margin-bottom:12px;
+  box-shadow: var(--shadow);
+}
+
 h1 {
   color: var(--primary-2);
   margin: 0 0 8px 0;
   font-size: 34px;
 }
 
-h2, h3 {
+h2, h3, h4 {
   color: var(--primary-2);
   margin-top: 0;
 }
@@ -112,14 +126,20 @@ h2, h3 {
 
 .grid-2 {
   display: grid;
-  grid-template-columns: 1.2fr 0.8fr;
+  grid-template-columns: 1.2fr .8fr;
   gap: 20px;
 }
 
 .grid-3 {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 16px;
+  gap: 14px;
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 14px;
 }
 
 .stat {
@@ -132,51 +152,9 @@ h2, h3 {
 
 .stat strong {
   display: block;
-  font-size: 28px;
+  font-size: 30px;
   color: var(--primary);
   margin-bottom: 4px;
-}
-
-.kicker {
-  color: var(--muted);
-  font-size: 13px;
-  margin-top: 4px;
-}
-
-.button,
-button,
-a.button-link {
-  display: inline-block;
-  width: 100%;
-  margin-top: 12px;
-  padding: 12px 14px;
-  background: var(--primary);
-  border: none;
-  color: white;
-  font-weight: bold;
-  border-radius: 12px;
-  cursor: pointer;
-  text-decoration: none;
-  text-align: center;
-}
-
-.button.secundario,
-button.secundario,
-a.button-link.secundario {
-  background: #7e8798;
-}
-
-.button.ver,
-button.ver,
-a.button-link.ver {
-  background: var(--accent-2);
-}
-
-.button.warning,
-button.warning,
-a.button-link.warning {
-  background: var(--warning);
-  color: #2b2430;
 }
 
 .item {
@@ -192,92 +170,61 @@ a.button-link.warning {
   color: var(--primary-2);
 }
 
-.item small {
+.item small,
+.kicker {
   color: var(--muted);
+  font-size: 13px;
 }
 
-.video-box {
-  position: relative;
-  width: 100%;
-  border-radius: 16px;
-  overflow: hidden;
-  border: 1px solid var(--border);
-  background: #000;
-  margin-top: 12px;
+.row {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
 }
 
-.video-box iframe {
-  width: 100%;
-  height: 380px;
-  border: 0;
-  display: block;
+.row > * {
+  flex: 1;
+  min-width: 160px;
 }
 
-.link-list a,
-.doc-list a {
-  color: var(--primary-2);
-  text-decoration: none;
-  display: block;
-  margin-top: 8px;
-  word-break: break-word;
-  padding: 10px 12px;
-  background: #f8f4fc;
-  border: 1px solid #e8def5;
-  border-radius: 12px;
-}
-
-.exercise-chip {
-  background: #eee6fb;
-  color: var(--primary-2);
-  padding: 6px 10px;
-  border-radius: 999px;
-  font-size: 12px;
+button,
+.button-link {
   display: inline-block;
-  margin-right: 8px;
-  margin-top: 6px;
-}
-
-.exercise-box {
-  background: #f9f6ff;
-  border: 1px dashed #c7b7e6;
-  border-radius: 14px;
-  padding: 14px;
-  margin-top: 14px;
-}
-
-input[type="text"], textarea {
-  width: 100%;
-  padding: 12px;
-  margin-top: 10px;
-  border-radius: 12px;
-  border: 1px solid var(--border);
-  font-size: 15px;
-  background: #fff;
-}
-
-textarea {
-  min-height: 90px;
-  resize: vertical;
-}
-
-.progreso-wrap {
   margin-top: 12px;
-}
-
-.progreso-bar {
+  padding: 12px 14px;
   width: 100%;
-  height: 12px;
-  background: #ece6dc;
-  border-radius: 999px;
-  overflow: hidden;
+  background: var(--primary);
+  border: none;
+  color: white;
+  font-weight: bold;
+  border-radius: 12px;
+  cursor: pointer;
+  text-decoration: none;
+  text-align: center;
 }
 
-.progreso-fill {
-  height: 100%;
-  width: 0%;
-  background: linear-gradient(90deg, var(--primary), var(--accent-2));
-  border-radius: 999px;
-  transition: width 0.3s ease;
+button:hover,
+.button-link:hover {
+  opacity: .96;
+}
+
+button.secundario,
+.button-link.secundario { background: #7e8798; }
+
+button.ver,
+.button-link.ver { background: var(--accent-2); }
+
+button.warning,
+.button-link.warning {
+  background: var(--warning);
+  color: #2b2430;
+}
+
+button.mini,
+.button-link.mini {
+  width: auto;
+  padding: 10px 12px;
+  margin-top: 8px;
 }
 
 .estado {
@@ -308,35 +255,146 @@ textarea {
   padding: 20px;
 }
 
-.badge {
-  display: inline-block;
-  background: #62458f;
-  color: #fff;
-  padding: 8px 12px;
+.progreso-wrap {
+  margin-top: 12px;
+}
+
+.progreso-bar {
+  width: 100%;
+  height: 12px;
+  background: #ece6dc;
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.progreso-fill {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, var(--primary), var(--accent-2));
+  border-radius: 999px;
+  transition: width .3s ease;
+}
+
+.link-list a,
+.doc-list a {
+  color: var(--primary-2);
+  text-decoration: none;
+  display: block;
+  margin-top: 8px;
+  word-break: break-word;
+  padding: 12px;
+  background: #f8f4fc;
+  border: 1px solid #e8def5;
   border-radius: 12px;
+}
+
+.video-box,
+.viewer-box {
+  position: relative;
+  width: 100%;
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  background: #000;
+  margin-top: 12px;
+}
+
+.video-box iframe,
+.viewer-box iframe,
+.viewer-box img {
+  width: 100%;
+  height: 420px;
+  border: 0;
+  display: block;
+  background: #fff;
+  object-fit: contain;
+}
+
+.exercise-box {
+  background: #f9f6ff;
+  border: 1px dashed #c7b7e6;
+  border-radius: 14px;
+  padding: 14px;
+  margin-top: 14px;
+}
+
+.exercise-chip {
+  background: #eee6fb;
+  color: var(--primary-2);
+  padding: 6px 10px;
+  border-radius: 999px;
   font-size: 12px;
-  margin-bottom: 12px;
+  display: inline-block;
+  margin-right: 8px;
+  margin-top: 6px;
+}
+
+textarea {
+  width: 100%;
+  padding: 12px;
+  margin-top: 10px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  font-size: 15px;
+  background: #fff;
+  min-height: 90px;
+  resize: vertical;
+}
+
+.hero-card {
+  background: linear-gradient(180deg, #fbf8f4 0%, #ffffff 100%);
+}
+
+.lesson-title {
+  font-size: 24px;
+  margin-bottom: 8px;
+}
+
+.modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(26, 18, 33, .72);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  z-index: 999;
+}
+
+.modal-content {
+  width: min(980px, 100%);
+  max-height: 90vh;
+  overflow: auto;
+  background: var(--card);
+  border-radius: 20px;
+  padding: 20px;
+  border: 1px solid var(--border);
   box-shadow: var(--shadow);
 }
 
-.row {
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
+.modal-close {
+  background: var(--danger);
+  color: white;
 }
 
-.row > * {
-  flex: 1;
+.hidden {
+  display: none !important;
 }
 
-@media (max-width: 900px) {
+@media (max-width: 980px) {
   .grid-2,
   .grid-3 {
     grid-template-columns: 1fr;
   }
 
-  .video-box iframe {
-    height: 240px;
+  .video-box iframe,
+  .viewer-box iframe,
+  .viewer-box img {
+    height: 260px;
+  }
+
+  h1 {
+    font-size: 28px;
   }
 }
 </style>
@@ -344,7 +402,7 @@ textarea {
 <body>
 
 <div class="header-wrap">
-  <div class="badge">Alumno build 05-04-26</div>
+  <div class="version-badge">Alumno blindado 05-04-26</div>
 
   <div class="logo-bar">
     <div class="logo-box">
@@ -352,20 +410,20 @@ textarea {
     </div>
     <div class="logo-text">
       <strong>Chambari Academy</strong>
-      <span>Tu espacio de aprendizaje</span>
+      <span>Espacio del alumno</span>
     </div>
   </div>
 
-  <h1>Bienvenido a tu clase</h1>
+  <h1>Tu clase</h1>
   <div class="subtitulo">
-    Aquí verás solo lo importante: tu clase, tus materiales, tus ejercicios y tu progreso.
+    Mira tu video, abre tu documento y practica sin complicaciones.
   </div>
 </div>
 
 <div class="main">
 
   <div class="grid-2">
-    <div class="card">
+    <div class="card hero-card">
       <h2>Continúa tu clase</h2>
       <div id="claseActualBox" class="vacio">Cargando clase...</div>
       <div id="estadoGeneral" class="estado"></div>
@@ -373,13 +431,13 @@ textarea {
 
     <div class="card">
       <h2>Cómo vas</h2>
-      <div class="grid-3">
+      <div class="stats">
         <div class="stat">
           <strong id="statModulo">-</strong>
           Módulo
         </div>
         <div class="stat">
-          <strong id="statLecciones">0</strong>
+          <strong id="statClases">0</strong>
           Clases
         </div>
         <div class="stat">
@@ -397,24 +455,24 @@ textarea {
 
       <div class="item">
         <h4>Siguiente paso</h4>
-        <div id="siguientePaso">Abre tu clase y completa el siguiente ejercicio.</div>
+        <div id="siguientePaso">Abre tu clase y continúa.</div>
       </div>
     </div>
   </div>
 
   <div class="card">
-    <h2>Video de la clase</h2>
+    <h2>Video</h2>
     <div id="videoBox" class="vacio">Esta clase no tiene video todavía.</div>
   </div>
 
   <div class="grid-2">
     <div class="card">
-      <h2>Materiales</h2>
-      <div id="materialesBox" class="vacio">No hay materiales disponibles.</div>
+      <h2>Documento o archivo</h2>
+      <div id="documentoBox" class="vacio">Esta clase no tiene documento todavía.</div>
     </div>
 
     <div class="card">
-      <h2>Enlaces útiles</h2>
+      <h2>Enlaces</h2>
       <div id="linksBox" class="vacio">No hay enlaces adicionales.</div>
     </div>
   </div>
@@ -426,6 +484,14 @@ textarea {
 
 </div>
 
+<div class="modal" id="modalViewer">
+  <div class="modal-content">
+    <h2 id="modalViewerTitulo">Documento</h2>
+    <div id="modalViewerContenido"></div>
+    <button class="modal-close" onclick="cerrarModalViewer()">Cerrar</button>
+  </div>
+</div>
+
 <script>
 const API = "https://chambari-academia.onrender.com";
 
@@ -434,7 +500,8 @@ function esc(texto) {
     .replaceAll("&", "&amp;")
     .replaceAll("<", "&lt;")
     .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;");
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#39;");
 }
 
 function mostrarEstado(id, texto, tipo = "ok") {
@@ -506,6 +573,44 @@ function getYoutubeEmbed(url) {
   }
 }
 
+function esImagen(url) {
+  return /\.(jpg|jpeg|png|gif|webp|svg)(\?.*)?$/i.test(String(url || ""));
+}
+
+function esPdf(url) {
+  return /\.pdf(\?.*)?$/i.test(String(url || ""));
+}
+
+function urlAbsoluta(url) {
+  const texto = String(url || "").trim();
+  if (!texto) return "";
+  if (texto.startsWith("http://") || texto.startsWith("https://")) return texto;
+  if (texto.startsWith("/")) return API + texto;
+  return texto;
+}
+
+function obtenerDocumentoPrincipal(clase) {
+  const docs = Array.isArray(clase.documents) ? clase.documents : [];
+  if (docs.length) {
+    const doc = docs[0] || {};
+    return {
+      name: doc.name || "Documento",
+      url: urlAbsoluta(doc.viewerUrl || doc.viewer_url || doc.url || doc.directUrl || ""),
+      rawUrl: urlAbsoluta(doc.url || doc.directUrl || doc.viewerUrl || doc.viewer_url || "")
+    };
+  }
+
+  if (clase.file_url || clase.file_name) {
+    return {
+      name: clase.file_name || "Archivo",
+      url: urlAbsoluta(clase.file_url || ""),
+      rawUrl: urlAbsoluta(clase.file_url || "")
+    };
+  }
+
+  return null;
+}
+
 function renderClaseActual(modulo, clase) {
   const box = document.getElementById("claseActualBox");
   const contenido = limpiarContenidoVisible(clase.contenido || clase.text_content || "");
@@ -519,11 +624,14 @@ function renderClaseActual(modulo, clase) {
       <h3>${esc(moduloNombre)}</h3>
 
       <div class="kicker" style="margin-top:12px;">Tu clase de hoy</div>
-      <h4 style="margin-top:6px;">${esc(claseNombre)}</h4>
+      <div class="lesson-title">${esc(claseNombre)}</div>
 
-      ${contenido ? `<p>${esc(contenido)}</p>` : `<p class="kicker">Esta clase no tiene descripción todavía.</p>`}
+      ${contenido ? `<p>${esc(contenido).replace(/\n/g, "<br>")}</p>` : `<p class="kicker">Esta clase no tiene descripción todavía.</p>`}
 
-      <a href="#ejerciciosBox" class="button-link">Ir a practicar</a>
+      <div class="row">
+        <a href="#videoBox" class="button-link">Ir al video</a>
+        <a href="#documentoBox" class="button-link ver">Ir al documento</a>
+      </div>
     </div>
   `;
 }
@@ -546,10 +654,86 @@ function renderVideo(clase) {
         src="${esc(embed)}"
         title="Video de la clase"
         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-        allowfullscreen>
+        allowfullscreen
+        referrerpolicy="strict-origin-when-cross-origin">
       </iframe>
     </div>
-    <a class="button-link ver" href="${esc(youtube)}" target="_blank">Abrir video</a>
+    <div class="row">
+      <a class="button-link ver" href="${esc(youtube)}" target="_blank" rel="noopener noreferrer">Abrir video</a>
+    </div>
+  `;
+}
+
+function abrirDocumento(url, nombre) {
+  const abs = urlAbsoluta(url);
+  const titulo = nombre || "Documento";
+  const cont = document.getElementById("modalViewerContenido");
+  document.getElementById("modalViewerTitulo").textContent = titulo;
+
+  if (!abs) {
+    cont.innerHTML = `<div class="item">No se pudo abrir el documento.</div>`;
+    document.getElementById("modalViewer").style.display = "flex";
+    return;
+  }
+
+  if (esImagen(abs)) {
+    cont.innerHTML = `
+      <div class="viewer-box">
+        <img src="${esc(abs)}" alt="${esc(titulo)}">
+      </div>
+      <div class="row">
+        <a class="button-link ver" href="${esc(abs)}" target="_blank" rel="noopener noreferrer">Abrir en otra pestaña</a>
+      </div>
+    `;
+  } else {
+    cont.innerHTML = `
+      <div class="viewer-box">
+        <iframe src="${esc(abs)}" title="${esc(titulo)}"></iframe>
+      </div>
+      <div class="row">
+        <a class="button-link ver" href="${esc(abs)}" target="_blank" rel="noopener noreferrer">Abrir en otra pestaña</a>
+      </div>
+    `;
+  }
+
+  document.getElementById("modalViewer").style.display = "flex";
+}
+
+function cerrarModalViewer() {
+  document.getElementById("modalViewer").style.display = "none";
+  document.getElementById("modalViewerContenido").innerHTML = "";
+}
+
+function renderDocumento(clase) {
+  const box = document.getElementById("documentoBox");
+  const doc = obtenerDocumentoPrincipal(clase);
+
+  if (!doc || !doc.url) {
+    box.className = "vacio";
+    box.textContent = "Esta clase no tiene documento todavía.";
+    return;
+  }
+
+  const previewUrl = doc.url;
+  const openUrl = doc.rawUrl || doc.url;
+
+  box.className = "";
+  box.innerHTML = `
+    <div class="item">
+      <h4>${esc(doc.name)}</h4>
+      <div class="kicker">Vista rápida del material</div>
+
+      ${
+        esImagen(previewUrl)
+          ? `<div class="viewer-box"><img src="${esc(previewUrl)}" alt="${esc(doc.name)}"></div>`
+          : `<div class="viewer-box"><iframe src="${esc(previewUrl)}" title="${esc(doc.name)}"></iframe></div>`
+      }
+
+      <div class="row">
+        <button type="button" class="ver" onclick="abrirDocumento('${esc(openUrl)}', '${esc(doc.name)}')">Ver grande</button>
+        <a class="button-link secundario" href="${esc(openUrl)}" target="_blank" rel="noopener noreferrer">Abrir documento</a>
+      </div>
+    </div>
   `;
 }
 
@@ -571,26 +755,8 @@ function renderLinks(clase) {
 
   box.className = "link-list";
   box.innerHTML = links.map((link, index) => `
-    <a href="${esc(link)}" target="_blank">Abrir enlace ${index + 1}</a>
+    <a href="${esc(link)}" target="_blank" rel="noopener noreferrer">Abrir enlace ${index + 1}</a>
   `).join("");
-}
-
-function renderDocs(clase) {
-  const box = document.getElementById("materialesBox");
-  const docs = clase.documents || clase.document_urls || [];
-
-  if (!docs.length) {
-    box.className = "vacio";
-    box.textContent = "No hay materiales disponibles.";
-    return;
-  }
-
-  box.className = "doc-list";
-  box.innerHTML = docs.map((doc, index) => {
-    const name = doc.name || `Documento ${index + 1}`;
-    const url = doc.viewerUrl || doc.viewer_url || doc.url || doc.directUrl || "#";
-    return `<a href="${esc(url)}" target="_blank">Abrir ${esc(name)}</a>`;
-  }).join("");
 }
 
 function renderEjercicios(clase) {
@@ -614,7 +780,7 @@ function renderEjercicios(clase) {
           <h4>${index + 1}. ${esc(ej.pregunta || "Pregunta")}</h4>
           <div class="row">
             ${opciones.map(op => `
-              <button type="button" class="secundario" onclick="responderOpcion(this, '${esc(ej.respuesta || "")}', '${esc(op)}')">
+              <button type="button" class="secundario" onclick="responderOpcion(this, ${JSON.stringify(String(ej.respuesta || ""))}, ${JSON.stringify(String(op || ""))})">
                 ${esc(op)}
               </button>
             `).join("")}
@@ -629,7 +795,7 @@ function renderEjercicios(clase) {
         <div class="exercise-chip">${esc(ej.tipo || "respuesta_corta")}</div>
         <h4>${index + 1}. ${esc(ej.pregunta || "Pregunta")}</h4>
         <textarea placeholder="Escribe tu respuesta aquí"></textarea>
-        <button type="button" onclick="revisarRespuestaCorta(this, '${esc(ej.respuesta || "")}')">Revisar</button>
+        <button type="button" onclick="revisarRespuestaCorta(this, ${JSON.stringify(String(ej.respuesta || ""))})">Revisar</button>
         <div class="kicker respuesta-box" style="margin-top:10px;"></div>
       </div>
     `;
@@ -669,10 +835,31 @@ function revisarRespuestaCorta(btn, correcta) {
   }
 }
 
-function calcularProgreso(lessons, currentLessonIndex) {
-  if (!lessons.length) return 0;
-  const progreso = Math.round(((currentLessonIndex + 1) / lessons.length) * 100);
+function calcularProgreso(total, actualIndex) {
+  if (!total) return 0;
+  const progreso = Math.round(((actualIndex + 1) / total) * 100);
   return Math.max(0, Math.min(100, progreso));
+}
+
+function seleccionarModuloVisible(modulos) {
+  return modulos.find(m => {
+    const estado = String(m.estado || m.status || "").toLowerCase();
+    const lessons = Array.isArray(m.lessons) ? m.lessons : [];
+    return estado !== "archived" && lessons.length > 0;
+  }) || null;
+}
+
+function seleccionarClaseVisible(modulo) {
+  const lessons = Array.isArray(modulo.lessons) ? modulo.lessons : [];
+  const publicadas = lessons.filter(clase => {
+    const estado = String(clase.estado || clase.status || "").toLowerCase();
+    return estado === "published" || estado === "publicado" || estado === "";
+  });
+  return {
+    clase: publicadas[0] || lessons[0] || null,
+    total: publicadas.length || lessons.length || 0,
+    index: 0
+  };
 }
 
 async function cargarAlumno() {
@@ -688,19 +875,15 @@ async function cargarAlumno() {
     }
 
     const modulos = Array.isArray(data.modules) ? data.modules : [];
-    const moduloPublicado = modulos.find(m => {
-      const estado = String(m.estado || m.status || "").toLowerCase();
-      const lessons = Array.isArray(m.lessons) ? m.lessons : [];
-      return estado !== "archived" && lessons.length > 0;
-    });
+    const modulo = seleccionarModuloVisible(modulos);
 
-    if (!moduloPublicado) {
+    if (!modulo) {
       document.getElementById("claseActualBox").className = "vacio";
-      document.getElementById("claseActualBox").textContent = "Aún no hay clases disponibles para ti.";
+      document.getElementById("claseActualBox").textContent = "Aún no hay clases disponibles.";
       document.getElementById("videoBox").className = "vacio";
       document.getElementById("videoBox").textContent = "Todavía no hay video disponible.";
-      document.getElementById("materialesBox").className = "vacio";
-      document.getElementById("materialesBox").textContent = "Todavía no hay materiales.";
+      document.getElementById("documentoBox").className = "vacio";
+      document.getElementById("documentoBox").textContent = "Todavía no hay documento disponible.";
       document.getElementById("linksBox").className = "vacio";
       document.getElementById("linksBox").textContent = "Todavía no hay enlaces.";
       document.getElementById("ejerciciosBox").className = "vacio";
@@ -708,32 +891,28 @@ async function cargarAlumno() {
       return;
     }
 
-    const lessons = (moduloPublicado.lessons || []).filter(clase => {
-      const estado = String(clase.estado || clase.status || "").toLowerCase();
-      return estado === "published" || estado === "";
-    });
+    const claseInfo = seleccionarClaseVisible(modulo);
+    const clase = claseInfo.clase;
 
-    const claseActual = lessons[0] || (moduloPublicado.lessons || [])[0];
-
-    if (!claseActual) {
+    if (!clase) {
       document.getElementById("claseActualBox").className = "vacio";
-      document.getElementById("claseActualBox").textContent = "Este módulo todavía no tiene una clase visible.";
+      document.getElementById("claseActualBox").textContent = "Este módulo no tiene clase visible todavía.";
       return;
     }
 
-    renderClaseActual(moduloPublicado, claseActual);
-    renderVideo(claseActual);
-    renderDocs(claseActual);
-    renderLinks(claseActual);
-    renderEjercicios(claseActual);
+    renderClaseActual(modulo, clase);
+    renderVideo(clase);
+    renderDocumento(clase);
+    renderLinks(clase);
+    renderEjercicios(clase);
 
-    const progreso = calcularProgreso(lessons.length ? lessons : [claseActual], 0);
+    const progreso = calcularProgreso(claseInfo.total || 1, claseInfo.index || 0);
 
-    document.getElementById("statModulo").textContent = normalizarModuloNombre(moduloPublicado);
-    document.getElementById("statLecciones").textContent = String(lessons.length || 1);
+    document.getElementById("statModulo").textContent = normalizarModuloNombre(modulo);
+    document.getElementById("statClases").textContent = String(claseInfo.total || 1);
     document.getElementById("statProgreso").textContent = progreso + "%";
     document.getElementById("barraProgreso").style.width = progreso + "%";
-    document.getElementById("siguientePaso").textContent = "Completa la clase \"" + normalizarClaseNombre(claseActual) + "\".";
+    document.getElementById("siguientePaso").textContent = `Completa la clase "${normalizarClaseNombre(clase)}".`;
 
     mostrarEstado("estadoGeneral", "Clase cargada correctamente.", "ok");
   } catch (error) {
@@ -741,6 +920,10 @@ async function cargarAlumno() {
     mostrarEstado("estadoGeneral", "Error conectando con el servidor.", "error");
   }
 }
+
+document.getElementById("modalViewer").addEventListener("click", function(e) {
+  if (e.target.id === "modalViewer") cerrarModalViewer();
+});
 
 (function diagnosticoHomeScreen() {
   const standalone = window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone === true;
