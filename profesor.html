@@ -13,13 +13,8 @@ body {
   margin: 0;
   padding: 20px;
 }
-h1 {
-  color: #ff8a00;
-  margin-top: 0;
-}
-h2, h3 {
-  margin-top: 0;
-}
+h1 { color: #ff8a00; margin-top: 0; }
+h2, h3, h4 { margin-top: 0; }
 .card {
   background: #1b1b1b;
   padding: 20px;
@@ -72,6 +67,7 @@ button.eliminar { background: #c62828; color: white; }
 button.publicar { background: #2e7d32; color: white; }
 button.archivar { background: #6d4c41; color: white; }
 button.ver { background: #1565c0; color: white; }
+button.didactico { background: #7b1fa2; color: white; }
 
 .item {
   background: #222;
@@ -119,7 +115,7 @@ button.ver { background: #1565c0; color: white; }
   z-index: 999;
 }
 .modal-content {
-  width: min(900px, 100%);
+  width: min(980px, 100%);
   max-height: 90vh;
   overflow: auto;
   background: #1a1a1a;
@@ -139,6 +135,19 @@ button.ver { background: #1565c0; color: white; }
   border-radius: 8px;
   font-weight: bold;
   margin-top: 10px;
+  margin-right: 8px;
+}
+.bloque {
+  margin-top: 18px;
+  padding-top: 12px;
+  border-top: 1px solid #333;
+}
+pre {
+  white-space: pre-wrap;
+  background: #101010;
+  border-radius: 10px;
+  padding: 12px;
+  overflow: auto;
 }
 @media (min-width: 900px) {
   .topbar { grid-template-columns: 1fr 1fr; }
@@ -171,6 +180,7 @@ button.ver { background: #1565c0; color: white; }
 
   <div class="card">
     <h3>Crear clase</h3>
+
     <label>Selecciona el módulo</label>
     <select id="claseModulo">
       <option value="">Cargando módulos...</option>
@@ -179,10 +189,36 @@ button.ver { background: #1565c0; color: white; }
     <input id="claseTitulo" placeholder="Título de la clase (opcional)">
     <textarea id="claseDesc" placeholder="Descripción corta (opcional)"></textarea>
     <textarea id="claseContenido" placeholder="Contenido o explicación (opcional)"></textarea>
-    <input id="claseYoutube" placeholder="Link YouTube (opcional)">
+    <input id="claseYoutube" placeholder="Video principal / YouTube (opcional)">
 
-    <label class="small">Subir archivo</label>
-    <input type="file" id="fileInput">
+    <div class="bloque">
+      <h4>Links adicionales</h4>
+      <input id="link1" placeholder="Link 1">
+      <input id="link2" placeholder="Link 2">
+      <input id="link3" placeholder="Link 3">
+      <input id="link4" placeholder="Link 4">
+      <input id="link5" placeholder="Link 5">
+    </div>
+
+    <div class="bloque">
+      <h4>Canción didáctica</h4>
+      <input id="songTitle" placeholder="Nombre de la canción">
+      <input id="songUrl" placeholder="Link de la canción">
+      <textarea id="songLyrics" placeholder="Letra original"></textarea>
+      <textarea id="songTranslation" placeholder="Traducción"></textarea>
+      <textarea id="songNotes" placeholder="Notas didácticas"></textarea>
+      <button class="didactico" onclick="generarEjerciciosDidacticos()">Generar ejercicios automáticos</button>
+    </div>
+
+    <div class="bloque">
+      <h4>Ejercicios automáticos</h4>
+      <textarea id="ejerciciosAuto" placeholder="Aquí se generarán los ejercicios automáticamente"></textarea>
+    </div>
+
+    <div class="bloque">
+      <label class="small">Subir archivo</label>
+      <input type="file" id="fileInput">
+    </div>
 
     <button onclick="crearClase()">Guardar clase</button>
     <div id="estadoClase"></div>
@@ -214,17 +250,12 @@ function ponerEstado(id, texto, tipo = "ok") {
   document.getElementById(id).innerHTML = `<div class="estado ${tipo}">${texto}</div>`;
 }
 
-function limpiarYoutube(url) {
+function limpiarUrl(url) {
   try {
-    if (!url) return "";
-    let texto = url.trim();
+    const texto = String(url || "").trim();
     if (!texto) return "";
-    if (!texto.startsWith("http://") && !texto.startsWith("https://")) {
-      if (texto.includes("youtube.com") || texto.includes("youtu.be")) {
-        texto = "https://" + texto.replace(/^\/+/, "");
-      }
-    }
-    return texto;
+    if (texto.startsWith("http://") || texto.startsWith("https://")) return texto;
+    return "https://" + texto.replace(/^\/+/, "");
   } catch {
     return "";
   }
@@ -259,6 +290,81 @@ function estadoBonito(estado) {
   if (e === "draft" || e === "borrador") return "Borrador";
   if (e === "archived" || e === "archivado") return "Archivado";
   return estado || "Borrador";
+}
+
+function normalizarLineas(texto) {
+  return String(texto || "")
+    .split("\n")
+    .map(x => x.trim())
+    .filter(Boolean);
+}
+
+function generarEjerciciosDidacticos() {
+  const titulo = document.getElementById("songTitle").value.trim() || "Canción";
+  const lyrics = document.getElementById("songLyrics").value.trim();
+  const translation = document.getElementById("songTranslation").value.trim();
+
+  if (!lyrics) {
+    ponerEstado("estadoClase", "Pega la letra original para generar ejercicios.", "error");
+    return;
+  }
+
+  const lineasOriginal = normalizarLineas(lyrics).slice(0, 8);
+  const lineasTrad = normalizarLineas(translation).slice(0, 8);
+
+  let ejercicios = `EJERCICIOS DIDÁCTICOS AUTOMÁTICOS\n`;
+  ejercicios += `Canción: ${titulo}\n\n`;
+
+  ejercicios += `1) Comprensión general\n`;
+  ejercicios += `- ¿De qué trata la canción?\n`;
+  ejercicios += `- ¿Qué emoción transmite?\n`;
+  ejercicios += `- Resume el mensaje principal en 3 oraciones.\n\n`;
+
+  ejercicios += `2) Vocabulario clave\n`;
+  lineasOriginal.slice(0, 4).forEach((linea, i) => {
+    ejercicios += `- Línea ${i + 1}: "${linea}"\n`;
+    ejercicios += `  Busca 3 palabras importantes y explica su significado.\n`;
+  });
+  ejercicios += `\n`;
+
+  ejercicios += `3) Traducción guiada\n`;
+  lineasOriginal.slice(0, 4).forEach((linea, i) => {
+    ejercicios += `${i + 1}. Traduce: "${linea}"\n`;
+  });
+  ejercicios += `\n`;
+
+  ejercicios += `4) Completa los espacios\n`;
+  lineasOriginal.slice(0, 4).forEach((linea, i) => {
+    const palabras = linea.split(" ");
+    if (palabras.length > 3) {
+      const pos = Math.min(1, palabras.length - 1);
+      const original = palabras[pos];
+      palabras[pos] = "________";
+      ejercicios += `${i + 1}. ${palabras.join(" ")}   [palabra faltante: ${original}]\n`;
+    }
+  });
+  ejercicios += `\n`;
+
+  ejercicios += `5) Pronunciación\n`;
+  lineasOriginal.slice(0, 3).forEach((linea, i) => {
+    ejercicios += `${i + 1}. Repite 3 veces: "${linea}"\n`;
+  });
+  ejercicios += `\n`;
+
+  ejercicios += `6) Producción oral\n`;
+  ejercicios += `- Explica con tus palabras qué quiso decir el cantante.\n`;
+  ejercicios += `- Usa 5 palabras de la canción en una oración propia.\n\n`;
+
+  if (lineasTrad.length) {
+    ejercicios += `7) Relación original / traducción\n`;
+    lineasOriginal.slice(0, Math.min(lineasOriginal.length, lineasTrad.length)).forEach((linea, i) => {
+      ejercicios += `Original: ${linea}\n`;
+      ejercicios += `Traducción: ${lineasTrad[i] || ""}\n\n`;
+    });
+  }
+
+  document.getElementById("ejerciciosAuto").value = ejercicios;
+  ponerEstado("estadoClase", "Ejercicios generados automáticamente.");
 }
 
 async function subirArchivo(file) {
@@ -366,20 +472,17 @@ function renderModulos(modulosConClases) {
       clasesHtml = clasesDelModulo.map(clase => {
         const tituloClase = clase.titulo || clase.title || "Sin título";
         const descripcionClase = clase.descripcion || clase.description || "";
-        const contenidoClase = clase.contenido || clase.text_content || "";
         const estadoClase = clase.estado || clase.status || "draft";
-        const youtubeClase = clase.youtube_url || "";
-        const fileClase = clase.file_url || "";
-        const fileNameClase = clase.file_name || "";
+        const songTitle = clase.song_title || "";
+        const links = [clase.link_1, clase.link_2, clase.link_3, clase.link_4, clase.link_5].filter(Boolean);
 
         return `
           <div class="lesson-box">
             <strong>Clase ID ${clase.id}: ${escapar(tituloClase)}</strong>
             ${descripcionClase ? `<div class="small">${escapar(descripcionClase)}</div>` : ""}
-            ${contenidoClase ? `<div class="small">Contenido: ${escapar(contenidoClase.substring(0, 180))}${contenidoClase.length > 180 ? "..." : ""}</div>` : ""}
             <div class="small">Estado: ${escapar(estadoBonito(estadoClase))}</div>
-            <div class="small">Video: ${youtubeClase ? "Sí" : "No"} | Archivo: ${fileClase ? "Sí" : "No"}</div>
-            ${fileNameClase ? `<div class="small">Archivo: ${escapar(fileNameClase)}</div>` : ""}
+            <div class="small">Links extra: ${links.length}</div>
+            <div class="small">Canción: ${songTitle ? escapar(songTitle) : "No"}</div>
             <div class="acciones">
               <button class="ver" onclick="verClase(${clase.id})">Revisar clase</button>
               <button class="publicar" onclick="publicarClase(${clase.id})">Publicar</button>
@@ -439,8 +542,24 @@ async function crearClase() {
   const module_id = Number(document.getElementById("claseModulo").value);
   const titulo = document.getElementById("claseTitulo").value.trim();
   const descripcion = document.getElementById("claseDesc").value.trim();
-  const contenido = document.getElementById("claseContenido").value.trim();
-  const youtube_url = limpiarYoutube(document.getElementById("claseYoutube").value);
+  const contenidoBase = document.getElementById("claseContenido").value.trim();
+  const ejerciciosAuto = document.getElementById("ejerciciosAuto").value.trim();
+  const contenido = [contenidoBase, ejerciciosAuto].filter(Boolean).join("\n\n====================\nEJERCICIOS\n====================\n\n");
+
+  const youtube_url = limpiarUrl(document.getElementById("claseYoutube").value);
+
+  const link_1 = limpiarUrl(document.getElementById("link1").value);
+  const link_2 = limpiarUrl(document.getElementById("link2").value);
+  const link_3 = limpiarUrl(document.getElementById("link3").value);
+  const link_4 = limpiarUrl(document.getElementById("link4").value);
+  const link_5 = limpiarUrl(document.getElementById("link5").value);
+
+  const song_title = document.getElementById("songTitle").value.trim();
+  const song_url = limpiarUrl(document.getElementById("songUrl").value);
+  const song_lyrics = document.getElementById("songLyrics").value.trim();
+  const song_translation = document.getElementById("songTranslation").value.trim();
+  const song_notes = document.getElementById("songNotes").value.trim();
+
   const fileInput = document.getElementById("fileInput");
 
   if (!module_id) {
@@ -475,6 +594,16 @@ async function crearClase() {
         youtube_url,
         file_url,
         file_name,
+        link_1,
+        link_2,
+        link_3,
+        link_4,
+        link_5,
+        song_title,
+        song_url,
+        song_lyrics,
+        song_translation,
+        song_notes,
         estado: "borrador",
         status: "draft"
       })
@@ -482,10 +611,13 @@ async function crearClase() {
 
     const data = await leerJSON(res);
 
-    document.getElementById("claseTitulo").value = "";
-    document.getElementById("claseDesc").value = "";
-    document.getElementById("claseContenido").value = "";
-    document.getElementById("claseYoutube").value = "";
+    [
+      "claseTitulo","claseDesc","claseContenido","claseYoutube",
+      "link1","link2","link3","link4","link5",
+      "songTitle","songUrl","songLyrics","songTranslation","songNotes",
+      "ejerciciosAuto"
+    ].forEach(id => document.getElementById(id).value = "");
+
     document.getElementById("fileInput").value = "";
 
     ponerEstado("estadoClase", `Clase creada correctamente: ${escapar(data.lesson?.titulo || data.lesson?.title || "")}`);
@@ -543,6 +675,42 @@ async function eliminarModulo(id, titulo) {
   }
 }
 
+function linksHtml(clase) {
+  const links = [
+    clase.link_1, clase.link_2, clase.link_3, clase.link_4, clase.link_5
+  ].filter(Boolean);
+
+  if (!links.length) return "";
+
+  return `
+    <div class="bloque">
+      <h4>Links adicionales</h4>
+      ${links.map((l, i) => `<p><a class="link-btn" href="${l}" target="_blank">Abrir link ${i + 1}</a></p>`).join("")}
+    </div>
+  `;
+}
+
+function songHtml(clase) {
+  const title = clase.song_title || "";
+  const url = clase.song_url || "";
+  const lyrics = clase.song_lyrics || "";
+  const translation = clase.song_translation || "";
+  const notes = clase.song_notes || "";
+
+  if (!title && !url && !lyrics && !translation && !notes) return "";
+
+  return `
+    <div class="bloque">
+      <h4>Canción didáctica</h4>
+      ${title ? `<p><strong>Título:</strong> ${escapar(title)}</p>` : ""}
+      ${url ? `<p><a class="link-btn" href="${url}" target="_blank">Abrir canción</a></p>` : ""}
+      ${lyrics ? `<p><strong>Letra original:</strong></p><pre>${escapar(lyrics)}</pre>` : ""}
+      ${translation ? `<p><strong>Traducción:</strong></p><pre>${escapar(translation)}</pre>` : ""}
+      ${notes ? `<p><strong>Notas didácticas:</strong></p><pre>${escapar(notes)}</pre>` : ""}
+    </div>
+  `;
+}
+
 async function verClase(id) {
   try {
     const res = await fetch(API + "/api/lesson/" + id);
@@ -565,9 +733,11 @@ async function verClase(id) {
         <div class="small"><strong>Módulo:</strong> ${escapar(modulo)}</div>
         <div class="small"><strong>Estado:</strong> ${escapar(estadoBonito(estado))}</div>
         ${descripcion ? `<p><strong>Descripción:</strong><br>${escapar(descripcion)}</p>` : ""}
-        ${contenido ? `<p><strong>Contenido:</strong><br>${escapar(contenido).replace(/\n/g, "<br>")}</p>` : ""}
-        ${youtube ? `<p><a class="link-btn" href="${youtube}" target="_blank">Abrir video</a></p>` : ""}
-        ${archivo ? `<p><a class="link-btn" href="${API}${archivo}" target="_blank">Abrir archivo ${archivoNombre ? "- " + escapar(archivoNombre) : ""}</a></p>` : ""}
+        ${contenido ? `<p><strong>Contenido y ejercicios:</strong></p><pre>${escapar(contenido)}</pre>` : ""}
+        ${youtube ? `<p><a class="link-btn" href="${youtube}" target="_blank">Abrir video principal</a></p>` : ""}
+        ${archivo ? `<p><a class="link-btn" href="${archivo}" target="_blank">Abrir archivo ${archivoNombre ? "- " + escapar(archivoNombre) : ""}</a></p>` : ""}
+        ${linksHtml(clase)}
+        ${songHtml(clase)}
       </div>
     `;
 
