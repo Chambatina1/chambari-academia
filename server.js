@@ -110,30 +110,6 @@ function normalizeModuleRow(row) {
   };
 }
 
-function normalizeLessonRow(row) {
-  return {
-    ...row,
-    titulo: row.titulo ?? row.title ?? "",
-    descripcion: row.descripcion ?? row.description ?? "",
-    contenido: row.contenido ?? row.text_content ?? "",
-    estado: legacyStatus(row.estado ?? row.status ?? "draft"),
-    module_titulo: row.module_titulo ?? row.module_title ?? "",
-    link_1: row.link_1 ?? "",
-    link_2: row.link_2 ?? "",
-    link_3: row.link_3 ?? "",
-    link_4: row.link_4 ?? "",
-    link_5: row.link_5 ?? "",
-    song_title: row.song_title ?? "",
-    song_url: row.song_url ?? "",
-    song_lyrics: row.song_lyrics ?? "",
-    song_translation: row.song_translation ?? "",
-    song_notes: row.song_notes ?? "",
-    document_urls: row.document_urls ?? row.documents_json ?? row.documentos_json ?? "[]",
-    documents_json: row.documents_json ?? row.document_urls ?? row.documentos_json ?? "[]",
-    documentos_json: row.documentos_json ?? row.documents_json ?? row.document_urls ?? "[]"
-  };
-}
-
 function getMimeType(filePath) {
   const ext = path.extname(filePath).toLowerCase();
 
@@ -204,6 +180,108 @@ function safeParseJsonArray(value) {
   } catch {
     return [];
   }
+}
+
+function normalizeDocumentItem(doc) {
+  if (!doc) return null;
+
+  if (typeof doc === "string") {
+    const cleanUrl = doc.trim();
+    if (!cleanUrl) return null;
+    return {
+      name: path.basename(cleanUrl) || "Documento",
+      url: cleanUrl,
+      directUrl: cleanUrl,
+      viewerUrl: cleanUrl.includes("/viewer/") ? cleanUrl : cleanUrl
+    };
+  }
+
+  const url =
+    doc.url ||
+    doc.file_url ||
+    doc.fileUrl ||
+    doc.directUrl ||
+    doc.viewerUrl ||
+    "";
+
+  if (!url) return null;
+
+  const name =
+    doc.name ||
+    doc.file_name ||
+    doc.fileName ||
+    path.basename(url) ||
+    "Documento";
+
+  const viewerUrl =
+    doc.viewerUrl ||
+    (url.includes("/files/")
+      ? url.replace("/files/", "/viewer/")
+      : url);
+
+  return {
+    ...doc,
+    name,
+    url,
+    directUrl: doc.directUrl || url,
+    viewerUrl
+  };
+}
+
+function normalizeLessonRow(row) {
+  const docsRaw =
+    row.document_urls ??
+    row.documents_json ??
+    row.documentos_json ??
+    "[]";
+
+  const parsedDocs = safeParseJsonArray(docsRaw)
+    .map(normalizeDocumentItem)
+    .filter(Boolean);
+
+  const mainFile = row.file_url
+    ? [{
+        name: row.file_name || path.basename(row.file_url) || "Documento principal",
+        url: row.file_url,
+        directUrl: row.file_url,
+        viewerUrl: row.file_url.includes("/files/")
+          ? row.file_url.replace("/files/", "/viewer/")
+          : row.file_url
+      }]
+    : [];
+
+  const combined = [...mainFile, ...parsedDocs];
+
+  const uniqueDocuments = combined.filter((doc, index, arr) => {
+    return index === arr.findIndex((d) => d.url === doc.url);
+  });
+
+  return {
+    ...row,
+    titulo: row.titulo ?? row.title ?? "",
+    descripcion: row.descripcion ?? row.description ?? "",
+    contenido: row.contenido ?? row.text_content ?? "",
+    estado: legacyStatus(row.estado ?? row.status ?? "draft"),
+    module_titulo: row.module_titulo ?? row.module_title ?? "",
+    link_1: row.link_1 ?? "",
+    link_2: row.link_2 ?? "",
+    link_3: row.link_3 ?? "",
+    link_4: row.link_4 ?? "",
+    link_5: row.link_5 ?? "",
+    song_title: row.song_title ?? "",
+    song_url: row.song_url ?? "",
+    song_lyrics: row.song_lyrics ?? "",
+    song_translation: row.song_translation ?? "",
+    song_notes: row.song_notes ?? "",
+    file_url: row.file_url ?? "",
+    file_name: row.file_name ?? "",
+
+    // Compatibilidad máxima para frontend
+    document_urls: uniqueDocuments,
+    documents_json: uniqueDocuments,
+    documentos_json: uniqueDocuments,
+    documents: uniqueDocuments
+  };
 }
 
 // =========================
@@ -731,7 +809,26 @@ app.post("/api/lessons", async (req, res) => {
       "[]";
 
     const docsArray = safeParseJsonArray(documentUrlsRaw);
-    const docsJson = JSON.stringify(docsArray);
+    const normalizedDocs = docsArray
+      .map(normalizeDocumentItem)
+      .filter(Boolean);
+
+    if (fileUrl) {
+      normalizedDocs.unshift({
+        name: fileName || path.basename(fileUrl) || "Documento principal",
+        url: fileUrl,
+        directUrl: fileUrl,
+        viewerUrl: fileUrl.includes("/files/")
+          ? fileUrl.replace("/files/", "/viewer/")
+          : fileUrl
+      });
+    }
+
+    const uniqueDocs = normalizedDocs.filter((doc, index, arr) => {
+      return index === arr.findIndex((d) => d.url === doc.url);
+    });
+
+    const docsJson = JSON.stringify(uniqueDocs);
 
     const rawStatus = normalizeStatus(req.body.estado || req.body.status || "draft", "draft");
     const finalTitle = rawTitle || autoLessonTitle();
@@ -853,7 +950,6 @@ app.delete("/api/lessons/:id", async (req, res) => {
     const result = await pool.query(`DELETE FROM lessons WHERE id = $1 RETURNING id`, [id]);
     if (!result.rowCount) return res.status(404).json({ ok: false, error: "Clase no encontrada" });
 
-    // Eliminación física opcional del archivo principal y documentos
     if (lessonResult.rowCount) {
       const lesson = lessonResult.rows[0];
       const fileCandidates = [];
