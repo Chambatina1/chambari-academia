@@ -23,6 +23,7 @@
       --shadow: 0 10px 26px rgba(66, 40, 80, 0.08);
       --danger: #c85c5c;
       --success: #6f9f6f;
+      --soft: #ece4f8;
     }
 
     * { box-sizing: border-box; }
@@ -44,8 +45,8 @@
     }
 
     .login-wrap {
-      max-width: 480px;
-      margin: 60px auto;
+      max-width: 500px;
+      margin: 50px auto;
     }
 
     .logo-bar {
@@ -62,6 +63,7 @@
       overflow: hidden;
       box-shadow: var(--shadow);
       background: white;
+      flex-shrink: 0;
     }
 
     .logo-box img {
@@ -134,8 +136,13 @@
     }
 
     button.secundario {
-      background: #ece4f8;
+      background: var(--soft);
       color: var(--primary-2);
+    }
+
+    button.instalar {
+      background: #7ea172;
+      color: white;
     }
 
     #estadoLogin {
@@ -161,7 +168,7 @@
     }
 
     .hidden {
-      display: none;
+      display: none !important;
     }
 
     .app-card {
@@ -186,6 +193,57 @@
       padding: 10px 16px;
       margin-top: 0;
     }
+
+    .acciones {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+      margin-top: 20px;
+    }
+
+    .accion-card {
+      background: #fcfbff;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 18px;
+    }
+
+    .accion-card h3 {
+      margin: 0 0 8px;
+      color: var(--primary-2);
+      font-size: 18px;
+    }
+
+    .accion-card p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.45;
+      font-size: 14px;
+    }
+
+    .franja {
+      margin-top: 16px;
+      padding: 12px 14px;
+      background: #f7f1ff;
+      border: 1px solid #e4d6f8;
+      border-radius: 12px;
+      color: var(--primary-2);
+      font-size: 14px;
+    }
+
+    @media (max-width: 640px) {
+      body {
+        padding: 14px;
+      }
+
+      .login-wrap {
+        margin: 24px auto;
+      }
+
+      .logo-text strong {
+        font-size: 20px;
+      }
+    }
   </style>
 </head>
 <body>
@@ -207,15 +265,20 @@
       <h2>Iniciar sesión</h2>
 
       <label for="loginEmail">Correo</label>
-      <input id="loginEmail" type="email" placeholder="correo@ejemplo.com">
+      <input id="loginEmail" type="email" placeholder="correo@ejemplo.com" autocomplete="email">
 
       <label for="loginPassword">Contraseña</label>
-      <input id="loginPassword" type="password" placeholder="Tu contraseña">
+      <input id="loginPassword" type="password" placeholder="Tu contraseña" autocomplete="current-password">
 
       <button onclick="loginAlumno()">Entrar</button>
       <button class="secundario" onclick="registrarAlumno()">Registrarme</button>
+      <button id="installBtn" class="instalar hidden">Instalar app</button>
 
       <div id="estadoLogin"></div>
+
+      <div class="franja">
+        Puedes usar Chambari como página web o instalarla como app en tu teléfono o computadora.
+      </div>
     </div>
   </div>
 
@@ -238,6 +301,32 @@
         </div>
         <button class="logout-btn" onclick="cerrarSesion()">Cerrar sesión</button>
       </div>
+
+      <div class="acciones">
+        <div class="accion-card">
+          <h3>Continúa tu clase</h3>
+          <p>Retoma tu aprendizaje desde donde lo dejaste y sigue avanzando paso a paso.</p>
+        </div>
+
+        <div class="accion-card">
+          <h3>Mi progreso</h3>
+          <p>Consulta tus avances, módulos completados y próximos objetivos dentro de la academia.</p>
+        </div>
+
+        <div class="accion-card">
+          <h3>Practica ahora</h3>
+          <p>Refuerza lo aprendido con ejercicios cortos, actividades y situaciones reales.</p>
+        </div>
+
+        <div class="accion-card">
+          <h3>Examen corto</h3>
+          <p>Haz una evaluación rápida para comprobar lo que ya dominas y lo que debes reforzar.</p>
+        </div>
+      </div>
+
+      <div class="franja" id="estadoApp">
+        Chambari está listo para funcionar en modo web y app.
+      </div>
     </div>
   </div>
 
@@ -245,12 +334,13 @@
 
 <script>
   const API_URL = "https://TU-BACKEND-REAL.onrender.com";
+  let deferredPrompt = null;
 
   function mostrarEstado(texto, tipo) {
     const box = document.getElementById("estadoLogin");
+    box.style.display = "block";
     box.textContent = texto;
     box.className = "";
-    box.id = "estadoLogin";
     box.classList.add(tipo);
   }
 
@@ -258,7 +348,6 @@
     const box = document.getElementById("estadoLogin");
     box.textContent = "";
     box.className = "";
-    box.id = "estadoLogin";
     box.style.display = "none";
   }
 
@@ -373,6 +462,12 @@
 
       document.getElementById("saludoAlumno").textContent =
         `Bienvenido, ${data.nombre}. Tu correo es ${data.email}.`;
+
+      const modoApp = window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone;
+      document.getElementById("estadoApp").textContent =
+        modoApp
+          ? "Estás usando Chambari como app instalada."
+          : "Estás usando Chambari desde la web. También puedes instalarla como app.";
     } catch (error) {
       console.error(error);
       document.getElementById("saludoAlumno").textContent =
@@ -397,6 +492,32 @@
       document.getElementById("appScreen").classList.remove("hidden");
       cargarPerfil();
     }
+  });
+
+  if ("serviceWorker" in navigator) {
+    window.addEventListener("load", async () => {
+      try {
+        await navigator.serviceWorker.register("./service-worker.js");
+        console.log("Service Worker registrado");
+      } catch (error) {
+        console.error("Error registrando Service Worker:", error);
+      }
+    });
+  }
+
+  window.addEventListener("beforeinstallprompt", (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    const installBtn = document.getElementById("installBtn");
+    installBtn.classList.remove("hidden");
+  });
+
+  document.getElementById("installBtn").addEventListener("click", async () => {
+    if (!deferredPrompt) return;
+    deferredPrompt.prompt();
+    await deferredPrompt.userChoice;
+    deferredPrompt = null;
+    document.getElementById("installBtn").classList.add("hidden");
   });
 </script>
 
