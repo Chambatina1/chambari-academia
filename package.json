@@ -1,18 +1,19 @@
 {
-  "name": "chambari-academy",
-  "version": "1.0.0",
-  "description": "Backend Chambari Academy",
-  "main": "server.js",
-  "scripts": {
-    "start": "node server.js"
-  },
-  "engines": {
-    "node": ">=18"
-  },
-  "dependencies": {
-    "cors": "^2.8.5",
-    "express": "^4.21.2",
-    "multer": "^1.4.5-lts.1",
-    "pg": "^8.13.1"
-  }
+  "id": 12,
+  "titulo": "Clase 1",
+  "video_url": "https://youtube.com/...",
+  "file_url": "https://tuapp.onrender.com/files/archivo.pdf",
+  "file_name": "guia.pdf",
+  "documents": [
+    {
+      "url": "https://tuapp.onrender.com/files/archivo.pdf",
+      "name": "guia.pdf"
+    }
+  ],
+  "document_urls": [
+    {
+      "url": "https://tuapp.onrender.com/files/archivo.pdf",
+      "name": "guia.pdf"
+    }
+  ]
 }
