@@ -1,8 +1,8 @@
 {
   "name": "Chambari Academy",
   "short_name": "Chambari",
-  "start_url": "/academy/index.html?v=20260405",
-  "scope": "/academy/",
+  "start_url": "/chambari/alumno?v=20260405",
+  "scope": "/chambari/",
   "display": "standalone",
   "background_color": "#f5f3f8",
   "theme_color": "#7b5ea7",
