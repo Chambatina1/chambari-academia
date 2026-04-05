@@ -1,19 +1,24 @@
 {
-  "id": 12,
-  "titulo": "Clase 1",
-  "video_url": "https://youtube.com/...",
-  "file_url": "https://tuapp.onrender.com/files/archivo.pdf",
-  "file_name": "guia.pdf",
-  "documents": [
+  "name": "Chambari Academy",
+  "short_name": "Chambari",
+  "start_url": "./alumno.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#ffffff",
+  "theme_color": "#6f54b8",
+  "icons": [
     {
-      "url": "https://tuapp.onrender.com/files/archivo.pdf",
-      "name": "guia.pdf"
-    }
-  ],
-  "document_urls": [
+      "src": "./CHAMBARI.jpeg",
+      "sizes": "192x192",
+      "type": "image/jpeg",
+      "purpose": "any"
+    },
     {
-      "url": "https://tuapp.onrender.com/files/archivo.pdf",
-      "name": "guia.pdf"
+      "src": "./CHAMBARI.jpeg",
+      "sizes": "512x512",
+      "type": "image/jpeg",
+      "purpose": "any"
     }
   ]
 }
