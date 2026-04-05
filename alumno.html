@@ -1,524 +1,197 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Chambari - Alumno</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chambari - Alumno</title>
 
-  <link rel="icon" type="image/jpeg" href="./CHAMBARI.jpeg">
-  <link rel="apple-touch-icon" href="./CHAMBARI.jpeg">
-  <link rel="manifest" href="./manifest.json">
-  <meta name="theme-color" content="#7b5ea7">
+<link rel="icon" href="./CHAMBARI.jpeg">
 
-  <style>
-    :root{
-      --bg: #f7f4ef;
-      --bg-2: #f3efe7;
-      --card: #ffffff;
-      --text: #2b2430;
-      --muted: #6f6472;
-      --primary: #7b5ea7;
-      --primary-2: #62458f;
-      --border: #e6ddd2;
-      --shadow: 0 10px 26px rgba(66, 40, 80, 0.08);
-      --danger: #c85c5c;
-      --success: #6f9f6f;
-      --soft: #ece4f8;
-    }
+<style>
+body{
+  font-family: Arial;
+  background:#f5f3f8;
+  padding:20px;
+}
 
-    * { box-sizing: border-box; }
+.container{
+  max-width:400px;
+  margin:auto;
+}
 
-    body {
-      font-family: Arial, sans-serif;
-      background:
-        radial-gradient(circle at top right, #efe6ff 0%, transparent 22%),
-        linear-gradient(180deg, var(--bg) 0%, var(--bg-2) 100%);
-      color: var(--text);
-      margin: 0;
-      padding: 20px;
-      min-height: 100vh;
-    }
+.card{
+  background:white;
+  padding:20px;
+  border-radius:12px;
+  box-shadow:0 10px 20px rgba(0,0,0,0.08);
+}
 
-    .main {
-      max-width: 1220px;
-      margin: 0 auto;
-    }
+input{
+  width:100%;
+  padding:12px;
+  margin-top:10px;
+  border-radius:8px;
+  border:1px solid #ccc;
+}
 
-    .login-wrap {
-      max-width: 500px;
-      margin: 50px auto;
-    }
+button{
+  width:100%;
+  padding:12px;
+  margin-top:10px;
+  border:none;
+  border-radius:8px;
+  background:#7b5ea7;
+  color:white;
+  font-weight:bold;
+  cursor:pointer;
+}
 
-    .logo-bar {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      margin-bottom: 16px;
-    }
+button:hover{
+  opacity:0.9;
+}
 
-    .logo-box {
-      width: 58px;
-      height: 58px;
-      border-radius: 16px;
-      overflow: hidden;
-      box-shadow: var(--shadow);
-      background: white;
-      flex-shrink: 0;
-    }
+.sec{
+  background:#ddd;
+  color:black;
+}
 
-    .logo-box img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
+.hidden{
+  display:none;
+}
 
-    .logo-text strong {
-      display: block;
-      font-size: 22px;
-      color: var(--primary-2);
-    }
-
-    .logo-text span {
-      color: var(--muted);
-      font-size: 13px;
-    }
-
-    .card {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 18px;
-      box-shadow: var(--shadow);
-      padding: 24px;
-    }
-
-    h2 {
-      margin-top: 0;
-      color: var(--text);
-    }
-
-    label {
-      display: block;
-      margin-top: 14px;
-      margin-bottom: 6px;
-      font-weight: bold;
-    }
-
-    input {
-      width: 100%;
-      padding: 12px 14px;
-      border: 1px solid #d7ccdb;
-      border-radius: 10px;
-      font-size: 15px;
-      outline: none;
-      background: #fffefc;
-    }
-
-    input:focus {
-      border-color: var(--primary);
-      box-shadow: 0 0 0 3px rgba(123, 94, 167, 0.12);
-    }
-
-    button {
-      width: 100%;
-      margin-top: 14px;
-      padding: 12px 14px;
-      border: none;
-      border-radius: 10px;
-      background: var(--primary);
-      color: white;
-      font-size: 15px;
-      font-weight: bold;
-      cursor: pointer;
-    }
-
-    button:hover {
-      opacity: 0.95;
-    }
-
-    button.secundario {
-      background: var(--soft);
-      color: var(--primary-2);
-    }
-
-    button.instalar {
-      background: #7ea172;
-      color: white;
-    }
-
-    #estadoLogin {
-      margin-top: 14px;
-      padding: 12px;
-      border-radius: 10px;
-      font-size: 14px;
-      display: none;
-    }
-
-    .ok {
-      display: block !important;
-      background: #eef8ee;
-      color: var(--success);
-      border: 1px solid #cfe4cf;
-    }
-
-    .error {
-      display: block !important;
-      background: #fff1f1;
-      color: var(--danger);
-      border: 1px solid #efc5c5;
-    }
-
-    .hidden {
-      display: none !important;
-    }
-
-    .app-card {
-      background: white;
-      border: 1px solid var(--border);
-      border-radius: 18px;
-      box-shadow: var(--shadow);
-      padding: 24px;
-      margin-top: 18px;
-    }
-
-    .top-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 16px;
-      flex-wrap: wrap;
-    }
-
-    .logout-btn {
-      width: auto;
-      padding: 10px 16px;
-      margin-top: 0;
-    }
-
-    .acciones {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 16px;
-      margin-top: 20px;
-    }
-
-    .accion-card {
-      background: #fcfbff;
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 18px;
-    }
-
-    .accion-card h3 {
-      margin: 0 0 8px;
-      color: var(--primary-2);
-      font-size: 18px;
-    }
-
-    .accion-card p {
-      margin: 0;
-      color: var(--muted);
-      line-height: 1.45;
-      font-size: 14px;
-    }
-
-    .franja {
-      margin-top: 16px;
-      padding: 12px 14px;
-      background: #f7f1ff;
-      border: 1px solid #e4d6f8;
-      border-radius: 12px;
-      color: var(--primary-2);
-      font-size: 14px;
-    }
-
-    @media (max-width: 640px) {
-      body {
-        padding: 14px;
-      }
-
-      .login-wrap {
-        margin: 24px auto;
-      }
-
-      .logo-text strong {
-        font-size: 20px;
-      }
-    }
-  </style>
+#estado{
+  margin-top:10px;
+  font-size:14px;
+}
+</style>
 </head>
+
 <body>
 
-<div class="main">
+<div class="container">
 
-  <div id="loginScreen" class="login-wrap">
-    <div class="logo-bar">
-      <div class="logo-box">
-        <img src="./CHAMBARI.jpeg" alt="Chambari">
-      </div>
-      <div class="logo-text">
-        <strong>Chambari Academy</strong>
-        <span>Acceso del alumno</span>
-      </div>
-    </div>
+<div id="loginBox" class="card">
+<h2>Chambari Academy</h2>
 
-    <div class="card">
-      <h2>Iniciar sesión</h2>
+<input id="email" placeholder="Correo">
+<input id="password" type="password" placeholder="Contraseña">
 
-      <label for="loginEmail">Correo</label>
-      <input id="loginEmail" type="email" placeholder="correo@ejemplo.com" autocomplete="email">
+<button onclick="login()">Entrar</button>
+<button class="sec" onclick="register()">Registrarme</button>
 
-      <label for="loginPassword">Contraseña</label>
-      <input id="loginPassword" type="password" placeholder="Tu contraseña" autocomplete="current-password">
+<div id="estado"></div>
+</div>
 
-      <button onclick="loginAlumno()">Entrar</button>
-      <button class="secundario" onclick="registrarAlumno()">Registrarme</button>
-      <button id="installBtn" class="instalar hidden">Instalar app</button>
+<div id="panel" class="card hidden">
+<h2>Alumno</h2>
 
-      <div id="estadoLogin"></div>
+<p id="user"></p>
 
-      <div class="franja">
-        Puedes usar Chambari como página web o instalarla como app en tu teléfono o computadora.
-      </div>
-    </div>
-  </div>
-
-  <div id="appScreen" class="hidden">
-    <div class="logo-bar">
-      <div class="logo-box">
-        <img src="./CHAMBARI.jpeg" alt="Chambari">
-      </div>
-      <div class="logo-text">
-        <strong>Chambari Academy</strong>
-        <span>Experiencia del alumno</span>
-      </div>
-    </div>
-
-    <div class="app-card">
-      <div class="top-row">
-        <div>
-          <h2 style="margin:0;">Panel del alumno</h2>
-          <p id="saludoAlumno" style="margin:8px 0 0; color:#6f6472;">Cargando perfil...</p>
-        </div>
-        <button class="logout-btn" onclick="cerrarSesion()">Cerrar sesión</button>
-      </div>
-
-      <div class="acciones">
-        <div class="accion-card">
-          <h3>Continúa tu clase</h3>
-          <p>Retoma tu aprendizaje desde donde lo dejaste y sigue avanzando paso a paso.</p>
-        </div>
-
-        <div class="accion-card">
-          <h3>Mi progreso</h3>
-          <p>Consulta tus avances, módulos completados y próximos objetivos dentro de la academia.</p>
-        </div>
-
-        <div class="accion-card">
-          <h3>Practica ahora</h3>
-          <p>Refuerza lo aprendido con ejercicios cortos, actividades y situaciones reales.</p>
-        </div>
-
-        <div class="accion-card">
-          <h3>Examen corto</h3>
-          <p>Haz una evaluación rápida para comprobar lo que ya dominas y lo que debes reforzar.</p>
-        </div>
-      </div>
-
-      <div class="franja" id="estadoApp">
-        Chambari está listo para funcionar en modo web y app.
-      </div>
-    </div>
-  </div>
+<button onclick="logout()">Cerrar sesión</button>
+</div>
 
 </div>
 
 <script>
-  const API_URL = "https://chambari-backend.onrender.com";
-  let deferredPrompt = null;
 
-  function mostrarEstado(texto, tipo) {
-    const box = document.getElementById("estadoLogin");
-    box.style.display = "block";
-    box.textContent = texto;
-    box.className = "";
-    box.classList.add(tipo);
+const API = "https://chambari-academia.onrender.com";
+
+function msg(text,color="red"){
+  estado.innerText=text;
+  estado.style.color=color;
+}
+
+async function register(){
+
+  const emailVal = email.value.trim().toLowerCase();
+  const passVal = password.value.trim();
+
+  if(!emailVal || !passVal){
+    msg("Completa los campos");
+    return;
   }
 
-  function limpiarEstado() {
-    const box = document.getElementById("estadoLogin");
-    box.textContent = "";
-    box.className = "";
-    box.style.display = "none";
-  }
+  try{
 
-  async function registrarAlumno() {
-    limpiarEstado();
-
-    const email = document.getElementById("loginEmail").value.trim().toLowerCase();
-    const password = document.getElementById("loginPassword").value.trim();
-
-    if (!email || !password) {
-      mostrarEstado("Escribe correo y contraseña para registrarte.", "error");
-      return;
-    }
-
-    const nombreBase = email.split("@")[0] || "Alumno";
-
-    try {
-      const res = await fetch(`${API_URL}/api/alumnos/register`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          nombre: nombreBase,
-          email,
-          password
-        })
-      });
-
-      const data = await res.json();
-
-      if (!res.ok) {
-        mostrarEstado(data.message || "No se pudo registrar el alumno.", "error");
-        return;
-      }
-
-      mostrarEstado("Cuenta creada correctamente. Ahora entra con tus datos.", "ok");
-    } catch (error) {
-      console.error(error);
-      mostrarEstado("Error conectando con el servidor.", "error");
-    }
-  }
-
-  async function loginAlumno() {
-    limpiarEstado();
-
-    const email = document.getElementById("loginEmail").value.trim().toLowerCase();
-    const password = document.getElementById("loginPassword").value.trim();
-
-    if (!email || !password) {
-      mostrarEstado("Debes escribir tu correo y tu contraseña.", "error");
-      return;
-    }
-
-    try {
-      const res = await fetch(`${API_URL}/api/alumnos/login`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ email, password })
-      });
-
-      const data = await res.json();
-
-      if (!res.ok) {
-        mostrarEstado(data.message || "Correo o contraseña incorrectos.", "error");
-        return;
-      }
-
-      localStorage.setItem("chambari_token", data.token);
-      localStorage.setItem("chambari_alumno", JSON.stringify(data.alumno));
-
-      mostrarEstado("Acceso correcto. Entrando...", "ok");
-
-      document.getElementById("loginScreen").classList.add("hidden");
-      document.getElementById("appScreen").classList.remove("hidden");
-
-      cargarPerfil();
-    } catch (error) {
-      console.error(error);
-      mostrarEstado("No se pudo conectar con el backend.", "error");
-    }
-  }
-
-  async function cargarPerfil() {
-    const token = localStorage.getItem("chambari_token");
-
-    if (!token) {
-      document.getElementById("loginScreen").classList.remove("hidden");
-      document.getElementById("appScreen").classList.add("hidden");
-      return;
-    }
-
-    try {
-      const res = await fetch(`${API_URL}/api/alumnos/perfil`, {
-        headers: {
-          "Authorization": `Bearer ${token}`
-        }
-      });
-
-      const data = await res.json();
-
-      if (!res.ok) {
-        localStorage.removeItem("chambari_token");
-        localStorage.removeItem("chambari_alumno");
-        document.getElementById("loginScreen").classList.remove("hidden");
-        document.getElementById("appScreen").classList.add("hidden");
-        mostrarEstado("Tu sesión expiró. Vuelve a entrar.", "error");
-        return;
-      }
-
-      document.getElementById("saludoAlumno").textContent =
-        `Bienvenido, ${data.nombre}. Tu correo es ${data.email}.`;
-
-      const modoApp = window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone;
-      document.getElementById("estadoApp").textContent =
-        modoApp
-          ? "Estás usando Chambari como app instalada."
-          : "Estás usando Chambari desde la web. También puedes instalarla como app.";
-    } catch (error) {
-      console.error(error);
-      document.getElementById("saludoAlumno").textContent =
-        "No se pudo cargar el perfil del alumno.";
-    }
-  }
-
-  function cerrarSesion() {
-    localStorage.removeItem("chambari_token");
-    localStorage.removeItem("chambari_alumno");
-    document.getElementById("loginScreen").classList.remove("hidden");
-    document.getElementById("appScreen").classList.add("hidden");
-    document.getElementById("loginEmail").value = "";
-    document.getElementById("loginPassword").value = "";
-    limpiarEstado();
-  }
-
-  window.addEventListener("load", () => {
-    const token = localStorage.getItem("chambari_token");
-    if (token) {
-      document.getElementById("loginScreen").classList.add("hidden");
-      document.getElementById("appScreen").classList.remove("hidden");
-      cargarPerfil();
-    }
-  });
-
-  if ("serviceWorker" in navigator) {
-    window.addEventListener("load", async () => {
-      try {
-        await navigator.serviceWorker.register("./service-worker.js");
-        console.log("Service Worker registrado");
-      } catch (error) {
-        console.error("Error registrando Service Worker:", error);
-      }
+    const res = await fetch(API + "/api/register",{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body: JSON.stringify({
+        nombre: emailVal.split("@")[0],
+        email: emailVal,
+        password: passVal
+      })
     });
+
+    const data = await res.json();
+
+    if(!res.ok){
+      msg(data.error || "Error registro");
+      return;
+    }
+
+    msg("Registrado correctamente","green");
+
+  }catch(e){
+    msg("No conecta servidor");
+  }
+}
+
+async function login(){
+
+  const emailVal = email.value.trim().toLowerCase();
+  const passVal = password.value.trim();
+
+  if(!emailVal || !passVal){
+    msg("Faltan datos");
+    return;
   }
 
-  window.addEventListener("beforeinstallprompt", (e) => {
-    e.preventDefault();
-    deferredPrompt = e;
-    const installBtn = document.getElementById("installBtn");
-    installBtn.classList.remove("hidden");
-  });
+  try{
 
-  document.getElementById("installBtn").addEventListener("click", async () => {
-    if (!deferredPrompt) return;
-    deferredPrompt.prompt();
-    await deferredPrompt.userChoice;
-    deferredPrompt = null;
-    document.getElementById("installBtn").classList.add("hidden");
-  });
+    const res = await fetch(API + "/api/login",{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body: JSON.stringify({
+        email: emailVal,
+        password: passVal
+      })
+    });
+
+    const data = await res.json();
+
+    if(!res.ok){
+      msg(data.error || "Error login");
+      return;
+    }
+
+    localStorage.setItem("user", JSON.stringify(data.student));
+
+    loginBox.classList.add("hidden");
+    panel.classList.remove("hidden");
+
+    user.innerText = "Bienvenido " + data.student.nombre;
+
+  }catch(e){
+    msg("No conecta servidor");
+  }
+}
+
+function logout(){
+  localStorage.removeItem("user");
+  location.reload();
+}
+
+window.onload = () => {
+  const u = localStorage.getItem("user");
+
+  if(u){
+    loginBox.classList.add("hidden");
+    panel.classList.remove("hidden");
+    user.innerText = "Bienvenido " + JSON.parse(u).nombre;
+  }
+}
+
 </script>
 
 </body>
