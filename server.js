@@ -11,7 +11,6 @@ const PORT = process.env.PORT || 3000;
 app.use(cors());
 app.use(express.json({ limit: "20mb" }));
 app.use(express.urlencoded({ extended: true, limit: "20mb" }));
-
 app.use("/public", express.static(path.join(__dirname, "public")));
 
 // =========================
@@ -40,7 +39,20 @@ try {
   process.exit(1);
 }
 
-app.use("/files", express.static(DISK_FILES_DIR));
+// Ruta directa pública
+app.use("/files", express.static(DISK_FILES_DIR, {
+  fallthrough: false,
+  etag: true,
+  maxAge: "1d",
+  setHeaders: (res, filePath) => {
+    res.setHeader("Access-Control-Allow-Origin", "*");
+    const ext = path.extname(filePath).toLowerCase();
+    const inlineExts = [".pdf", ".jpg", ".jpeg", ".png", ".gif", ".webp", ".mp3", ".wav", ".ogg", ".mp4", ".webm", ".txt"];
+    if (inlineExts.includes(ext)) {
+      res.setHeader("Content-Disposition", "inline");
+    }
+  }
+}));
 
 // =========================
 // DB
@@ -115,8 +127,83 @@ function normalizeLessonRow(row) {
     song_url: row.song_url ?? "",
     song_lyrics: row.song_lyrics ?? "",
     song_translation: row.song_translation ?? "",
-    song_notes: row.song_notes ?? ""
+    song_notes: row.song_notes ?? "",
+    document_urls: row.document_urls ?? row.documents_json ?? row.documentos_json ?? "[]",
+    documents_json: row.documents_json ?? row.document_urls ?? row.documentos_json ?? "[]",
+    documentos_json: row.documentos_json ?? row.documents_json ?? row.document_urls ?? "[]"
   };
+}
+
+function getMimeType(filePath) {
+  const ext = path.extname(filePath).toLowerCase();
+
+  const map = {
+    ".pdf": "application/pdf",
+    ".txt": "text/plain; charset=utf-8",
+    ".json": "application/json; charset=utf-8",
+    ".csv": "text/csv; charset=utf-8",
+    ".html": "text/html; charset=utf-8",
+    ".jpg": "image/jpeg",
+    ".jpeg": "image/jpeg",
+    ".png": "image/png",
+    ".gif": "image/gif",
+    ".webp": "image/webp",
+    ".svg": "image/svg+xml",
+    ".mp3": "audio/mpeg",
+    ".wav": "audio/wav",
+    ".ogg": "audio/ogg",
+    ".m4a": "audio/mp4",
+    ".mp4": "video/mp4",
+    ".webm": "video/webm",
+    ".mov": "video/quicktime",
+    ".doc": "application/msword",
+    ".docx": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    ".xls": "application/vnd.ms-excel",
+    ".xlsx": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    ".ppt": "application/vnd.ms-powerpoint",
+    ".pptx": "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+    ".zip": "application/zip",
+    ".rar": "application/vnd.rar",
+    ".7z": "application/x-7z-compressed"
+  };
+
+  return map[ext] || "application/octet-stream";
+}
+
+function isInlineFriendly(filePath) {
+  const ext = path.extname(filePath).toLowerCase();
+  return [
+    ".pdf",
+    ".txt",
+    ".jpg",
+    ".jpeg",
+    ".png",
+    ".gif",
+    ".webp",
+    ".svg",
+    ".mp3",
+    ".wav",
+    ".ogg",
+    ".m4a",
+    ".mp4",
+    ".webm",
+    ".mov"
+  ].includes(ext);
+}
+
+function sanitizeViewerName(fileName) {
+  return path.basename(String(fileName || ""));
+}
+
+function safeParseJsonArray(value) {
+  try {
+    if (!value) return [];
+    if (Array.isArray(value)) return value;
+    const parsed = JSON.parse(value);
+    return Array.isArray(parsed) ? parsed : [];
+  } catch {
+    return [];
+  }
 }
 
 // =========================
@@ -166,6 +253,9 @@ async function ensureSchema() {
         audio_url TEXT DEFAULT '',
         file_url TEXT DEFAULT '',
         file_name TEXT DEFAULT '',
+        document_urls TEXT DEFAULT '[]',
+        documents_json TEXT DEFAULT '[]',
+        documentos_json TEXT DEFAULT '[]',
         link TEXT DEFAULT '',
         link_1 TEXT DEFAULT '',
         link_2 TEXT DEFAULT '',
@@ -197,6 +287,9 @@ async function ensureSchema() {
     await client.query(`ALTER TABLE lessons ADD COLUMN IF NOT EXISTS audio_url TEXT DEFAULT ''`);
     await client.query(`ALTER TABLE lessons ADD COLUMN IF NOT EXISTS file_url TEXT DEFAULT ''`);
     await client.query(`ALTER TABLE lessons ADD COLUMN IF NOT EXISTS file_name TEXT DEFAULT ''`);
+    await client.query(`ALTER TABLE lessons ADD COLUMN IF NOT EXISTS document_urls TEXT DEFAULT '[]'`);
+    await client.query(`ALTER TABLE lessons ADD COLUMN IF NOT EXISTS documents_json TEXT DEFAULT '[]'`);
+    await client.query(`ALTER TABLE lessons ADD COLUMN IF NOT EXISTS documentos_json TEXT DEFAULT '[]'`);
     await client.query(`ALTER TABLE lessons ADD COLUMN IF NOT EXISTS link TEXT DEFAULT ''`);
     await client.query(`ALTER TABLE lessons ADD COLUMN IF NOT EXISTS link_1 TEXT DEFAULT ''`);
     await client.query(`ALTER TABLE lessons ADD COLUMN IF NOT EXISTS link_2 TEXT DEFAULT ''`);
@@ -219,6 +312,7 @@ async function ensureSchema() {
         nombre TEXT NOT NULL,
         email TEXT UNIQUE NOT NULL,
         password TEXT NOT NULL,
+        last_login_at TIMESTAMP,
         created_at TIMESTAMP DEFAULT NOW(),
         updated_at TIMESTAMP DEFAULT NOW()
       )
@@ -227,6 +321,7 @@ async function ensureSchema() {
     await client.query(`ALTER TABLE students ADD COLUMN IF NOT EXISTS nombre TEXT`);
     await client.query(`ALTER TABLE students ADD COLUMN IF NOT EXISTS email TEXT`);
     await client.query(`ALTER TABLE students ADD COLUMN IF NOT EXISTS password TEXT`);
+    await client.query(`ALTER TABLE students ADD COLUMN IF NOT EXISTS last_login_at TIMESTAMP`);
     await client.query(`ALTER TABLE students ADD COLUMN IF NOT EXISTS created_at TIMESTAMP DEFAULT NOW()`);
     await client.query(`ALTER TABLE students ADD COLUMN IF NOT EXISTS updated_at TIMESTAMP DEFAULT NOW()`);
 
@@ -275,6 +370,9 @@ async function ensureSchema() {
         description = COALESCE(description, descripcion, ''),
         contenido = COALESCE(contenido, text_content, ''),
         text_content = COALESCE(text_content, contenido, ''),
+        document_urls = COALESCE(document_urls, '[]'),
+        documents_json = COALESCE(documents_json, document_urls, '[]'),
+        documentos_json = COALESCE(documentos_json, documents_json, document_urls, '[]'),
         estado = COALESCE(NULLIF(TRIM(estado), ''), NULLIF(TRIM(status), ''), 'draft'),
         status = COALESCE(NULLIF(TRIM(status), ''), NULLIF(TRIM(estado), ''), 'draft'),
         link_1 = COALESCE(link_1, ''),
@@ -315,7 +413,98 @@ const storage = multer.diskStorage({
 
 const upload = multer({
   storage,
-  limits: { fileSize: 30 * 1024 * 1024 }
+  limits: { fileSize: 60 * 1024 * 1024 }
+});
+
+// =========================
+// VISOR ESTABLE DE ARCHIVOS
+// =========================
+app.get("/viewer/:file", (req, res) => {
+  try {
+    const fileName = sanitizeViewerName(req.params.file);
+    const filePath = path.join(DISK_FILES_DIR, fileName);
+
+    if (!fileName || !fs.existsSync(filePath)) {
+      return res.status(404).send("Archivo no encontrado");
+    }
+
+    const stat = fs.statSync(filePath);
+    const mimeType = getMimeType(filePath);
+    const range = req.headers.range;
+
+    res.setHeader("Access-Control-Allow-Origin", "*");
+    res.setHeader("Accept-Ranges", "bytes");
+    res.setHeader("Content-Type", mimeType);
+    res.setHeader("Cache-Control", "public, max-age=86400");
+    res.setHeader("Content-Disposition", isInlineFriendly(filePath) ? "inline" : `attachment; filename="${fileName}"`);
+
+    if (range) {
+      const parts = range.replace(/bytes=/, "").split("-");
+      const start = parseInt(parts[0], 10);
+      const end = parts[1] ? parseInt(parts[1], 10) : stat.size - 1;
+
+      if (Number.isNaN(start) || Number.isNaN(end) || start > end || end >= stat.size) {
+        res.status(416).setHeader("Content-Range", `bytes */${stat.size}`);
+        return res.end();
+      }
+
+      const chunkSize = (end - start) + 1;
+      res.status(206);
+      res.setHeader("Content-Range", `bytes ${start}-${end}/${stat.size}`);
+      res.setHeader("Content-Length", chunkSize);
+
+      const stream = fs.createReadStream(filePath, { start, end });
+      stream.on("error", (err) => {
+        console.error("VIEWER STREAM ERROR:", err);
+        if (!res.headersSent) {
+          res.status(500).end("Error leyendo archivo");
+        } else {
+          res.end();
+        }
+      });
+      return stream.pipe(res);
+    }
+
+    res.setHeader("Content-Length", stat.size);
+
+    const stream = fs.createReadStream(filePath);
+    stream.on("error", (err) => {
+      console.error("VIEWER STREAM ERROR:", err);
+      if (!res.headersSent) {
+        res.status(500).end("Error leyendo archivo");
+      } else {
+        res.end();
+      }
+    });
+    return stream.pipe(res);
+
+  } catch (error) {
+    console.error("VIEWER ERROR:", error);
+    return res.status(500).send("Error abriendo archivo");
+  }
+});
+
+// =========================
+// API DE SOPORTE DE ARCHIVOS
+// =========================
+app.get("/api/files", (req, res) => {
+  try {
+    const files = fs.readdirSync(DISK_FILES_DIR).map((name) => {
+      const filePath = path.join(DISK_FILES_DIR, name);
+      const stat = fs.statSync(filePath);
+      return {
+        name,
+        size: stat.size,
+        modified_at: stat.mtime,
+        url: `/files/${name}`,
+        viewer_url: `/viewer/${name}`
+      };
+    }).sort((a, b) => new Date(b.modified_at) - new Date(a.modified_at));
+
+    res.json({ ok: true, files });
+  } catch (error) {
+    res.status(500).json({ ok: false, error: error.message });
+  }
 });
 
 // =========================
@@ -535,8 +724,16 @@ app.post("/api/lessons", async (req, res) => {
     const songTranslation = normalizeText(req.body.song_translation);
     const songNotes = normalizeText(req.body.song_notes);
 
-    const rawStatus = normalizeStatus(req.body.estado || req.body.status || "draft", "draft");
+    const documentUrlsRaw =
+      req.body.document_urls ||
+      req.body.documents_json ||
+      req.body.documentos_json ||
+      "[]";
 
+    const docsArray = safeParseJsonArray(documentUrlsRaw);
+    const docsJson = JSON.stringify(docsArray);
+
+    const rawStatus = normalizeStatus(req.body.estado || req.body.status || "draft", "draft");
     const finalTitle = rawTitle || autoLessonTitle();
 
     const result = await pool.query(`
@@ -547,6 +744,7 @@ app.post("/api/lessons", async (req, res) => {
         contenido, text_content,
         video_url, youtube_url, tiktok_url, audio_url,
         file_url, file_name,
+        document_urls, documents_json, documentos_json,
         link,
         link_1, link_2, link_3, link_4, link_5,
         song_title, song_url, song_lyrics, song_translation, song_notes,
@@ -560,10 +758,11 @@ app.post("/api/lessons", async (req, res) => {
         $6, $7,
         $8, $9, $10, $11,
         $12, $13,
-        $14,
-        $15, $16, $17, $18, $19,
-        $20, $21, $22, $23, $24,
-        $25, $26,
+        $14, $15, $16,
+        $17,
+        $18, $19, $20, $21, $22,
+        $23, $24, $25, $26, $27,
+        $28, $29,
         NOW(), NOW()
       )
       RETURNING *
@@ -574,6 +773,7 @@ app.post("/api/lessons", async (req, res) => {
       rawContent, rawContent,
       videoUrl, youtubeUrl, tiktokUrl, audioUrl,
       fileUrl, fileName,
+      docsJson, docsJson, docsJson,
       youtubeUrl,
       link1, link2, link3, link4, link5,
       songTitle, songUrl, songLyrics, songTranslation, songNotes,
@@ -643,8 +843,47 @@ app.delete("/api/lessons/:id", async (req, res) => {
     const id = Number(req.params.id);
     if (!id) return res.status(400).json({ ok: false, error: "ID inválido" });
 
+    const lessonResult = await pool.query(`
+      SELECT file_url, documents_json, document_urls, documentos_json
+      FROM lessons
+      WHERE id = $1
+      LIMIT 1
+    `, [id]);
+
     const result = await pool.query(`DELETE FROM lessons WHERE id = $1 RETURNING id`, [id]);
     if (!result.rowCount) return res.status(404).json({ ok: false, error: "Clase no encontrada" });
+
+    // Eliminación física opcional del archivo principal y documentos
+    if (lessonResult.rowCount) {
+      const lesson = lessonResult.rows[0];
+      const fileCandidates = [];
+
+      if (lesson.file_url) {
+        const name = sanitizeViewerName(String(lesson.file_url).split("/").pop());
+        if (name) fileCandidates.push(name);
+      }
+
+      const docs = safeParseJsonArray(
+        lesson.documents_json || lesson.document_urls || lesson.documentos_json || "[]"
+      );
+
+      docs.forEach((d) => {
+        const url = typeof d === "string" ? d : (d.url || d.file_url || "");
+        const name = sanitizeViewerName(String(url).split("/").pop());
+        if (name) fileCandidates.push(name);
+      });
+
+      [...new Set(fileCandidates)].forEach((name) => {
+        const filePath = path.join(DISK_FILES_DIR, name);
+        if (fs.existsSync(filePath)) {
+          try {
+            fs.unlinkSync(filePath);
+          } catch (e) {
+            console.error("No se pudo borrar archivo físico:", name, e.message);
+          }
+        }
+      });
+    }
 
     res.json({ ok: true, message: "Clase eliminada correctamente" });
   } catch (error) {
@@ -662,6 +901,7 @@ app.get("/api/students", async (req, res) => {
         s.id,
         s.nombre,
         s.email,
+        s.last_login_at,
         s.created_at,
         COALESCE(AVG(p.progress_percent), 0)::int AS progreso_promedio
       FROM students s
@@ -723,7 +963,20 @@ app.post("/api/login", async (req, res) => {
       return res.status(401).json({ ok: false, error: "Correo o contraseña incorrectos" });
     }
 
-    res.json({ ok: true, student: result.rows[0], message: "Login correcto" });
+    await pool.query(`
+      UPDATE students
+      SET last_login_at = NOW(), updated_at = NOW()
+      WHERE id = $1
+    `, [result.rows[0].id]);
+
+    res.json({
+      ok: true,
+      student: {
+        ...result.rows[0],
+        last_login_at: new Date().toISOString()
+      },
+      message: "Login correcto"
+    });
   } catch (error) {
     res.status(500).json({ ok: false, error: error.message });
   }
@@ -797,7 +1050,8 @@ app.post("/api/upload-file", upload.single("file"), async (req, res) => {
     }
 
     const baseUrl = `${req.protocol}://${req.get("host")}`;
-    const fileUrl = `${baseUrl}/files/${req.file.filename}`;
+    const directUrl = `${baseUrl}/files/${req.file.filename}`;
+    const viewerUrl = `${baseUrl}/viewer/${req.file.filename}`;
 
     res.json({
       ok: true,
@@ -806,11 +1060,14 @@ app.post("/api/upload-file", upload.single("file"), async (req, res) => {
         savedName: req.file.filename,
         size: req.file.size,
         mimetype: req.file.mimetype,
-        url: fileUrl,
+        url: directUrl,
+        directUrl,
+        viewerUrl,
         diskPath: req.file.path
       },
-      file_url: fileUrl,
+      file_url: directUrl,
       file_name: req.file.originalname,
+      viewer_url: viewerUrl,
       message: "Archivo subido correctamente"
     });
   } catch (error) {
