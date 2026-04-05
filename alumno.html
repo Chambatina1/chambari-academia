@@ -1,144 +1,755 @@
-// StudentPublicPage.jsx
-import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Chambari - Alumno</title>
 
-export default function StudentPublicPage() {
-  const { token } = useParams();
-  const [data, setData] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
+<link rel="icon" type="image/jpeg" href="https://chambatina1.github.io/chambari-academia/CHAMBARI.jpeg?v=20260405">
+<link rel="apple-touch-icon" href="https://chambatina1.github.io/chambari-academia/CHAMBARI.jpeg?v=20260405">
+<link rel="manifest" href="https://chambatina1.github.io/chambari-academia/manifest.json?v=20260405">
 
-  useEffect(() => {
-    const loadStudentAccess = async () => {
-      try {
-        const res = await fetch(`http://localhost:3001/api/student-access/${token}`);
-        const json = await res.json();
+<meta name="theme-color" content="#7b5ea7">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Alumno">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
 
-        if (!json.ok) {
-          setError(json.message || 'No se pudo abrir la clase');
-          return;
-        }
-
-        setData(json);
-      } catch (err) {
-        setError('Error de conexión');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    loadStudentAccess();
-  }, [token]);
-
-  if (loading) return <div style={styles.center}>Cargando...</div>;
-  if (error) return <div style={styles.center}>{error}</div>;
-
-  return (
-    <div style={styles.page}>
-      <div style={styles.card}>
-        <p style={styles.badge}>Bienvenido</p>
-        <h1 style={styles.title}>{data.student.name}</h1>
-
-        <div style={styles.section}>
-          <p style={styles.label}>Módulo</p>
-          <p style={styles.value}>{data.module.title}</p>
-        </div>
-
-        <div style={styles.section}>
-          <p style={styles.label}>Tu clase de hoy</p>
-          <p style={styles.value}>{data.lesson.title}</p>
-        </div>
-
-        <div style={styles.section}>
-          <p style={styles.label}>Progreso</p>
-          <div style={styles.progressBar}>
-            <div
-              style={{
-                ...styles.progressFill,
-                width: `${data.progress}%`
-              }}
-            />
-          </div>
-          <p style={styles.percent}>{data.progress}% completado</p>
-        </div>
-
-        <button style={styles.button}>
-          Continúa tu clase
-        </button>
-      </div>
-    </div>
-  );
+<style>
+:root{
+  --bg: #f7f4ef;
+  --bg-2: #f3efe7;
+  --card: #ffffff;
+  --card-soft: #f6f1e8;
+  --text: #2b2430;
+  --muted: #6f6472;
+  --primary: #7b5ea7;
+  --primary-2: #62458f;
+  --accent: #a8c3a0;
+  --accent-2: #7ea172;
+  --warning: #e0b35b;
+  --danger: #c85c5c;
+  --success: #6f9f6f;
+  --border: #e6ddd2;
+  --shadow: 0 10px 26px rgba(66, 40, 80, 0.08);
 }
 
-const styles = {
-  page: {
-    minHeight: '100vh',
-    background: '#f7f7fb',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: 24
-  },
-  card: {
-    width: '100%',
-    maxWidth: 480,
-    background: '#fff',
-    borderRadius: 16,
-    padding: 24,
-    boxShadow: '0 10px 30px rgba(0,0,0,0.08)'
-  },
-  badge: {
-    fontSize: 12,
-    color: '#666',
-    marginBottom: 8
-  },
-  title: {
-    fontSize: 28,
-    margin: '0 0 24px 0'
-  },
-  section: {
-    marginBottom: 20
-  },
-  label: {
-    fontSize: 13,
-    color: '#777',
-    marginBottom: 6
-  },
-  value: {
-    fontSize: 18,
-    margin: 0
-  },
-  progressBar: {
-    width: '100%',
-    height: 10,
-    background: '#eee',
-    borderRadius: 999
-  },
-  progressFill: {
-    height: '100%',
-    background: '#222',
-    borderRadius: 999
-  },
-  percent: {
-    fontSize: 13,
-    marginTop: 8,
-    color: '#555'
-  },
-  button: {
-    width: '100%',
-    padding: '14px 16px',
-    border: 'none',
-    borderRadius: 12,
-    background: '#111',
-    color: '#fff',
-    fontSize: 16,
-    cursor: 'pointer'
-  },
-  center: {
-    minHeight: '100vh',
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    fontSize: 18
+* { box-sizing: border-box; }
+
+body {
+  font-family: Arial, sans-serif;
+  background:
+    radial-gradient(circle at top right, #efe6ff 0%, transparent 22%),
+    linear-gradient(180deg, var(--bg) 0%, var(--bg-2) 100%);
+  color: var(--text);
+  margin: 0;
+  padding: 20px;
+}
+
+.main, .header-wrap {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.logo-bar {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 14px;
+}
+
+.logo-box {
+  width: 58px;
+  height: 58px;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: var(--shadow);
+  background: white;
+}
+
+.logo-box img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.logo-text strong {
+  display: block;
+  font-size: 22px;
+  color: var(--primary-2);
+}
+
+.logo-text span {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+h1 {
+  color: var(--primary-2);
+  margin: 0 0 8px 0;
+  font-size: 34px;
+}
+
+h2, h3 {
+  color: var(--primary-2);
+  margin-top: 0;
+}
+
+.subtitulo {
+  color: var(--muted);
+  margin-bottom: 22px;
+  font-size: 15px;
+}
+
+.card {
+  background: var(--card);
+  padding: 22px;
+  border-radius: 20px;
+  margin-bottom: 20px;
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border);
+}
+
+.grid-2 {
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr;
+  gap: 20px;
+}
+
+.grid-3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.stat {
+  background: linear-gradient(180deg, #fbf8f4 0%, #ffffff 100%);
+  padding: 18px;
+  border-radius: 16px;
+  text-align: center;
+  border: 1px solid var(--border);
+}
+
+.stat strong {
+  display: block;
+  font-size: 28px;
+  color: var(--primary);
+  margin-bottom: 4px;
+}
+
+.kicker {
+  color: var(--muted);
+  font-size: 13px;
+  margin-top: 4px;
+}
+
+.button,
+button,
+a.button-link {
+  display: inline-block;
+  width: 100%;
+  margin-top: 12px;
+  padding: 12px 14px;
+  background: var(--primary);
+  border: none;
+  color: white;
+  font-weight: bold;
+  border-radius: 12px;
+  cursor: pointer;
+  text-decoration: none;
+  text-align: center;
+}
+
+.button.secundario,
+button.secundario,
+a.button-link.secundario {
+  background: #7e8798;
+}
+
+.button.ver,
+button.ver,
+a.button-link.ver {
+  background: var(--accent-2);
+}
+
+.button.warning,
+button.warning,
+a.button-link.warning {
+  background: var(--warning);
+  color: #2b2430;
+}
+
+.item {
+  background: #fbfaf7;
+  padding: 16px;
+  border-radius: 16px;
+  margin-top: 12px;
+  border: 1px solid var(--border);
+}
+
+.item h4 {
+  margin: 0 0 6px 0;
+  color: var(--primary-2);
+}
+
+.item small {
+  color: var(--muted);
+}
+
+.video-box {
+  position: relative;
+  width: 100%;
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  background: #000;
+  margin-top: 12px;
+}
+
+.video-box iframe {
+  width: 100%;
+  height: 380px;
+  border: 0;
+  display: block;
+}
+
+.link-list a,
+.doc-list a {
+  color: var(--primary-2);
+  text-decoration: none;
+  display: block;
+  margin-top: 8px;
+  word-break: break-word;
+  padding: 10px 12px;
+  background: #f8f4fc;
+  border: 1px solid #e8def5;
+  border-radius: 12px;
+}
+
+.exercise-chip {
+  background: #eee6fb;
+  color: var(--primary-2);
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  display: inline-block;
+  margin-right: 8px;
+  margin-top: 6px;
+}
+
+.exercise-box {
+  background: #f9f6ff;
+  border: 1px dashed #c7b7e6;
+  border-radius: 14px;
+  padding: 14px;
+  margin-top: 14px;
+}
+
+input[type="text"], textarea {
+  width: 100%;
+  padding: 12px;
+  margin-top: 10px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  font-size: 15px;
+  background: #fff;
+}
+
+textarea {
+  min-height: 90px;
+  resize: vertical;
+}
+
+.progreso-wrap {
+  margin-top: 12px;
+}
+
+.progreso-bar {
+  width: 100%;
+  height: 12px;
+  background: #ece6dc;
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.progreso-fill {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, var(--primary), var(--accent-2));
+  border-radius: 999px;
+  transition: width 0.3s ease;
+}
+
+.estado {
+  margin-top: 10px;
+  font-size: 14px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  display: none;
+}
+
+.estado.ok {
+  display: block;
+  background: #eef8ee;
+  color: var(--success);
+  border: 1px solid #cfe4cf;
+}
+
+.estado.error {
+  display: block;
+  background: #fff1f1;
+  color: var(--danger);
+  border: 1px solid #efc5c5;
+}
+
+.vacio {
+  color: var(--muted);
+  text-align: center;
+  padding: 20px;
+}
+
+.badge {
+  display: inline-block;
+  background: #62458f;
+  color: #fff;
+  padding: 8px 12px;
+  border-radius: 12px;
+  font-size: 12px;
+  margin-bottom: 12px;
+  box-shadow: var(--shadow);
+}
+
+.row {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.row > * {
+  flex: 1;
+}
+
+@media (max-width: 900px) {
+  .grid-2,
+  .grid-3 {
+    grid-template-columns: 1fr;
   }
-};
+
+  .video-box iframe {
+    height: 240px;
+  }
+}
+</style>
+</head>
+<body>
+
+<div class="header-wrap">
+  <div class="badge">Alumno build 05-04-26</div>
+
+  <div class="logo-bar">
+    <div class="logo-box">
+      <img src="https://chambatina1.github.io/chambari-academia/CHAMBARI.jpeg?v=20260405" alt="Chambari">
+    </div>
+    <div class="logo-text">
+      <strong>Chambari Academy</strong>
+      <span>Tu espacio de aprendizaje</span>
+    </div>
+  </div>
+
+  <h1>Bienvenido a tu clase</h1>
+  <div class="subtitulo">
+    Aquí verás solo lo importante: tu clase, tus materiales, tus ejercicios y tu progreso.
+  </div>
+</div>
+
+<div class="main">
+
+  <div class="grid-2">
+    <div class="card">
+      <h2>Continúa tu clase</h2>
+      <div id="claseActualBox" class="vacio">Cargando clase...</div>
+      <div id="estadoGeneral" class="estado"></div>
+    </div>
+
+    <div class="card">
+      <h2>Cómo vas</h2>
+      <div class="grid-3">
+        <div class="stat">
+          <strong id="statModulo">-</strong>
+          Módulo
+        </div>
+        <div class="stat">
+          <strong id="statLecciones">0</strong>
+          Clases
+        </div>
+        <div class="stat">
+          <strong id="statProgreso">0%</strong>
+          Progreso
+        </div>
+      </div>
+
+      <div class="progreso-wrap">
+        <div class="kicker">Tu avance actual</div>
+        <div class="progreso-bar">
+          <div id="barraProgreso" class="progreso-fill"></div>
+        </div>
+      </div>
+
+      <div class="item">
+        <h4>Siguiente paso</h4>
+        <div id="siguientePaso">Abre tu clase y completa el siguiente ejercicio.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Video de la clase</h2>
+    <div id="videoBox" class="vacio">Esta clase no tiene video todavía.</div>
+  </div>
+
+  <div class="grid-2">
+    <div class="card">
+      <h2>Materiales</h2>
+      <div id="materialesBox" class="vacio">No hay materiales disponibles.</div>
+    </div>
+
+    <div class="card">
+      <h2>Enlaces útiles</h2>
+      <div id="linksBox" class="vacio">No hay enlaces adicionales.</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Practica ahora</h2>
+    <div id="ejerciciosBox" class="vacio">No hay ejercicios en esta clase.</div>
+  </div>
+
+</div>
+
+<script>
+const API = "https://chambari-academia.onrender.com";
+
+function esc(texto) {
+  return String(texto || "")
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;");
+}
+
+function mostrarEstado(id, texto, tipo = "ok") {
+  const box = document.getElementById(id);
+  box.textContent = texto;
+  box.className = "estado " + tipo;
+}
+
+function limpiarEstado(id) {
+  const box = document.getElementById(id);
+  box.textContent = "";
+  box.className = "estado";
+}
+
+function normalizarModuloNombre(m) {
+  return m.titulo || m.title || "Módulo";
+}
+
+function normalizarClaseNombre(c) {
+  return c.titulo || c.title || "Clase";
+}
+
+function extraerEjerciciosDesdeContenido(contenido) {
+  const texto = String(contenido || "");
+  const marcador = "---EJERCICIOS_CHAMBARI---";
+  const pos = texto.indexOf(marcador);
+  if (pos === -1) return [];
+
+  const jsonText = texto.slice(pos + marcador.length).trim();
+  try {
+    const parsed = JSON.parse(jsonText);
+    return Array.isArray(parsed) ? parsed : [];
+  } catch {
+    return [];
+  }
+}
+
+function limpiarContenidoVisible(contenido) {
+  const texto = String(contenido || "");
+  const marcador = "---EJERCICIOS_CHAMBARI---";
+  const pos = texto.indexOf(marcador);
+  if (pos === -1) return texto;
+  return texto.slice(0, pos).trim();
+}
+
+function getYoutubeEmbed(url) {
+  if (!url) return "";
+  try {
+    const u = new URL(url);
+
+    if (u.hostname.includes("youtube.com")) {
+      const v = u.searchParams.get("v");
+      if (v) return "https://www.youtube.com/embed/" + v;
+      const parts = u.pathname.split("/");
+      const embedIndex = parts.indexOf("embed");
+      if (embedIndex !== -1 && parts[embedIndex + 1]) {
+        return "https://www.youtube.com/embed/" + parts[embedIndex + 1];
+      }
+    }
+
+    if (u.hostname.includes("youtu.be")) {
+      const id = u.pathname.replace("/", "").trim();
+      if (id) return "https://www.youtube.com/embed/" + id;
+    }
+
+    return url;
+  } catch {
+    return url;
+  }
+}
+
+function renderClaseActual(modulo, clase) {
+  const box = document.getElementById("claseActualBox");
+  const contenido = limpiarContenidoVisible(clase.contenido || clase.text_content || "");
+  const moduloNombre = normalizarModuloNombre(modulo);
+  const claseNombre = normalizarClaseNombre(clase);
+
+  box.className = "";
+  box.innerHTML = `
+    <div class="item">
+      <div class="kicker">Módulo actual</div>
+      <h3>${esc(moduloNombre)}</h3>
+
+      <div class="kicker" style="margin-top:12px;">Tu clase de hoy</div>
+      <h4 style="margin-top:6px;">${esc(claseNombre)}</h4>
+
+      ${contenido ? `<p>${esc(contenido)}</p>` : `<p class="kicker">Esta clase no tiene descripción todavía.</p>`}
+
+      <a href="#ejerciciosBox" class="button-link">Ir a practicar</a>
+    </div>
+  `;
+}
+
+function renderVideo(clase) {
+  const box = document.getElementById("videoBox");
+  const youtube = clase.youtube_url || "";
+
+  if (!youtube) {
+    box.className = "vacio";
+    box.textContent = "Esta clase no tiene video todavía.";
+    return;
+  }
+
+  const embed = getYoutubeEmbed(youtube);
+  box.className = "";
+  box.innerHTML = `
+    <div class="video-box">
+      <iframe
+        src="${esc(embed)}"
+        title="Video de la clase"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowfullscreen>
+      </iframe>
+    </div>
+    <a class="button-link ver" href="${esc(youtube)}" target="_blank">Abrir video</a>
+  `;
+}
+
+function renderLinks(clase) {
+  const box = document.getElementById("linksBox");
+  const links = [
+    clase.link_1,
+    clase.link_2,
+    clase.link_3,
+    clase.link_4,
+    clase.link_5
+  ].filter(Boolean);
+
+  if (!links.length) {
+    box.className = "vacio";
+    box.textContent = "No hay enlaces adicionales.";
+    return;
+  }
+
+  box.className = "link-list";
+  box.innerHTML = links.map((link, index) => `
+    <a href="${esc(link)}" target="_blank">Abrir enlace ${index + 1}</a>
+  `).join("");
+}
+
+function renderDocs(clase) {
+  const box = document.getElementById("materialesBox");
+  const docs = clase.documents || clase.document_urls || [];
+
+  if (!docs.length) {
+    box.className = "vacio";
+    box.textContent = "No hay materiales disponibles.";
+    return;
+  }
+
+  box.className = "doc-list";
+  box.innerHTML = docs.map((doc, index) => {
+    const name = doc.name || `Documento ${index + 1}`;
+    const url = doc.viewerUrl || doc.viewer_url || doc.url || doc.directUrl || "#";
+    return `<a href="${esc(url)}" target="_blank">Abrir ${esc(name)}</a>`;
+  }).join("");
+}
+
+function renderEjercicios(clase) {
+  const box = document.getElementById("ejerciciosBox");
+  const ejercicios = extraerEjerciciosDesdeContenido(clase.contenido || clase.text_content || "");
+
+  if (!ejercicios.length) {
+    box.className = "vacio";
+    box.textContent = "No hay ejercicios en esta clase.";
+    return;
+  }
+
+  box.className = "";
+  box.innerHTML = ejercicios.map((ej, index) => {
+    const opciones = Array.isArray(ej.opciones) ? ej.opciones : [];
+
+    if (ej.tipo === "opcion_multiple" || ej.tipo === "verdadero_falso") {
+      return `
+        <div class="exercise-box">
+          <div class="exercise-chip">${esc(ej.tipo)}</div>
+          <h4>${index + 1}. ${esc(ej.pregunta || "Pregunta")}</h4>
+          <div class="row">
+            ${opciones.map(op => `
+              <button type="button" class="secundario" onclick="responderOpcion(this, '${esc(ej.respuesta || "")}', '${esc(op)}')">
+                ${esc(op)}
+              </button>
+            `).join("")}
+          </div>
+          <div class="kicker respuesta-box" style="margin-top:10px;"></div>
+        </div>
+      `;
+    }
+
+    return `
+      <div class="exercise-box">
+        <div class="exercise-chip">${esc(ej.tipo || "respuesta_corta")}</div>
+        <h4>${index + 1}. ${esc(ej.pregunta || "Pregunta")}</h4>
+        <textarea placeholder="Escribe tu respuesta aquí"></textarea>
+        <button type="button" onclick="revisarRespuestaCorta(this, '${esc(ej.respuesta || "")}')">Revisar</button>
+        <div class="kicker respuesta-box" style="margin-top:10px;"></div>
+      </div>
+    `;
+  }).join("");
+}
+
+function responderOpcion(btn, correcta, elegida) {
+  const box = btn.closest(".exercise-box").querySelector(".respuesta-box");
+  if ((elegida || "").trim().toLowerCase() === (correcta || "").trim().toLowerCase()) {
+    box.innerHTML = "Muy bien. Respuesta correcta.";
+    box.style.color = "#6f9f6f";
+  } else {
+    box.innerHTML = "Todavía no. Intenta otra vez.";
+    box.style.color = "#c85c5c";
+  }
+}
+
+function revisarRespuestaCorta(btn, correcta) {
+  const wrap = btn.closest(".exercise-box");
+  const textarea = wrap.querySelector("textarea");
+  const box = wrap.querySelector(".respuesta-box");
+  const valor = (textarea.value || "").trim().toLowerCase();
+  const ok = valor === (correcta || "").trim().toLowerCase();
+
+  if (!valor) {
+    box.innerHTML = "Escribe una respuesta primero.";
+    box.style.color = "#c85c5c";
+    return;
+  }
+
+  if (ok) {
+    box.innerHTML = "Muy bien. Tu respuesta coincide.";
+    box.style.color = "#6f9f6f";
+  } else {
+    box.innerHTML = "Respuesta guardada. Revisa e intenta mejorarla.";
+    box.style.color = "#7b5ea7";
+  }
+}
+
+function calcularProgreso(lessons, currentLessonIndex) {
+  if (!lessons.length) return 0;
+  const progreso = Math.round(((currentLessonIndex + 1) / lessons.length) * 100);
+  return Math.max(0, Math.min(100, progreso));
+}
+
+async function cargarAlumno() {
+  limpiarEstado("estadoGeneral");
+
+  try {
+    const res = await fetch(`${API}/api/dashboard`);
+    const data = await res.json();
+
+    if (!res.ok || !data.ok) {
+      mostrarEstado("estadoGeneral", data.error || "No se pudo cargar la información.", "error");
+      return;
+    }
+
+    const modulos = Array.isArray(data.modules) ? data.modules : [];
+    const moduloPublicado = modulos.find(m => {
+      const estado = String(m.estado || m.status || "").toLowerCase();
+      const lessons = Array.isArray(m.lessons) ? m.lessons : [];
+      return estado !== "archived" && lessons.length > 0;
+    });
+
+    if (!moduloPublicado) {
+      document.getElementById("claseActualBox").className = "vacio";
+      document.getElementById("claseActualBox").textContent = "Aún no hay clases disponibles para ti.";
+      document.getElementById("videoBox").className = "vacio";
+      document.getElementById("videoBox").textContent = "Todavía no hay video disponible.";
+      document.getElementById("materialesBox").className = "vacio";
+      document.getElementById("materialesBox").textContent = "Todavía no hay materiales.";
+      document.getElementById("linksBox").className = "vacio";
+      document.getElementById("linksBox").textContent = "Todavía no hay enlaces.";
+      document.getElementById("ejerciciosBox").className = "vacio";
+      document.getElementById("ejerciciosBox").textContent = "Todavía no hay ejercicios.";
+      return;
+    }
+
+    const lessons = (moduloPublicado.lessons || []).filter(clase => {
+      const estado = String(clase.estado || clase.status || "").toLowerCase();
+      return estado === "published" || estado === "";
+    });
+
+    const claseActual = lessons[0] || (moduloPublicado.lessons || [])[0];
+
+    if (!claseActual) {
+      document.getElementById("claseActualBox").className = "vacio";
+      document.getElementById("claseActualBox").textContent = "Este módulo todavía no tiene una clase visible.";
+      return;
+    }
+
+    renderClaseActual(moduloPublicado, claseActual);
+    renderVideo(claseActual);
+    renderDocs(claseActual);
+    renderLinks(claseActual);
+    renderEjercicios(claseActual);
+
+    const progreso = calcularProgreso(lessons.length ? lessons : [claseActual], 0);
+
+    document.getElementById("statModulo").textContent = normalizarModuloNombre(moduloPublicado);
+    document.getElementById("statLecciones").textContent = String(lessons.length || 1);
+    document.getElementById("statProgreso").textContent = progreso + "%";
+    document.getElementById("barraProgreso").style.width = progreso + "%";
+    document.getElementById("siguientePaso").textContent = "Completa la clase \"" + normalizarClaseNombre(claseActual) + "\".";
+
+    mostrarEstado("estadoGeneral", "Clase cargada correctamente.", "ok");
+  } catch (error) {
+    console.error(error);
+    mostrarEstado("estadoGeneral", "Error conectando con el servidor.", "error");
+  }
+}
+
+(function diagnosticoHomeScreen() {
+  const standalone = window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone === true;
+  console.log("Modo app:", standalone);
+  console.log("URL actual:", window.location.href);
+})();
+
+cargarAlumno();
+</script>
+
+</body>
+</html>
