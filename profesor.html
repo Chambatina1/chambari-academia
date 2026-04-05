@@ -7,42 +7,90 @@
 
 <style>
 :root{
-  --bg: #f4f7fb;
+  --bg: #f7f4ef;
+  --bg-2: #f3efe7;
   --card: #ffffff;
-  --card-soft: #eef4ff;
-  --text: #1f2937;
-  --muted: #6b7280;
-  --primary: #2563eb;
-  --primary-2: #1d4ed8;
-  --accent: #14b8a6;
-  --accent-2: #0f766e;
-  --warning: #f59e0b;
-  --danger: #dc2626;
-  --success: #16a34a;
-  --border: #dbe4f0;
-  --shadow: 0 8px 24px rgba(31, 41, 55, 0.08);
+  --card-soft: #f6f1e8;
+  --text: #2b2430;
+  --muted: #6f6472;
+
+  --primary: #7b5ea7;
+  --primary-2: #62458f;
+
+  --accent: #a8c3a0;
+  --accent-2: #7ea172;
+
+  --wood: #c7a27c;
+  --wood-2: #a67c52;
+
+  --warning: #e0b35b;
+  --danger: #c85c5c;
+  --success: #6f9f6f;
+
+  --border: #e6ddd2;
+  --shadow: 0 10px 26px rgba(66, 40, 80, 0.08);
 }
 
 * { box-sizing: border-box; }
 
 body {
   font-family: Arial, sans-serif;
-  background: linear-gradient(180deg, #eef4ff 0%, #f8fbff 100%);
+  background:
+    radial-gradient(circle at top right, #efe6ff 0%, transparent 22%),
+    linear-gradient(180deg, var(--bg) 0%, var(--bg-2) 100%);
   color: var(--text);
   margin: 0;
   padding: 20px;
+}
+
+.header-wrap {
+  max-width: 1400px;
+  margin: 0 auto 18px auto;
+}
+
+.logo-bar {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 14px;
+}
+
+.logo-box {
+  width: 58px;
+  height: 58px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, var(--primary), var(--wood));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 24px;
+  font-weight: bold;
+  box-shadow: var(--shadow);
+}
+
+.logo-text strong {
+  display: block;
+  font-size: 20px;
+  color: var(--primary-2);
+}
+
+.logo-text span {
+  color: var(--muted);
+  font-size: 13px;
 }
 
 h1 {
   color: var(--primary-2);
   margin-top: 0;
   margin-bottom: 8px;
-  font-size: 32px;
+  font-size: 34px;
 }
 
 .subtitulo {
   color: var(--muted);
   margin-bottom: 22px;
+  font-size: 15px;
 }
 
 h2, h3, h4 {
@@ -50,10 +98,15 @@ h2, h3, h4 {
   color: var(--primary-2);
 }
 
+.main {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
 .card {
   background: var(--card);
-  padding: 20px;
-  border-radius: 18px;
+  padding: 22px;
+  border-radius: 20px;
   margin-bottom: 20px;
   box-shadow: var(--shadow);
   border: 1px solid var(--border);
@@ -66,9 +119,9 @@ h2, h3, h4 {
 }
 
 .stat {
-  background: linear-gradient(180deg, #eff6ff 0%, #ffffff 100%);
-  padding: 16px;
-  border-radius: 14px;
+  background: linear-gradient(180deg, #fbf8f4 0%, #ffffff 100%);
+  padding: 18px;
+  border-radius: 16px;
   text-align: center;
   border: 1px solid var(--border);
 }
@@ -84,12 +137,18 @@ input, textarea, select {
   width: 100%;
   padding: 12px;
   margin-top: 10px;
-  border-radius: 10px;
+  border-radius: 12px;
   border: 1px solid var(--border);
   box-sizing: border-box;
   font-size: 15px;
   background: #fff;
   color: var(--text);
+  outline: none;
+}
+
+input:focus, textarea:focus, select:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(123, 94, 167, 0.10);
 }
 
 textarea {
@@ -111,7 +170,7 @@ button {
   border: none;
   color: white;
   font-weight: bold;
-  border-radius: 10px;
+  border-radius: 12px;
   cursor: pointer;
   font-size: 15px;
   transition: .18s ease;
@@ -119,11 +178,11 @@ button {
 
 button:hover {
   transform: translateY(-1px);
-  opacity: .96;
+  opacity: .97;
 }
 
 button.secundario {
-  background: #64748b;
+  background: #7e8798;
   color: white;
 }
 
@@ -139,18 +198,18 @@ button.publicar {
 
 button.archivar {
   background: var(--warning);
-  color: #111827;
+  color: #2d2d2d;
 }
 
 button.ver {
-  background: var(--accent);
+  background: var(--accent-2);
   color: white;
 }
 
 .item {
-  background: #f8fbff;
+  background: #fbfaf7;
   padding: 16px;
-  border-radius: 14px;
+  border-radius: 16px;
   margin-top: 12px;
   border: 1px solid var(--border);
 }
@@ -159,13 +218,14 @@ button.ver {
   font-size: 13px;
   color: var(--muted);
   margin-top: 6px;
+  line-height: 1.45;
 }
 
 .estado {
   margin-top: 12px;
   padding: 12px;
-  border-radius: 10px;
-  background: #f8fbff;
+  border-radius: 12px;
+  background: #faf8f4;
 }
 
 .ok {
@@ -186,7 +246,7 @@ button.ver {
   background: #ffffff;
   padding: 14px;
   margin-top: 12px;
-  border-radius: 12px;
+  border-radius: 14px;
   border: 1px solid var(--border);
 }
 
@@ -199,7 +259,7 @@ button.ver {
 .modal {
   position: fixed;
   inset: 0;
-  background: rgba(15, 23, 42, 0.62);
+  background: rgba(43, 36, 48, 0.58);
   display: none;
   align-items: center;
   justify-content: center;
@@ -212,8 +272,8 @@ button.ver {
   max-height: 90vh;
   overflow: auto;
   background: #ffffff;
-  border-radius: 18px;
-  padding: 22px;
+  border-radius: 20px;
+  padding: 24px;
   border: 1px solid var(--border);
   box-shadow: var(--shadow);
 }
@@ -229,7 +289,7 @@ button.ver {
   color: white;
   text-decoration: none;
   padding: 10px 14px;
-  border-radius: 10px;
+  border-radius: 12px;
   font-weight: bold;
   margin-top: 10px;
   margin-right: 8px;
@@ -243,8 +303,8 @@ button.ver {
 
 pre {
   white-space: pre-wrap;
-  background: #f3f7fd;
-  border-radius: 12px;
+  background: #f8f4ee;
+  border-radius: 14px;
   padding: 12px;
   overflow: auto;
   border: 1px solid var(--border);
@@ -255,100 +315,144 @@ pre {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  background: #e0f2fe;
-  color: #0c4a6e;
+  background: #efe7db;
+  color: #6d5036;
   padding: 8px 12px;
   border-radius: 999px;
   font-size: 13px;
   font-weight: bold;
   margin-top: 10px;
   margin-right: 8px;
-  border: 1px solid #bae6fd;
+  border: 1px solid #e3d3c1;
 }
 
 .ayuda {
   margin-top: 8px;
   font-size: 13px;
   color: var(--muted);
-  background: #f8fbff;
+  background: #faf8f4;
   border: 1px dashed var(--border);
-  border-radius: 10px;
+  border-radius: 12px;
   padding: 10px 12px;
+  line-height: 1.45;
+}
+
+.section-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.badge-soft {
+  display: inline-block;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: #efe6ff;
+  color: var(--primary-2);
+  font-size: 12px;
+  font-weight: bold;
 }
 
 @media (min-width: 900px) {
-  .topbar { grid-template-columns: 0.95fr 1.35fr; }
+  .topbar {
+    grid-template-columns: 0.95fr 1.35fr;
+  }
 }
 </style>
 </head>
 
 <body>
 
-<h1>Panel del Profesor</h1>
-<div class="subtitulo">Panel visual para crear módulos y clases con hasta 5 links y varios documentos por clase.</div>
-
-<div class="card">
-  <h2>Resumen general</h2>
-  <div class="stats">
-    <div class="stat"><strong id="statModulos">0</strong>Módulos</div>
-    <div class="stat"><strong id="statClases">0</strong>Clases</div>
-    <div class="stat"><strong id="statEstudiantes">0</strong>Estudiantes</div>
+<div class="header-wrap">
+  <div class="logo-bar">
+    <div class="logo-box">C</div>
+    <div class="logo-text">
+      <strong>Chambari Academy</strong>
+      <span>Panel integrado del profesor</span>
+    </div>
   </div>
-  <button class="secundario" onclick="cargarTodo()">Actualizar panel</button>
+
+  <h1>Panel del Profesor</h1>
+  <div class="subtitulo">
+    Panel visual para crear módulos y clases con hasta 5 links y varios documentos por clase.
+  </div>
 </div>
 
-<div class="topbar">
-  <div class="card">
-    <h3>Crear módulo</h3>
-    <input id="moduloTitulo" placeholder="Título del módulo">
-    <textarea id="moduloDesc" placeholder="Descripción del módulo"></textarea>
-    <button onclick="crearModulo()">Guardar módulo</button>
-    <div id="estadoModulo"></div>
-  </div>
+<div class="main">
 
   <div class="card">
-    <h3>Crear clase</h3>
-
-    <label>Selecciona el módulo</label>
-    <select id="claseModulo">
-      <option value="">Cargando módulos...</option>
-    </select>
-
-    <input id="claseTitulo" placeholder="Título de la clase">
-    <textarea id="claseDesc" placeholder="Descripción corta"></textarea>
-    <textarea id="claseContenido" placeholder="Contenido, explicación o guía de la clase"></textarea>
-    <input id="claseYoutube" placeholder="Video principal o YouTube (opcional)">
-
-    <div class="bloque">
-      <h4>Links adicionales</h4>
-      <input id="link1" placeholder="Link 1">
-      <input id="link2" placeholder="Link 2">
-      <input id="link3" placeholder="Link 3">
-      <input id="link4" placeholder="Link 4">
-      <input id="link5" placeholder="Link 5">
-      <div class="ayuda">Puedes poner hasta 5 links: videos, lecturas, ejercicios, canciones, documentos en Drive o páginas externas.</div>
+    <div class="section-title">
+      <h2>Resumen general</h2>
+      <span class="badge-soft">Método Sinapsis listo para integrar en alumno</span>
     </div>
 
-    <div class="bloque">
-      <h4>Documentos de la clase</h4>
-      <input type="file" id="fileInput" multiple>
-      <div class="ayuda">Puedes subir varios documentos en una sola clase. El sistema los intentará cargar uno por uno.</div>
-      <div id="listaDocsSeleccionados"></div>
+    <div class="stats">
+      <div class="stat"><strong id="statModulos">0</strong>Módulos</div>
+      <div class="stat"><strong id="statClases">0</strong>Clases</div>
+      <div class="stat"><strong id="statEstudiantes">0</strong>Estudiantes</div>
     </div>
-
-    <button onclick="crearClase()">Guardar clase</button>
-    <div id="estadoClase"></div>
+    <button class="secundario" onclick="cargarTodo()">Actualizar panel</button>
   </div>
-</div>
 
-<div class="card">
-  <h2>Módulos y clases</h2>
-  <div id="listaModulos"></div>
-</div>
+  <div class="topbar">
+    <div class="card">
+      <h3>Crear módulo</h3>
+      <input id="moduloTitulo" placeholder="Título del módulo">
+      <textarea id="moduloDesc" placeholder="Descripción del módulo"></textarea>
+      <button onclick="crearModulo()">Guardar módulo</button>
+      <div id="estadoModulo"></div>
+    </div>
 
-<div class="card">
-  <h2>Estudiantes registrados</h2>
-  <div id="listaEstudiantes"></div>
+    <div class="card">
+      <h3>Crear clase</h3>
+
+      <label>Selecciona el módulo</label>
+      <select id="claseModulo">
+        <option value="">Cargando módulos...</option>
+      </select>
+
+      <input id="claseTitulo" placeholder="Título de la clase">
+      <textarea id="claseDesc" placeholder="Descripción corta"></textarea>
+      <textarea id="claseContenido" placeholder="Contenido, explicación o guía de la clase"></textarea>
+      <input id="claseYoutube" placeholder="Video principal o YouTube (opcional)">
+
+      <div class="bloque">
+        <h4>Links adicionales</h4>
+        <input id="link1" placeholder="Link 1">
+        <input id="link2" placeholder="Link 2">
+        <input id="link3" placeholder="Link 3">
+        <input id="link4" placeholder="Link 4">
+        <input id="link5" placeholder="Link 5">
+        <div class="ayuda">
+          Puedes poner hasta 5 links: videos, lecturas, ejercicios, documentos en Drive o páginas externas.
+        </div>
+      </div>
+
+      <div class="bloque">
+        <h4>Documentos de la clase</h4>
+        <input type="file" id="fileInput" multiple>
+        <div class="ayuda">
+          Puedes subir varios documentos en una sola clase. El sistema los cargará uno por uno.
+        </div>
+        <div id="listaDocsSeleccionados"></div>
+      </div>
+
+      <button onclick="crearClase()">Guardar clase</button>
+      <div id="estadoClase"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Módulos y clases</h2>
+    <div id="listaModulos"></div>
+  </div>
+
+  <div class="card">
+    <h2>Estudiantes registrados</h2>
+    <div id="listaEstudiantes"></div>
+  </div>
+
 </div>
 
 <div class="modal" id="modalClase">
@@ -416,6 +520,12 @@ function parseJSONSeguro(valor, fallback = []) {
   } catch {
     return fallback;
   }
+}
+
+function normalizarDocumentoUrl(url) {
+  if (!url) return "";
+  if (String(url).startsWith("http://") || String(url).startsWith("https://")) return url;
+  return API + url;
 }
 
 function renderDocsSeleccionados() {
@@ -558,7 +668,14 @@ function renderModulos(modulosConClases) {
         const estadoClase = clase.estado || clase.status || "draft";
         const links = [clase.link_1, clase.link_2, clase.link_3, clase.link_4, clase.link_5].filter(Boolean);
 
-        const docs = parseJSONSeguro(clase.document_urls || clase.documents_json || "[]", []);
+        const docs = parseJSONSeguro(
+          clase.document_urls ||
+          clase.documents_json ||
+          clase.documentos_json ||
+          "[]",
+          []
+        );
+
         const docsCount = docs.length || (clase.file_url ? 1 : 0);
 
         return `
@@ -631,4 +748,268 @@ async function crearClase() {
   const youtube_url = limpiarUrl(document.getElementById("claseYoutube").value);
 
   const link_1 = limpiarUrl(document.getElementById("link1").value);
-  const link_2 = limpiarUrl(document.getElement
+  const link_2 = limpiarUrl(document.getElementById("link2").value);
+  const link_3 = limpiarUrl(document.getElementById("link3").value);
+  const link_4 = limpiarUrl(document.getElementById("link4").value);
+  const link_5 = limpiarUrl(document.getElementById("link5").value);
+
+  const fileInput = document.getElementById("fileInput");
+  const archivos = Array.from(fileInput.files || []);
+
+  if (!module_id) {
+    ponerEstado("estadoClase", "Debes seleccionar un módulo.", "error");
+    return;
+  }
+
+  if (!titulo) {
+    ponerEstado("estadoClase", "Debes escribir el título de la clase.", "error");
+    return;
+  }
+
+  try {
+    ponerEstado("estadoClase", "Guardando clase y subiendo documentos...");
+
+    let file_url = "";
+    let file_name = "";
+    let docsSubidos = [];
+
+    if (archivos.length > 0) {
+      docsSubidos = await subirMultiplesArchivos(archivos);
+      if (docsSubidos.length > 0) {
+        file_url = docsSubidos[0].url || "";
+        file_name = docsSubidos[0].name || "";
+      }
+    }
+
+    const documents_json = JSON.stringify(docsSubidos);
+
+    const res = await fetch(API + "/api/lessons", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        module_id,
+        titulo,
+        title: titulo,
+        descripcion,
+        description: descripcion,
+        contenido,
+        text_content: contenido,
+        youtube_url,
+        link_1,
+        link_2,
+        link_3,
+        link_4,
+        link_5,
+        file_url,
+        file_name,
+        document_urls: documents_json,
+        documents_json: documents_json,
+        documentos_json: documents_json,
+        estado: "borrador",
+        status: "draft"
+      })
+    });
+
+    const data = await leerJSON(res);
+
+    [
+      "claseTitulo",
+      "claseDesc",
+      "claseContenido",
+      "claseYoutube",
+      "link1",
+      "link2",
+      "link3",
+      "link4",
+      "link5"
+    ].forEach(id => document.getElementById(id).value = "");
+
+    document.getElementById("fileInput").value = "";
+    document.getElementById("listaDocsSeleccionados").innerHTML = "";
+
+    ponerEstado(
+      "estadoClase",
+      `Clase creada correctamente: ${escapar(data.lesson?.titulo || data.lesson?.title || "")}`
+    );
+
+    await cargarTodo();
+  } catch (err) {
+    ponerEstado("estadoClase", "Error creando clase: " + err.message, "error");
+  }
+}
+
+async function publicarClase(id) {
+  try {
+    const res = await fetch(API + "/api/lessons/" + id + "/publish", { method: "PUT" });
+    await leerJSON(res);
+    await cargarTodo();
+  } catch (err) {
+    alert("Error publicando clase: " + err.message);
+  }
+}
+
+async function archivarClase(id) {
+  try {
+    const res = await fetch(API + "/api/lessons/" + id + "/archive", { method: "PUT" });
+    await leerJSON(res);
+    await cargarTodo();
+  } catch (err) {
+    alert("Error archivando clase: " + err.message);
+  }
+}
+
+async function eliminarClase(id, titulo) {
+  const ok = confirm(`¿Seguro que quieres eliminar la clase "${titulo}"?`);
+  if (!ok) return;
+
+  try {
+    const res = await fetch(API + "/api/lessons/" + id, { method: "DELETE" });
+    await leerJSON(res);
+    await cargarTodo();
+    alert("Clase eliminada correctamente.");
+  } catch (err) {
+    alert("Error eliminando clase: " + err.message);
+  }
+}
+
+async function eliminarModulo(id, titulo) {
+  const ok = confirm(`¿Seguro que quieres eliminar el módulo "${titulo}" y todas sus clases?`);
+  if (!ok) return;
+
+  try {
+    const res = await fetch(API + "/api/modules/" + id, { method: "DELETE" });
+    await leerJSON(res);
+    await cargarTodo();
+    alert("Módulo eliminado correctamente.");
+  } catch (err) {
+    alert("Error eliminando módulo: " + err.message);
+  }
+}
+
+function renderLinksClase(clase) {
+  const links = [
+    clase.link_1,
+    clase.link_2,
+    clase.link_3,
+    clase.link_4,
+    clase.link_5
+  ].filter(Boolean);
+
+  if (!links.length) return "";
+
+  return `
+    <div class="bloque">
+      <h4>Links adicionales</h4>
+      ${links.map((l, i) => `
+        <p><a class="link-btn" href="${limpiarUrl(l)}" target="_blank" rel="noopener noreferrer">Abrir recurso ${i + 1}</a></p>
+      `).join("")}
+    </div>
+  `;
+}
+
+function renderDocumentosClase(clase) {
+  const docs = parseJSONSeguro(
+    clase.document_urls ||
+    clase.documents_json ||
+    clase.documentos_json ||
+    "[]",
+    []
+  );
+
+  const docsNormalizados = docs.map(d => {
+    if (typeof d === "string") {
+      return { url: d, name: "Documento" };
+    }
+    return {
+      url: d.url || d.file_url || "",
+      name: d.name || d.file_name || "Documento"
+    };
+  }).filter(d => d.url);
+
+  if (!docsNormalizados.length && !clase.file_url) return "";
+
+  let html = `<div class="bloque"><h4>Documentos</h4>`;
+
+  if (docsNormalizados.length) {
+    html += docsNormalizados.map((doc, i) => `
+      <p>
+        <a class="link-btn" href="${normalizarDocumentoUrl(doc.url)}" target="_blank" rel="noopener noreferrer">
+          Abrir documento ${i + 1}${doc.name ? " - " + escapar(doc.name) : ""}
+        </a>
+      </p>
+    `).join("");
+  } else if (clase.file_url) {
+    html += `
+      <p>
+        <a class="link-btn" href="${normalizarDocumentoUrl(clase.file_url)}" target="_blank" rel="noopener noreferrer">
+          Abrir archivo${clase.file_name ? " - " + escapar(clase.file_name) : ""}
+        </a>
+      </p>
+    `;
+  }
+
+  html += `</div>`;
+  return html;
+}
+
+async function verClase(id) {
+  try {
+    const res = await fetch(API + "/api/lesson/" + id);
+    const data = await leerJSON(res);
+
+    const clase = data.lesson || {};
+    const titulo = clase.titulo || clase.title || "Sin título";
+    const descripcion = clase.descripcion || clase.description || "";
+    const contenido = clase.contenido || clase.text_content || "";
+    const estado = clase.estado || clase.status || "draft";
+    const modulo = clase.module_titulo || clase.module_title || "";
+    const youtube = clase.youtube_url || "";
+
+    document.getElementById("modalTituloClase").textContent = titulo;
+
+    document.getElementById("modalContenidoClase").innerHTML = `
+      <div class="item">
+        <div class="small"><strong>Módulo:</strong> ${escapar(modulo)}</div>
+        <div class="small"><strong>Estado:</strong> ${escapar(estadoBonito(estado))}</div>
+
+        ${descripcion ? `<p><strong>Descripción:</strong><br>${escapar(descripcion)}</p>` : ""}
+        ${contenido ? `<p><strong>Contenido:</strong></p><pre>${escapar(contenido)}</pre>` : ""}
+        ${youtube ? `<p><a class="link-btn" href="${limpiarUrl(youtube)}" target="_blank" rel="noopener noreferrer">Abrir video principal</a></p>` : ""}
+
+        ${renderLinksClase(clase)}
+        ${renderDocumentosClase(clase)}
+      </div>
+    `;
+
+    document.getElementById("modalClase").style.display = "flex";
+  } catch (err) {
+    alert("Error revisando clase: " + err.message);
+  }
+}
+
+function cerrarModalClase() {
+  document.getElementById("modalClase").style.display = "none";
+}
+
+async function cargarTodo() {
+  try {
+    const [modulosDashboard, modulosBase, estudiantes] = await Promise.all([
+      cargarDashboard(),
+      cargarModulos(),
+      cargarStudents()
+    ]);
+
+    llenarSelectModulos(modulosBase);
+    renderModulos(modulosDashboard);
+    renderEstudiantes(estudiantes);
+  } catch (err) {
+    document.getElementById("listaModulos").innerHTML =
+      `<div class="item">Error cargando panel: ${escapar(err.message)}</div>`;
+  }
+}
+
+cargarTodo();
+</script>
+
+</body>
+</html>
