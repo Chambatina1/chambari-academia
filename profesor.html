@@ -285,9 +285,50 @@ button.mini {
   line-height: 1.65;
 }
 
+.embed-box {
+  margin-top: 12px;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  overflow: hidden;
+  background: #fff;
+  box-shadow: var(--shadow);
+}
+
+.embed-head {
+  padding: 10px 12px;
+  background: #f6f1e8;
+  border-bottom: 1px solid var(--border);
+  color: var(--primary-2);
+  font-weight: bold;
+}
+
+.embed-frame {
+  width: 100%;
+  height: 640px;
+  border: 0;
+  display: block;
+  background: #fff;
+}
+
+.embed-actions {
+  padding: 10px 12px;
+  border-top: 1px solid var(--border);
+  background: #fcfaf7;
+}
+
+.embed-actions a {
+  color: var(--primary-2);
+  text-decoration: none;
+  font-weight: bold;
+}
+
 @media (max-width: 1100px) {
   .grid-2, .grid-3 {
     grid-template-columns: 1fr;
+  }
+
+  .embed-frame {
+    height: 520px;
   }
 }
 </style>
@@ -467,6 +508,10 @@ function esc(texto) {
     .replaceAll(">", "&gt;")
     .replaceAll('"', "&quot;")
     .replaceAll("'", "&#39;");
+}
+
+function escAttr(texto) {
+  return esc(texto);
 }
 
 function normalizarModuloNombre(m) {
@@ -854,6 +899,59 @@ function limpiarContenidoVisible(contenido) {
   return texto.slice(0, pos).trim();
 }
 
+function normalizarUrl(url) {
+  return String(url || "").trim();
+}
+
+function esLinkEjerciciosEmbebible(url) {
+  const limpio = normalizarUrl(url).toLowerCase();
+  return limpio.startsWith("https://chambatina1.github.io/ejercicios");
+}
+
+function construirBloqueLink(link) {
+  const url = normalizarUrl(link);
+  if (!url) return "";
+
+  if (esLinkEjerciciosEmbebible(url)) {
+    return `
+      <div class="embed-box">
+        <div class="embed-head">Practica ahora</div>
+        <iframe
+          class="embed-frame"
+          src="${escAttr(url)}"
+          loading="lazy"
+          referrerpolicy="strict-origin-when-cross-origin"
+          allowfullscreen
+          title="Ejercicios interactivos Chambari">
+        </iframe>
+        <div class="embed-actions">
+          <a href="${escAttr(url)}" target="_blank" rel="noopener noreferrer">
+            Abrir ejercicios en pantalla completa
+          </a>
+        </div>
+      </div>
+    `;
+  }
+
+  return `<a href="${escAttr(url)}" target="_blank" rel="noopener noreferrer">${esc(url)}</a>`;
+}
+
+function renderLinksClase(links) {
+  const html = (links || [])
+    .filter(Boolean)
+    .map(construirBloqueLink)
+    .join("");
+
+  if (!html) return "";
+
+  return `
+    <div class="link-list">
+      <strong>Links:</strong>
+      ${html}
+    </div>
+  `;
+}
+
 async function cargarEstudiantes() {
   try {
     const res = await fetch(`${API}/api/students`);
@@ -974,12 +1072,7 @@ async function cargarTodo() {
                     </div>
                   ` : ""}
 
-                  ${links.length ? `
-                    <div class="link-list">
-                      <strong>Links:</strong>
-                      ${links.map(link => `<a href="${esc(link)}" target="_blank">${esc(link)}</a>`).join("")}
-                    </div>
-                  ` : ""}
+                  ${renderLinksClase(links)}
 
                   ${docs.length ? `
                     <div class="doc-list">
@@ -987,7 +1080,7 @@ async function cargarTodo() {
                       ${docs.map(doc => {
                         const name = doc.name || "Documento";
                         const url = doc.viewerUrl || doc.viewer_url || doc.url || doc.directUrl || "#";
-                        return `<a href="${esc(url)}" target="_blank">${esc(name)}</a>`;
+                        return `<a href="${escAttr(url)}" target="_blank" rel="noopener noreferrer">${esc(name)}</a>`;
                       }).join("")}
                     </div>
                   ` : ""}
