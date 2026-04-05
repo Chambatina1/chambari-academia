@@ -5,10 +5,15 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Chambari - Panel Profesor</title>
 
-<link rel="icon" type="image/jpeg" href="./CHAMBARI.jpeg">
-<link rel="apple-touch-icon" href="./CHAMBARI.jpeg">
-<link rel="manifest" href="./manifest.json">
+<link rel="icon" type="image/jpeg" href="https://chambatina1.github.io/chambari-academia/CHAMBARI.jpeg?v=20260405">
+<link rel="apple-touch-icon" href="https://chambatina1.github.io/chambari-academia/CHAMBARI.jpeg?v=20260405">
+<link rel="manifest" href="https://chambatina1.github.io/chambari-academia/manifest.json?v=20260405">
+
 <meta name="theme-color" content="#7b5ea7">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Profesor">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
 
 <style>
 :root{
@@ -255,6 +260,17 @@ button.mini {
   margin-top: 4px;
 }
 
+.version-badge{
+  background:#62458f;
+  color:#fff;
+  padding:8px 12px;
+  border-radius:12px;
+  font-size:12px;
+  display:inline-block;
+  margin-bottom:12px;
+  box-shadow: var(--shadow);
+}
+
 @media (max-width: 1100px) {
   .grid-2, .grid-3 {
     grid-template-columns: 1fr;
@@ -265,9 +281,11 @@ button.mini {
 <body>
 
 <div class="header-wrap">
+  <div class="version-badge">Profesor build 05-04-26</div>
+
   <div class="logo-bar">
     <div class="logo-box">
-      <img src="./CHAMBARI.jpeg" alt="Chambari">
+      <img src="https://chambatina1.github.io/chambari-academia/CHAMBARI.jpeg?v=20260405" alt="Chambari">
     </div>
     <div class="logo-text">
       <strong>Chambari Academy</strong>
@@ -849,6 +867,12 @@ async function cargarTodo() {
     mostrarEstado("estadoGeneral", "Error conectando con el servidor.", "error");
   }
 }
+
+(function diagnosticoHomeScreen() {
+  const standalone = window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone === true;
+  console.log("Modo app:", standalone);
+  console.log("URL actual:", window.location.href);
+})();
 
 renderEjerciciosTemp();
 cargarTodo();
