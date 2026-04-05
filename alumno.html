@@ -44,7 +44,7 @@
     }
 
     .main {
-      max-width: 1250px;
+      max-width: 1220px;
       margin: 0 auto;
     }
 
@@ -53,7 +53,6 @@
       align-items: center;
       gap: 14px;
       margin-bottom: 16px;
-      flex-wrap: wrap;
     }
 
     .logo-box {
@@ -81,26 +80,6 @@
       font-size: 13px;
     }
 
-    .user-chip {
-      margin-left: auto;
-      display: none;
-      align-items: center;
-      gap: 10px;
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 999px;
-      padding: 8px 12px;
-      box-shadow: var(--shadow);
-    }
-
-    .user-chip button {
-      margin: 0;
-      width: auto;
-      padding: 8px 12px;
-      border-radius: 999px;
-      font-size: 13px;
-    }
-
     .hero {
       background: var(--card);
       border: 1px solid var(--border);
@@ -122,17 +101,6 @@
       line-height: 1.5;
     }
 
-    .layout {
-      display: grid;
-      gap: 18px;
-    }
-
-    @media (min-width: 980px) {
-      .layout {
-        grid-template-columns: 360px 1fr;
-      }
-    }
-
     .card {
       background: var(--card);
       border: 1px solid var(--border);
@@ -141,46 +109,42 @@
       padding: 20px;
     }
 
-    .login-wrap {
+    .grid-top {
       display: grid;
-      gap: 14px;
-      margin-bottom: 18px;
+      gap: 18px;
+      margin-bottom: 20px;
     }
 
-    .tabs {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 8px;
-      background: #f4efe7;
-      border-radius: 14px;
-      padding: 6px;
+    @media (min-width: 920px) {
+      .grid-top {
+        grid-template-columns: 340px 1fr;
+      }
     }
 
-    .tab-btn {
-      margin: 0;
-      width: 100%;
-      background: transparent;
-      color: var(--muted);
-      border-radius: 10px;
-      padding: 10px;
-    }
-
-    .tab-btn.active {
-      background: var(--primary);
-      color: white;
-    }
-
-    .panel-form {
-      display: none;
-    }
-
-    .panel-form.active {
-      display: block;
-    }
-
-    h2, h3, h4 {
+    h2, h3 {
       margin-top: 0;
       color: var(--primary-2);
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+
+    .stat {
+      background: linear-gradient(180deg, #fbf8f4 0%, #ffffff 100%);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 16px;
+      text-align: center;
+    }
+
+    .stat strong {
+      display: block;
+      font-size: 26px;
+      color: var(--primary);
+      margin-bottom: 4px;
     }
 
     label {
@@ -188,10 +152,10 @@
       font-size: 14px;
       color: var(--muted);
       margin-bottom: 6px;
-      margin-top: 10px;
+      margin-top: 12px;
     }
 
-    input, select, textarea {
+    input, select {
       width: 100%;
       padding: 12px;
       border-radius: 12px;
@@ -202,7 +166,7 @@
       outline: none;
     }
 
-    input:focus, select:focus, textarea:focus {
+    input:focus, select:focus {
       border-color: var(--primary);
       box-shadow: 0 0 0 3px rgba(123, 94, 167, 0.10);
     }
@@ -234,26 +198,18 @@
       background: var(--success);
     }
 
-    .stats {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 12px;
-      margin-bottom: 12px;
+    button.logout {
+      background: var(--danger);
     }
 
-    .stat {
-      background: linear-gradient(180deg, #fbf8f4 0%, #ffffff 100%);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 16px;
-      text-align: center;
-    }
-
-    .stat strong {
-      display: block;
-      font-size: 26px;
-      color: var(--primary);
-      margin-bottom: 4px;
+    .badge {
+      display: inline-block;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: #efe6ff;
+      color: var(--primary-2);
+      font-size: 12px;
+      font-weight: bold;
     }
 
     .estado {
@@ -263,7 +219,7 @@
       background: #faf8f4;
       border-left: 4px solid var(--success);
       color: var(--text);
-      line-height: 1.5;
+      line-height: 1.45;
     }
 
     .estado.error {
@@ -354,16 +310,6 @@
       font-size: 28px;
     }
 
-    .badge {
-      display: inline-block;
-      padding: 6px 10px;
-      border-radius: 999px;
-      background: #efe6ff;
-      color: var(--primary-2);
-      font-size: 12px;
-      font-weight: bold;
-    }
-
     .lesson-desc {
       color: var(--muted);
       margin-bottom: 18px;
@@ -381,6 +327,7 @@
 
     .docs-embed-zone {
       margin-top: 18px;
+      margin-bottom: 18px;
     }
 
     .doc-viewer-card {
@@ -420,9 +367,21 @@
 
     .doc-frame {
       width: 100%;
-      height: 520px;
+      height: 560px;
       border: none;
       display: block;
+      background: white;
+    }
+
+    .doc-image {
+      max-width: 100%;
+      display: block;
+      margin: 0 auto;
+      background: white;
+    }
+
+    .doc-media-wrap {
+      padding: 18px;
       background: white;
     }
 
@@ -448,6 +407,10 @@
       border-radius: 14px;
       padding: 14px;
       flex-wrap: wrap;
+    }
+
+    .recurso strong {
+      color: var(--text);
     }
 
     .link-btn {
@@ -486,8 +449,29 @@
       border-color: var(--primary);
     }
 
+    .footer-note {
+      text-align: center;
+      color: var(--muted);
+      font-size: 13px;
+      margin-top: 18px;
+    }
+
     .hidden {
       display: none !important;
+    }
+
+    .top-user {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+      margin-bottom: 16px;
+    }
+
+    .login-wrap {
+      max-width: 520px;
+      margin: 40px auto 0 auto;
     }
   </style>
 </head>
@@ -495,66 +479,57 @@
 
 <div class="main">
 
-  <div class="logo-bar">
-    <div class="logo-box">C</div>
-    <div class="logo-text">
-      <strong>Chambari Academy</strong>
-      <span>Experiencia del alumno</span>
-    </div>
-
-    <div class="user-chip" id="userChip">
-      <div class="small" id="userChipText">Alumno</div>
-      <button class="secundario" onclick="cerrarSesion()">Salir</button>
-    </div>
-  </div>
-
-  <div class="hero">
-    <h1>Continúa tu clase</h1>
-    <p>
-      Entra con tu cuenta, abre tu módulo y sigue aprendiendo con video, documentos y práctica en una sola pantalla.
-    </p>
-  </div>
-
-  <div class="layout">
-
-    <div>
-      <div class="card login-wrap" id="authCard">
-        <h3>Acceso del estudiante</h3>
-
-        <div class="tabs">
-          <button id="tabLogin" class="tab-btn active" onclick="mostrarTab('login')">Entrar</button>
-          <button id="tabRegister" class="tab-btn" onclick="mostrarTab('register')">Registrarse</button>
-        </div>
-
-        <div id="loginPanel" class="panel-form active">
-          <label>Correo</label>
-          <input id="loginEmail" type="email" placeholder="Tu correo" />
-
-          <label>Contraseña</label>
-          <input id="loginPassword" type="password" placeholder="Tu contraseña" />
-
-          <button onclick="loginAlumno()">Entrar</button>
-        </div>
-
-        <div id="registerPanel" class="panel-form">
-          <label>Nombre</label>
-          <input id="regNombre" type="text" placeholder="Tu nombre" />
-
-          <label>Correo</label>
-          <input id="regEmail" type="email" placeholder="Tu correo" />
-
-          <label>Contraseña</label>
-          <input id="regPassword" type="password" placeholder="Crea tu contraseña" />
-
-          <button onclick="registrarAlumno()">Crear cuenta</button>
-        </div>
-
-        <div id="estadoAuth"></div>
+  <div id="loginScreen" class="login-wrap">
+    <div class="logo-bar">
+      <div class="logo-box">C</div>
+      <div class="logo-text">
+        <strong>Chambari Academy</strong>
+        <span>Acceso del alumno</span>
       </div>
+    </div>
 
+    <div class="card">
+      <h2>Iniciar sesión</h2>
+      <div class="small">Entra con tu correo y contraseña para ver tus clases.</div>
+
+      <label for="loginEmail">Correo</label>
+      <input id="loginEmail" type="email" placeholder="tucorreo@email.com">
+
+      <label for="loginPassword">Contraseña</label>
+      <input id="loginPassword" type="password" placeholder="Tu contraseña">
+
+      <button onclick="loginAlumno()">Entrar</button>
+      <button class="secundario" onclick="registrarAlumno()">Registrarme</button>
+
+      <div id="estadoLogin"></div>
+    </div>
+  </div>
+
+  <div id="appScreen" class="hidden">
+    <div class="logo-bar">
+      <div class="logo-box">C</div>
+      <div class="logo-text">
+        <strong>Chambari Academy</strong>
+        <span>Experiencia del alumno</span>
+      </div>
+    </div>
+
+    <div class="hero">
+      <div class="top-user">
+        <div>
+          <h1>Continúa tu clase</h1>
+          <p>Aprende de forma clara, visual y práctica. El video va arriba, los documentos debajo y luego la explicación de la clase.</p>
+        </div>
+        <div>
+          <span class="badge" id="studentBadge">Alumno</span>
+        </div>
+      </div>
+      <button class="logout" onclick="cerrarSesion()">Cerrar sesión</button>
+    </div>
+
+    <div class="grid-top">
       <div class="card">
         <h3>Tu avance</h3>
-
         <div class="stats">
           <div class="stat">
             <strong id="statModulos">0</strong>
@@ -581,33 +556,36 @@
         <div id="estadoAlumno"></div>
         <div class="modulo-lista" id="listaModulos"></div>
       </div>
-    </div>
 
-    <div class="card">
-      <div id="zonaClase">
-        <div class="video-wrap">
-          <div class="video-placeholder">
-            Inicia sesión y selecciona una clase para comenzar.
+      <div class="card">
+        <div id="zonaClase">
+          <div class="video-wrap">
+            <div class="video-placeholder">
+              Selecciona un módulo o una clase para comenzar.
+            </div>
           </div>
-        </div>
 
-        <div class="lesson-header">
-          <h2 class="lesson-title">Bienvenido</h2>
-          <span class="badge">Alumno</span>
-        </div>
+          <div class="lesson-header">
+            <h2 class="lesson-title">Bienvenido</h2>
+            <span class="badge">Alumno</span>
+          </div>
 
-        <div class="lesson-desc">
-          El video se muestra arriba, los documentos debajo y luego el contenido de la clase.
-        </div>
+          <div class="lesson-desc">
+            Aquí verás el video arriba, los documentos debajo y después el contenido de la clase.
+          </div>
 
-        <div class="contenido-box">
-          Cuando entres con tu cuenta y el profesor publique clases, todo aparecerá aquí.
-        </div>
+          <div class="contenido-box">
+            Cuando el profesor publique clases, aparecerán aquí.
+          </div>
 
-        <div class="lesson-mini-list" id="listaClasesMini"></div>
+          <div class="lesson-mini-list" id="listaClasesMini"></div>
+        </div>
       </div>
     </div>
 
+    <div class="footer-note">
+      Chambari Academy · interfaz alumno
+    </div>
   </div>
 </div>
 
@@ -617,8 +595,7 @@
   let modulosGlobal = [];
   let moduloActual = null;
   let claseActualIndex = 0;
-  let alumnoActual = null;
-  let progresoActual = [];
+  let studentActual = null;
 
   function escapar(texto) {
     return String(texto || "")
@@ -629,13 +606,13 @@
       .replace(/'/g, "&#39;");
   }
 
-  function ponerEstadoAlumno(texto, tipo = "ok") {
-    document.getElementById("estadoAlumno").innerHTML =
+  function ponerEstadoLogin(texto, tipo = "ok") {
+    document.getElementById("estadoLogin").innerHTML =
       '<div class="estado ' + (tipo === "error" ? "error" : "") + '">' + texto + '</div>';
   }
 
-  function ponerEstadoAuth(texto, tipo = "ok") {
-    document.getElementById("estadoAuth").innerHTML =
+  function ponerEstadoAlumno(texto, tipo = "ok") {
+    document.getElementById("estadoAlumno").innerHTML =
       '<div class="estado ' + (tipo === "error" ? "error" : "") + '">' + texto + '</div>';
   }
 
@@ -647,180 +624,10 @@
     } catch {
       throw new Error("Respuesta no válida del servidor: " + texto);
     }
-
     if (!res.ok || !data.ok) {
       throw new Error(data?.error || ("Error HTTP " + res.status));
     }
-
     return data;
-  }
-
-  function mostrarTab(tab) {
-    document.getElementById("tabLogin").classList.remove("active");
-    document.getElementById("tabRegister").classList.remove("active");
-    document.getElementById("loginPanel").classList.remove("active");
-    document.getElementById("registerPanel").classList.remove("active");
-
-    if (tab === "login") {
-      document.getElementById("tabLogin").classList.add("active");
-      document.getElementById("loginPanel").classList.add("active");
-    } else {
-      document.getElementById("tabRegister").classList.add("active");
-      document.getElementById("registerPanel").classList.add("active");
-    }
-  }
-
-  function guardarSesionAlumno(student) {
-    localStorage.setItem("chambari_student", JSON.stringify(student));
-  }
-
-  function leerSesionAlumno() {
-    try {
-      const raw = localStorage.getItem("chambari_student");
-      return raw ? JSON.parse(raw) : null;
-    } catch {
-      return null;
-    }
-  }
-
-  function cerrarSesion() {
-    localStorage.removeItem("chambari_student");
-    alumnoActual = null;
-    progresoActual = [];
-    document.getElementById("userChip").style.display = "none";
-    document.getElementById("authCard").classList.remove("hidden");
-    document.getElementById("selectorModulo").innerHTML = '<option value="">Inicia sesión primero</option>';
-    document.getElementById("listaModulos").innerHTML = "";
-    document.getElementById("statModulos").textContent = "0";
-    document.getElementById("statClases").textContent = "0";
-    document.getElementById("statProgreso").textContent = "0%";
-    document.getElementById("zonaClase").innerHTML = `
-      <div class="video-wrap">
-        <div class="video-placeholder">
-          Inicia sesión para ver tus clases.
-        </div>
-      </div>
-
-      <div class="lesson-header">
-        <h2 class="lesson-title">Sesión cerrada</h2>
-        <span class="badge">Alumno</span>
-      </div>
-
-      <div class="lesson-desc">
-        Entra nuevamente con tu cuenta.
-      </div>
-
-      <div class="contenido-box">
-        Tu contenido aparecerá aquí después de entrar.
-      </div>
-
-      <div class="lesson-mini-list" id="listaClasesMini"></div>
-    `;
-    ponerEstadoAuth("Sesión cerrada.");
-  }
-
-  function actualizarUIUsuario() {
-    if (!alumnoActual) {
-      document.getElementById("userChip").style.display = "none";
-      document.getElementById("authCard").classList.remove("hidden");
-      return;
-    }
-
-    document.getElementById("userChip").style.display = "flex";
-    document.getElementById("authCard").classList.add("hidden");
-    document.getElementById("userChipText").textContent =
-      (alumnoActual.nombre || "Alumno") + " · " + (alumnoActual.email || "");
-  }
-
-  async function registrarAlumno() {
-    try {
-      const nombre = document.getElementById("regNombre").value.trim();
-      const email = document.getElementById("regEmail").value.trim();
-      const password = document.getElementById("regPassword").value.trim();
-
-      const res = await fetch(API + "/api/register", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ nombre, email, password })
-      });
-
-      const data = await leerJSON(res);
-
-      document.getElementById("regNombre").value = "";
-      document.getElementById("regEmail").value = "";
-      document.getElementById("regPassword").value = "";
-
-      ponerEstadoAuth("Cuenta creada correctamente. Ahora entra con tu correo.");
-      mostrarTab("login");
-      document.getElementById("loginEmail").value = data.student?.email || email;
-    } catch (err) {
-      ponerEstadoAuth("Error en registro: " + err.message, "error");
-    }
-  }
-
-  async function loginAlumno() {
-    try {
-      const email = document.getElementById("loginEmail").value.trim();
-      const password = document.getElementById("loginPassword").value.trim();
-
-      const res = await fetch(API + "/api/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password })
-      });
-
-      const data = await leerJSON(res);
-
-      alumnoActual = data.student || null;
-      guardarSesionAlumno(alumnoActual);
-      actualizarUIUsuario();
-      ponerEstadoAuth("Acceso correcto. Cargando contenido...");
-      await cargarTodo();
-    } catch (err) {
-      ponerEstadoAuth("Error al entrar: " + err.message, "error");
-    }
-  }
-
-  async function cargarProgresoAlumno() {
-    if (!alumnoActual || !alumnoActual.id) {
-      progresoActual = [];
-      return;
-    }
-
-    try {
-      const res = await fetch(API + "/api/progress/" + alumnoActual.id);
-      const data = await leerJSON(res);
-      progresoActual = Array.isArray(data.progress) ? data.progress : [];
-    } catch {
-      progresoActual = [];
-    }
-  }
-
-  function progresoDeClase(lessonId) {
-    const item = progresoActual.find(p => Number(p.lesson_id) === Number(lessonId));
-    return item ? Number(item.progress_percent || 0) : 0;
-  }
-
-  function claseCompletada(lessonId) {
-    const item = progresoActual.find(p => Number(p.lesson_id) === Number(lessonId));
-    return !!(item && item.completed);
-  }
-
-  async function guardarProgresoClase(lessonId, percent, completed = false) {
-    if (!alumnoActual || !alumnoActual.id) return;
-
-    try {
-      await fetch(API + "/api/progress", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          student_id: alumnoActual.id,
-          lesson_id: lessonId,
-          progress_percent: percent,
-          completed: completed
-        })
-      });
-    } catch {}
   }
 
   function limpiarUrl(url) {
@@ -832,6 +639,200 @@
     } catch {
       return "";
     }
+  }
+
+  function parseJSONSeguro(valor, fallback = []) {
+    try {
+      if (!valor) return fallback;
+      if (Array.isArray(valor)) return valor;
+      const parsed = JSON.parse(valor);
+      return Array.isArray(parsed) ? parsed : fallback;
+    } catch {
+      return fallback;
+    }
+  }
+
+  function esPublicado(valor) {
+    const v = String(valor || "").toLowerCase().trim();
+    return v === "published" || v === "publicado";
+  }
+
+  function obtenerClasesPublicadas(modulo) {
+    const lessons = Array.isArray(modulo.lessons) ? modulo.lessons : [];
+    return lessons.filter(clase => esPublicado(clase.estado || clase.status || "draft"));
+  }
+
+  function guardarSesion(student) {
+    localStorage.setItem("chambari_student", JSON.stringify(student));
+  }
+
+  function leerSesion() {
+    try {
+      return JSON.parse(localStorage.getItem("chambari_student") || "null");
+    } catch {
+      return null;
+    }
+  }
+
+  function cerrarSesion() {
+    localStorage.removeItem("chambari_student");
+    localStorage.removeItem("chambari_last_module");
+    localStorage.removeItem("chambari_clases_vistas_ids_" + (studentActual?.id || ""));
+    studentActual = null;
+    document.getElementById("appScreen").classList.add("hidden");
+    document.getElementById("loginScreen").classList.remove("hidden");
+  }
+
+  async function loginAlumno() {
+    const email = document.getElementById("loginEmail").value.trim();
+    const password = document.getElementById("loginPassword").value.trim();
+
+    if (!email || !password) {
+      ponerEstadoLogin("Debes escribir correo y contraseña.", "error");
+      return;
+    }
+
+    try {
+      ponerEstadoLogin("Entrando...");
+      const res = await fetch(API + "/api/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password })
+      });
+
+      const data = await leerJSON(res);
+      studentActual = data.student;
+      guardarSesion(studentActual);
+      iniciarAppAlumno();
+    } catch (err) {
+      ponerEstadoLogin("Error de acceso: " + err.message, "error");
+    }
+  }
+
+  async function registrarAlumno() {
+    const email = document.getElementById("loginEmail").value.trim();
+    const password = document.getElementById("loginPassword").value.trim();
+
+    if (!email || !password) {
+      ponerEstadoLogin("Escribe nombre en el correo y tu contraseña para registrarte. Usa un correo válido.", "error");
+      return;
+    }
+
+    const nombre = email.split("@")[0] || "Alumno";
+
+    try {
+      ponerEstadoLogin("Registrando alumno...");
+      const res = await fetch(API + "/api/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ nombre, email, password })
+      });
+
+      await leerJSON(res);
+      ponerEstadoLogin("Registro correcto. Ahora pulsa Entrar.");
+    } catch (err) {
+      ponerEstadoLogin("Error de registro: " + err.message, "error");
+    }
+  }
+
+  function iniciarAppAlumno() {
+    document.getElementById("loginScreen").classList.add("hidden");
+    document.getElementById("appScreen").classList.remove("hidden");
+    document.getElementById("studentBadge").textContent =
+      studentActual?.nombre ? ("Alumno: " + studentActual.nombre) : "Alumno";
+    cargarTodo();
+  }
+
+  function calcularProgreso() {
+    let total = 0;
+    modulosGlobal.forEach(m => {
+      total += obtenerClasesPublicadas(m).length;
+    });
+
+    if (!total || !studentActual?.id) return 0;
+
+    const key = "chambari_clases_vistas_ids_" + studentActual.id;
+    const vistas = parseJSONSeguro(localStorage.getItem(key), []);
+    return Math.min(100, Math.round((vistas.length / total) * 100));
+  }
+
+  async function marcarClaseVista(idClase) {
+    if (!studentActual?.id || !idClase) return;
+
+    const key = "chambari_clases_vistas_ids_" + studentActual.id;
+    const actuales = parseJSONSeguro(localStorage.getItem(key), []);
+
+    if (!actuales.includes(idClase)) {
+      actuales.push(idClase);
+      localStorage.setItem(key, JSON.stringify(actuales));
+    }
+
+    const total = (() => {
+      let n = 0;
+      modulosGlobal.forEach(m => n += obtenerClasesPublicadas(m).length);
+      return n;
+    })();
+
+    const progressPercent = total ? Math.round((actuales.length / total) * 100) : 0;
+
+    try {
+      await fetch(API + "/api/progress", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          student_id: studentActual.id,
+          lesson_id: idClase,
+          completed: true,
+          progress_percent: progressPercent
+        })
+      });
+    } catch (e) {}
+
+    document.getElementById("statProgreso").textContent = progressPercent + "%";
+  }
+
+  function llenarSelectorModulos(modulos) {
+    const select = document.getElementById("selectorModulo");
+    select.innerHTML = "";
+
+    if (!modulos.length) {
+      select.innerHTML = '<option value="">No hay módulos publicados</option>';
+      return;
+    }
+
+    const base = document.createElement("option");
+    base.value = "";
+    base.textContent = "Selecciona un módulo";
+    select.appendChild(base);
+
+    modulos.forEach(modulo => {
+      const option = document.createElement("option");
+      option.value = modulo.id;
+      option.textContent = modulo.titulo || modulo.title || ("Módulo " + modulo.id);
+      select.appendChild(option);
+    });
+  }
+
+  function renderListaModulos(modulos) {
+    const cont = document.getElementById("listaModulos");
+    cont.innerHTML = "";
+
+    if (!modulos.length) {
+      cont.innerHTML = '<div class="modulo-item"><strong>No hay módulos publicados</strong><div class="small">Aún no hay contenido visible para alumno.</div></div>';
+      return;
+    }
+
+    modulos.forEach(modulo => {
+      const clases = obtenerClasesPublicadas(modulo);
+      const div = document.createElement("div");
+      div.className = "modulo-item" + (moduloActual && moduloActual.id === modulo.id ? " activo" : "");
+      div.innerHTML =
+        '<strong>' + escapar(modulo.titulo || modulo.title || "Sin título") + '</strong>' +
+        '<div class="small">' + escapar(modulo.descripcion || modulo.description || "Sin descripción") + '</div>' +
+        '<div class="small">Clases disponibles: ' + clases.length + '</div>';
+      div.onclick = () => seleccionarModulo(modulo.id);
+      cont.appendChild(div);
+    });
   }
 
   function convertirYoutubeEmbed(url) {
@@ -858,22 +859,430 @@
     }
   }
 
-  function parseJSONSeguro(valor, fallback = []) {
-    try {
-      if (!valor) return fallback;
-      if (Array.isArray(valor)) return valor;
-      return JSON.parse(valor);
-    } catch {
-      return fallback;
+  function renderVideo(url) {
+    if (!url) {
+      return `
+        <div class="video-wrap">
+          <div class="video-placeholder">
+            Esta clase no tiene video principal todavía.
+          </div>
+        </div>
+      `;
     }
+
+    const embed = convertirYoutubeEmbed(url);
+
+    if (embed.includes("youtube.com/embed/")) {
+      return `
+        <div class="video-wrap">
+          <iframe class="video-frame" src="${embed}" allowfullscreen></iframe>
+        </div>
+      `;
+    }
+
+    return `
+      <div class="video-wrap">
+        <div class="video-placeholder">
+          <div>
+            <p>El video está disponible en un enlace externo.</p>
+            <p><a class="link-btn" href="${embed}" target="_blank" rel="noopener noreferrer">Abrir video</a></p>
+          </div>
+        </div>
+      </div>
+    `;
   }
 
-  function normalizarDocumentoUrl(url) {
+  function buildViewerUrlFromAny(url) {
     if (!url) return "";
 
-    if (String(url).startsWith("http://") || String(url).startsWith("https://")) {
-      const parts = String(url).split("/files/");
+    const raw = String(url).trim();
+
+    if (raw.startsWith("http://") || raw.startsWith("https://")) {
+      const parts = raw.split("/files/");
       if (parts.length > 1) {
         return API + "/viewer/" + parts[1];
       }
-      return url
+      const vparts = raw.split("/viewer/");
+      if (vparts.length > 1) {
+        return API + "/viewer/" + vparts[1];
+      }
+      return raw;
+    }
+
+    const limpio = raw.replace(/^\/+/, "");
+    if (limpio.startsWith("files/")) {
+      return API + "/viewer/" + limpio.replace("files/", "");
+    }
+    if (limpio.startsWith("viewer/")) {
+      return API + "/" + limpio;
+    }
+
+    return API + "/viewer/" + limpio.split("/").pop();
+  }
+
+  function getFileExt(url) {
+    const limpio = String(url || "").toLowerCase().split("?")[0];
+    const idx = limpio.lastIndexOf(".");
+    return idx >= 0 ? limpio.slice(idx) : "";
+  }
+
+  function renderDocumentoByType(url, nombre) {
+    const ext = getFileExt(url);
+    const safeName = escapar(nombre || "Documento");
+    const viewerUrl = buildViewerUrlFromAny(url);
+    const directUrl = viewerUrl.replace("/viewer/", "/files/");
+
+    if (ext === ".pdf") {
+      return `
+        <div class="doc-viewer-card">
+          <div class="doc-viewer-head">
+            <strong>${safeName}</strong>
+            <a class="doc-open-link" href="${directUrl}" target="_blank" rel="noopener noreferrer">Abrir aparte</a>
+          </div>
+          <iframe class="doc-frame" src="${viewerUrl}"></iframe>
+        </div>
+      `;
+    }
+
+    if ([".jpg", ".jpeg", ".png", ".gif", ".webp", ".svg"].includes(ext)) {
+      return `
+        <div class="doc-viewer-card">
+          <div class="doc-viewer-head">
+            <strong>${safeName}</strong>
+            <a class="doc-open-link" href="${directUrl}" target="_blank" rel="noopener noreferrer">Abrir aparte</a>
+          </div>
+          <div class="doc-media-wrap">
+            <img class="doc-image" src="${viewerUrl}" alt="${safeName}">
+          </div>
+        </div>
+      `;
+    }
+
+    if ([".mp3", ".wav", ".ogg", ".m4a"].includes(ext)) {
+      return `
+        <div class="doc-viewer-card">
+          <div class="doc-viewer-head">
+            <strong>${safeName}</strong>
+            <a class="doc-open-link" href="${directUrl}" target="_blank" rel="noopener noreferrer">Abrir aparte</a>
+          </div>
+          <div class="doc-media-wrap">
+            <audio controls style="width:100%;">
+              <source src="${viewerUrl}">
+            </audio>
+          </div>
+        </div>
+      `;
+    }
+
+    if ([".mp4", ".webm", ".mov"].includes(ext)) {
+      return `
+        <div class="doc-viewer-card">
+          <div class="doc-viewer-head">
+            <strong>${safeName}</strong>
+            <a class="doc-open-link" href="${directUrl}" target="_blank" rel="noopener noreferrer">Abrir aparte</a>
+          </div>
+          <div class="doc-media-wrap">
+            <video controls style="width:100%;max-height:540px;background:#000;">
+              <source src="${viewerUrl}">
+            </video>
+          </div>
+        </div>
+      `;
+    }
+
+    return `
+      <div class="doc-viewer-card">
+        <div class="doc-viewer-head">
+          <strong>${safeName}</strong>
+          <a class="doc-open-link" href="${directUrl}" target="_blank" rel="noopener noreferrer">Abrir archivo</a>
+        </div>
+        <div class="doc-no-preview">
+          Este tipo de archivo no tiene vista interna estable en todos los navegadores.
+          Puedes abrirlo con el botón superior.
+        </div>
+      </div>
+    `;
+  }
+
+  function renderDocumentosEmbebidos(clase) {
+    const docs = parseJSONSeguro(
+      clase.document_urls ||
+      clase.documents_json ||
+      clase.documentos_json ||
+      "[]",
+      []
+    );
+
+    const docsNormalizados = docs.map(d => {
+      if (typeof d === "string") {
+        return { url: d, name: "Documento" };
+      }
+      return {
+        url: d.url || d.file_url || "",
+        name: d.name || d.file_name || "Documento"
+      };
+    }).filter(d => d.url);
+
+    if (!docsNormalizados.length && !clase.file_url) return "";
+
+    let listaFinal = [];
+
+    if (docsNormalizados.length) {
+      listaFinal = docsNormalizados;
+    } else if (clase.file_url) {
+      listaFinal = [{
+        url: clase.file_url,
+        name: clase.file_name || "Documento de la clase"
+      }];
+    }
+
+    let html = '<div class="docs-embed-zone"><h3>Documentos de la clase</h3>';
+    html += listaFinal.map((doc) => renderDocumentoByType(doc.url, doc.name)).join("");
+    html += "</div>";
+
+    return html;
+  }
+
+  function renderRecursos(clase) {
+    const links = [
+      clase.link_1,
+      clase.link_2,
+      clase.link_3,
+      clase.link_4,
+      clase.link_5
+    ].filter(Boolean);
+
+    if (!links.length) return "";
+
+    let html = '<h3 style="margin-top:18px;">Recursos extra</h3><div class="recursos">';
+
+    html += links.map((link, i) => `
+      <div class="recurso">
+        <div>
+          <strong>Recurso ${i + 1}</strong>
+          <div class="small">${escapar(link)}</div>
+        </div>
+        <a class="link-btn" href="${limpiarUrl(link)}" target="_blank" rel="noopener noreferrer">Abrir</a>
+      </div>
+    `).join("");
+
+    html += "</div>";
+    return html;
+  }
+
+  function renderMiniClases(clases, indexActual) {
+    const cont = document.getElementById("listaClasesMini");
+    if (!cont) return;
+
+    cont.innerHTML = "";
+
+    if (!clases.length) return;
+
+    clases.forEach((clase, i) => {
+      const div = document.createElement("div");
+      div.className = "lesson-mini" + (i === indexActual ? " activa" : "");
+      div.innerHTML =
+        '<strong>' + escapar(clase.titulo || clase.title || ("Clase " + (i + 1))) + '</strong>' +
+        '<div class="small">' + escapar(clase.descripcion || clase.description || "Sin descripción") + '</div>';
+      div.onclick = () => {
+        claseActualIndex = i;
+        renderClaseActual();
+      };
+      cont.appendChild(div);
+    });
+  }
+
+  async function renderClaseActual() {
+    if (!moduloActual) return;
+
+    const clases = obtenerClasesPublicadas(moduloActual);
+
+    if (!clases.length) {
+      document.getElementById("zonaClase").innerHTML = `
+        <div class="video-wrap">
+          <div class="video-placeholder">
+            Este módulo todavía no tiene clases publicadas.
+          </div>
+        </div>
+
+        <div class="lesson-header">
+          <h2 class="lesson-title">${escapar(moduloActual.titulo || moduloActual.title || "Módulo")}</h2>
+          <span class="badge">Sin clases</span>
+        </div>
+
+        <div class="lesson-desc">
+          El profesor aún no ha publicado contenido visible para este módulo.
+        </div>
+
+        <div class="contenido-box">
+          En cuanto el profesor publique clases, aparecerán aquí.
+        </div>
+
+        <div class="lesson-mini-list" id="listaClasesMini"></div>
+      `;
+      return;
+    }
+
+    if (claseActualIndex < 0) claseActualIndex = 0;
+    if (claseActualIndex >= clases.length) claseActualIndex = clases.length - 1;
+
+    const clase = clases[claseActualIndex];
+    await marcarClaseVista(clase.id);
+
+    const titulo = clase.titulo || clase.title || "Sin título";
+    const descripcion = clase.descripcion || clase.description || "";
+    const contenido = clase.contenido || clase.text_content || "Esta clase no tiene contenido escrito todavía.";
+    const youtube = clase.youtube_url || clase.video_url || "";
+
+    const puedeAnterior = claseActualIndex > 0;
+    const puedeSiguiente = claseActualIndex < (clases.length - 1);
+
+    document.getElementById("zonaClase").innerHTML = `
+      ${renderVideo(youtube)}
+
+      ${renderDocumentosEmbebidos(clase)}
+
+      <div class="lesson-header">
+        <h2 class="lesson-title">${escapar(titulo)}</h2>
+        <span class="badge">Clase ${claseActualIndex + 1} de ${clases.length}</span>
+      </div>
+
+      <div class="lesson-desc">
+        ${escapar(descripcion || "Sigue esta lección paso a paso y usa los recursos al final.")}
+      </div>
+
+      <div class="contenido-box">${escapar(contenido)}</div>
+
+      ${renderRecursos(clase)}
+
+      <div class="lesson-nav">
+        <button class="secundario" ${!puedeAnterior ? "disabled style='opacity:.55;cursor:not-allowed;'" : ""} onclick="irClaseAnterior()">Clase anterior</button>
+        <button class="success" ${!puedeSiguiente ? "disabled style='opacity:.55;cursor:not-allowed;'" : ""} onclick="irClaseSiguiente()">Siguiente clase</button>
+      </div>
+
+      <div class="lesson-mini-list" id="listaClasesMini"></div>
+    `;
+
+    renderMiniClases(clases, claseActualIndex);
+  }
+
+  function irClaseAnterior() {
+    if (!moduloActual) return;
+    const clases = obtenerClasesPublicadas(moduloActual);
+    if (claseActualIndex > 0 && clases.length) {
+      claseActualIndex--;
+      renderClaseActual();
+    }
+  }
+
+  function irClaseSiguiente() {
+    if (!moduloActual) return;
+    const clases = obtenerClasesPublicadas(moduloActual);
+    if (claseActualIndex < clases.length - 1) {
+      claseActualIndex++;
+      renderClaseActual();
+    }
+  }
+
+  function seleccionarModulo(id) {
+    const modulo = modulosGlobal.find(m => String(m.id) === String(id));
+    if (!modulo) return;
+
+    moduloActual = modulo;
+    claseActualIndex = 0;
+
+    localStorage.setItem("chambari_last_module", String(modulo.id));
+    document.getElementById("selectorModulo").value = String(modulo.id);
+    renderListaModulos(modulosGlobal);
+    renderClaseActual();
+  }
+
+  function seleccionarModuloDesdeSelect() {
+    const id = document.getElementById("selectorModulo").value;
+    if (!id) {
+      ponerEstadoAlumno("Debes seleccionar un módulo.", "error");
+      return;
+    }
+    seleccionarModulo(id);
+  }
+
+  async function cargarTodo() {
+    try {
+      const res = await fetch(API + "/api/student-dashboard");
+      const data = await leerJSON(res);
+
+      const modulos = Array.isArray(data.modules) ? data.modules : [];
+      modulosGlobal = modulos.filter(m => {
+        const clases = obtenerClasesPublicadas(m);
+        return clases.length > 0 || esPublicado(m.estado || m.status || "published");
+      });
+
+      const totalClases = modulosGlobal.reduce((acc, m) => acc + obtenerClasesPublicadas(m).length, 0);
+
+      document.getElementById("statModulos").textContent = modulosGlobal.length;
+      document.getElementById("statClases").textContent = totalClases;
+      document.getElementById("statProgreso").textContent = calcularProgreso() + "%";
+
+      llenarSelectorModulos(modulosGlobal);
+      renderListaModulos(modulosGlobal);
+
+      if (modulosGlobal.length) {
+        const ultimoModulo = localStorage.getItem("chambari_last_module");
+        let moduloInicial = modulosGlobal[0];
+
+        if (ultimoModulo) {
+          const encontrado = modulosGlobal.find(m => String(m.id) === String(ultimoModulo));
+          if (encontrado) moduloInicial = encontrado;
+        }
+
+        moduloActual = moduloInicial;
+        document.getElementById("selectorModulo").value = String(moduloInicial.id);
+        renderListaModulos(modulosGlobal);
+        renderClaseActual();
+        ponerEstadoAlumno("Contenido cargado correctamente.");
+      } else {
+        document.getElementById("zonaClase").innerHTML = `
+          <div class="video-wrap">
+            <div class="video-placeholder">
+              No hay clases publicadas todavía.
+            </div>
+          </div>
+
+          <div class="lesson-header">
+            <h2 class="lesson-title">Sin contenido disponible</h2>
+            <span class="badge">Alumno</span>
+          </div>
+
+          <div class="lesson-desc">
+            Cuando el profesor publique módulos y clases, aparecerán aquí automáticamente.
+          </div>
+
+          <div class="contenido-box">
+            Verifica más tarde o publica una clase desde el panel del profesor.
+          </div>
+
+          <div class="lesson-mini-list" id="listaClasesMini"></div>
+        `;
+        ponerEstadoAlumno("Todavía no hay módulos con clases publicadas.", "error");
+      }
+    } catch (err) {
+      ponerEstadoAlumno("Error cargando alumno: " + err.message, "error");
+    }
+  }
+
+  function boot() {
+    const saved = leerSesion();
+    if (saved && saved.id) {
+      studentActual = saved;
+      iniciarAppAlumno();
+    } else {
+      document.getElementById("loginScreen").classList.remove("hidden");
+      document.getElementById("appScreen").classList.add("hidden");
+    }
+  }
+
+  boot();
+</script>
+
+</body>
+</html>
