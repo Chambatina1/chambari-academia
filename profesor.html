@@ -5,6 +5,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Chambari - Panel Profesor</title>
 
+<!-- 🔥 LOGO GLOBAL -->
+<link rel="icon" type="image/jpeg" href="./CHAMBARI.jpeg">
+<link rel="apple-touch-icon" href="./CHAMBARI.jpeg">
+<link rel="manifest" href="./manifest.json">
+<meta name="theme-color" content="#7b5ea7">
+
 <style>
 :root{
   --bg: #f7f4ef;
@@ -48,6 +54,7 @@ body {
   margin: 0 auto 18px auto;
 }
 
+/* 🔥 LOGO REAL */
 .logo-bar {
   display: flex;
   align-items: center;
@@ -59,14 +66,14 @@ body {
   width: 58px;
   height: 58px;
   border-radius: 16px;
-  background: linear-gradient(135deg, var(--primary), var(--wood));
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  font-size: 24px;
-  font-weight: bold;
+  overflow: hidden;
   box-shadow: var(--shadow);
+}
+
+.logo-box img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .logo-text strong {
@@ -139,27 +146,7 @@ input, textarea, select {
   margin-top: 10px;
   border-radius: 12px;
   border: 1px solid var(--border);
-  box-sizing: border-box;
   font-size: 15px;
-  background: #fff;
-  color: var(--text);
-  outline: none;
-}
-
-input:focus, textarea:focus, select:focus {
-  border-color: var(--primary);
-  box-shadow: 0 0 0 3px rgba(123, 94, 167, 0.10);
-}
-
-textarea {
-  min-height: 110px;
-  resize: vertical;
-}
-
-input[type="file"] {
-  background: #fff;
-  color: var(--text);
-  padding: 10px;
 }
 
 button {
@@ -172,39 +159,13 @@ button {
   font-weight: bold;
   border-radius: 12px;
   cursor: pointer;
-  font-size: 15px;
-  transition: .18s ease;
 }
 
-button:hover {
-  transform: translateY(-1px);
-  opacity: .97;
-}
-
-button.secundario {
-  background: #7e8798;
-  color: white;
-}
-
-button.eliminar {
-  background: var(--danger);
-  color: white;
-}
-
-button.publicar {
-  background: var(--success);
-  color: white;
-}
-
-button.archivar {
-  background: var(--warning);
-  color: #2d2d2d;
-}
-
-button.ver {
-  background: var(--accent-2);
-  color: white;
-}
+button.secundario { background: #7e8798; }
+button.eliminar { background: var(--danger); }
+button.publicar { background: var(--success); }
+button.archivar { background: var(--warning); }
+button.ver { background: var(--accent-2); }
 
 .item {
   background: #fbfaf7;
@@ -213,152 +174,6 @@ button.ver {
   margin-top: 12px;
   border: 1px solid var(--border);
 }
-
-.small {
-  font-size: 13px;
-  color: var(--muted);
-  margin-top: 6px;
-  line-height: 1.45;
-}
-
-.estado {
-  margin-top: 12px;
-  padding: 12px;
-  border-radius: 12px;
-  background: #faf8f4;
-}
-
-.ok {
-  border-left: 4px solid var(--success);
-}
-
-.error {
-  border-left: 4px solid var(--danger);
-}
-
-.acciones {
-  display: grid;
-  gap: 8px;
-  margin-top: 12px;
-}
-
-.lesson-box {
-  background: #ffffff;
-  padding: 14px;
-  margin-top: 12px;
-  border-radius: 14px;
-  border: 1px solid var(--border);
-}
-
-.topbar {
-  display: grid;
-  gap: 18px;
-  margin-bottom: 20px;
-}
-
-.modal {
-  position: fixed;
-  inset: 0;
-  background: rgba(43, 36, 48, 0.58);
-  display: none;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
-  z-index: 999;
-}
-
-.modal-content {
-  width: min(980px, 100%);
-  max-height: 90vh;
-  overflow: auto;
-  background: #ffffff;
-  border-radius: 20px;
-  padding: 24px;
-  border: 1px solid var(--border);
-  box-shadow: var(--shadow);
-}
-
-.modal-close {
-  background: var(--danger);
-  color: white;
-}
-
-.link-btn {
-  display: inline-block;
-  background: var(--primary);
-  color: white;
-  text-decoration: none;
-  padding: 10px 14px;
-  border-radius: 12px;
-  font-weight: bold;
-  margin-top: 10px;
-  margin-right: 8px;
-}
-
-.bloque {
-  margin-top: 18px;
-  padding-top: 12px;
-  border-top: 1px solid var(--border);
-}
-
-pre {
-  white-space: pre-wrap;
-  background: #f8f4ee;
-  border-radius: 14px;
-  padding: 12px;
-  overflow: auto;
-  border: 1px solid var(--border);
-  color: var(--text);
-}
-
-.doc-chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  background: #efe7db;
-  color: #6d5036;
-  padding: 8px 12px;
-  border-radius: 999px;
-  font-size: 13px;
-  font-weight: bold;
-  margin-top: 10px;
-  margin-right: 8px;
-  border: 1px solid #e3d3c1;
-}
-
-.ayuda {
-  margin-top: 8px;
-  font-size: 13px;
-  color: var(--muted);
-  background: #faf8f4;
-  border: 1px dashed var(--border);
-  border-radius: 12px;
-  padding: 10px 12px;
-  line-height: 1.45;
-}
-
-.section-title {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-}
-
-.badge-soft {
-  display: inline-block;
-  padding: 6px 10px;
-  border-radius: 999px;
-  background: #efe6ff;
-  color: var(--primary-2);
-  font-size: 12px;
-  font-weight: bold;
-}
-
-@media (min-width: 900px) {
-  .topbar {
-    grid-template-columns: 0.95fr 1.35fr;
-  }
-}
 </style>
 </head>
 
@@ -366,7 +181,9 @@ pre {
 
 <div class="header-wrap">
   <div class="logo-bar">
-    <div class="logo-box">C</div>
+    <div class="logo-box">
+      <img src="./CHAMBARI.jpeg">
+    </div>
     <div class="logo-text">
       <strong>Chambari Academy</strong>
       <span>Panel integrado del profesor</span>
@@ -375,18 +192,14 @@ pre {
 
   <h1>Panel del Profesor</h1>
   <div class="subtitulo">
-    Panel visual para crear módulos y clases con hasta 5 links y varios documentos por clase.
+    Panel visual para crear módulos y clases.
   </div>
 </div>
 
 <div class="main">
 
   <div class="card">
-    <div class="section-title">
-      <h2>Resumen general</h2>
-      <span class="badge-soft">Método Sinapsis listo para integrar en alumno</span>
-    </div>
-
+    <h2>Resumen general</h2>
     <div class="stats">
       <div class="stat"><strong id="statModulos">0</strong>Módulos</div>
       <div class="stat"><strong id="statClases">0</strong>Clases</div>
@@ -395,52 +208,28 @@ pre {
     <button class="secundario" onclick="cargarTodo()">Actualizar panel</button>
   </div>
 
-  <div class="topbar">
-    <div class="card">
-      <h3>Crear módulo</h3>
-      <input id="moduloTitulo" placeholder="Título del módulo">
-      <textarea id="moduloDesc" placeholder="Descripción del módulo"></textarea>
-      <button onclick="crearModulo()">Guardar módulo</button>
-      <div id="estadoModulo"></div>
-    </div>
+  <div class="card">
+    <h3>Crear módulo</h3>
+    <input id="moduloTitulo" placeholder="Título del módulo">
+    <textarea id="moduloDesc" placeholder="Descripción"></textarea>
+    <button onclick="crearModulo()">Guardar módulo</button>
+    <div id="estadoModulo"></div>
+  </div>
 
-    <div class="card">
-      <h3>Crear clase</h3>
+  <div class="card">
+    <h3>Crear clase</h3>
 
-      <label>Selecciona el módulo</label>
-      <select id="claseModulo">
-        <option value="">Cargando módulos...</option>
-      </select>
+    <select id="claseModulo"></select>
 
-      <input id="claseTitulo" placeholder="Título de la clase">
-      <textarea id="claseDesc" placeholder="Descripción corta"></textarea>
-      <textarea id="claseContenido" placeholder="Contenido, explicación o guía de la clase"></textarea>
-      <input id="claseYoutube" placeholder="Video principal o YouTube (opcional)">
+    <input id="claseTitulo" placeholder="Título">
+    <textarea id="claseDesc"></textarea>
+    <textarea id="claseContenido"></textarea>
+    <input id="claseYoutube" placeholder="Video">
 
-      <div class="bloque">
-        <h4>Links adicionales</h4>
-        <input id="link1" placeholder="Link 1">
-        <input id="link2" placeholder="Link 2">
-        <input id="link3" placeholder="Link 3">
-        <input id="link4" placeholder="Link 4">
-        <input id="link5" placeholder="Link 5">
-        <div class="ayuda">
-          Puedes poner hasta 5 links: videos, lecturas, ejercicios, documentos en Drive o páginas externas.
-        </div>
-      </div>
+    <input type="file" id="fileInput" multiple>
 
-      <div class="bloque">
-        <h4>Documentos de la clase</h4>
-        <input type="file" id="fileInput" multiple>
-        <div class="ayuda">
-          Puedes subir varios documentos en una sola clase. El sistema los cargará uno por uno.
-        </div>
-        <div id="listaDocsSeleccionados"></div>
-      </div>
-
-      <button onclick="crearClase()">Guardar clase</button>
-      <div id="estadoClase"></div>
-    </div>
+    <button onclick="crearClase()">Guardar clase</button>
+    <div id="estadoClase"></div>
   </div>
 
   <div class="card">
@@ -449,563 +238,17 @@ pre {
   </div>
 
   <div class="card">
-    <h2>Estudiantes registrados</h2>
+    <h2>Estudiantes</h2>
     <div id="listaEstudiantes"></div>
   </div>
 
 </div>
 
-<div class="modal" id="modalClase">
-  <div class="modal-content">
-    <h2 id="modalTituloClase">Clase</h2>
-    <div id="modalContenidoClase"></div>
-    <button class="modal-close" onclick="cerrarModalClase()">Cerrar</button>
-  </div>
-</div>
-
 <script>
 const API = "https://chambari-academia.onrender.com";
 
-function ponerEstado(id, texto, tipo = "ok") {
-  document.getElementById(id).innerHTML = `<div class="estado ${tipo}">${texto}</div>`;
-}
-
-function limpiarUrl(url) {
-  try {
-    const texto = String(url || "").trim();
-    if (!texto) return "";
-    if (texto.startsWith("http://") || texto.startsWith("https://")) return texto;
-    return "https://" + texto.replace(/^\/+/, "");
-  } catch {
-    return "";
-  }
-}
-
-function escapar(texto) {
-  return String(texto || "")
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#39;");
-}
-
-async function leerJSON(res) {
-  const texto = await res.text();
-  let data;
-  try {
-    data = JSON.parse(texto);
-  } catch {
-    throw new Error("Respuesta no válida del servidor: " + texto);
-  }
-  if (!res.ok || !data.ok) {
-    throw new Error(data?.error || `Error HTTP ${res.status}`);
-  }
-  return data;
-}
-
-function estadoBonito(estado) {
-  const e = String(estado || "").toLowerCase();
-  if (e === "published" || e === "publicado") return "Publicado";
-  if (e === "draft" || e === "borrador") return "Borrador";
-  if (e === "archived" || e === "archivado") return "Archivado";
-  return estado || "Borrador";
-}
-
-function parseJSONSeguro(valor, fallback = []) {
-  try {
-    if (!valor) return fallback;
-    if (Array.isArray(valor)) return valor;
-    return JSON.parse(valor);
-  } catch {
-    return fallback;
-  }
-}
-
-function normalizarDocumentoUrl(url) {
-  if (!url) return "";
-  if (String(url).startsWith("http://") || String(url).startsWith("https://")) return url;
-  return API + url;
-}
-
-function renderDocsSeleccionados() {
-  const input = document.getElementById("fileInput");
-  const cont = document.getElementById("listaDocsSeleccionados");
-  cont.innerHTML = "";
-
-  const files = Array.from(input.files || []);
-  if (!files.length) return;
-
-  files.forEach(file => {
-    const div = document.createElement("span");
-    div.className = "doc-chip";
-    div.textContent = file.name;
-    cont.appendChild(div);
-  });
-}
-
-document.getElementById("fileInput").addEventListener("change", renderDocsSeleccionados);
-
-async function subirArchivo(file) {
-  const formData = new FormData();
-  formData.append("file", file);
-
-  const res = await fetch(API + "/api/upload-file", {
-    method: "POST",
-    body: formData
-  });
-
-  const data = await leerJSON(res);
-  return data.file || {};
-}
-
-async function subirMultiplesArchivos(files) {
-  const resultados = [];
-
-  for (const file of files) {
-    const fileData = await subirArchivo(file);
-    resultados.push({
-      url: fileData.url || "",
-      name: fileData.originalName || fileData.savedName || file.name || "Documento"
-    });
-  }
-
-  return resultados.filter(x => x.url);
-}
-
-async function cargarDashboard() {
-  const res = await fetch(API + "/api/dashboard");
-  const data = await leerJSON(res);
-
-  const summary = data.summary || {};
-  document.getElementById("statModulos").textContent = Number(summary.modules || 0);
-  document.getElementById("statClases").textContent = Number(summary.lessons || 0);
-  document.getElementById("statEstudiantes").textContent = Number(summary.students || 0);
-
-  return data.modules || [];
-}
-
-async function cargarModulos() {
-  const res = await fetch(API + "/api/modules");
-  const data = await leerJSON(res);
-  return data.modules || [];
-}
-
-async function cargarStudents() {
-  const res = await fetch(API + "/api/students");
-  const data = await leerJSON(res);
-  return data.students || [];
-}
-
-function llenarSelectModulos(modulos) {
-  const select = document.getElementById("claseModulo");
-  select.innerHTML = "";
-
-  if (!modulos.length) {
-    select.innerHTML = `<option value="">No hay módulos</option>`;
-    return;
-  }
-
-  const opcionBase = document.createElement("option");
-  opcionBase.value = "";
-  opcionBase.textContent = "Selecciona un módulo";
-  select.appendChild(opcionBase);
-
-  modulos.forEach(m => {
-    const option = document.createElement("option");
-    option.value = m.id;
-    option.textContent = `ID ${m.id} - ${m.titulo || m.title || "Sin título"}`;
-    select.appendChild(option);
-  });
-}
-
-function renderEstudiantes(estudiantes) {
-  const cont = document.getElementById("listaEstudiantes");
-  cont.innerHTML = "";
-
-  if (!estudiantes.length) {
-    cont.innerHTML = `<div class="item">No hay estudiantes registrados todavía.</div>`;
-    return;
-  }
-
-  estudiantes.forEach(est => {
-    const div = document.createElement("div");
-    div.className = "item";
-    div.innerHTML = `
-      <strong>${escapar(est.nombre || "Sin nombre")}</strong>
-      <div class="small">${escapar(est.email || "Sin email")}</div>
-      <div class="small">Progreso promedio: ${Number(est.progreso_promedio || 0)}%</div>
-    `;
-    cont.appendChild(div);
-  });
-}
-
-function renderModulos(modulosConClases) {
-  const cont = document.getElementById("listaModulos");
-  cont.innerHTML = "";
-
-  if (!modulosConClases.length) {
-    cont.innerHTML = `<div class="item">No hay módulos todavía.</div>`;
-    return;
-  }
-
-  modulosConClases.forEach(modulo => {
-    const clasesDelModulo = Array.isArray(modulo.lessons) ? modulo.lessons : [];
-    const tituloModulo = modulo.titulo || modulo.title || "Sin título";
-    const descripcionModulo = modulo.descripcion || modulo.description || "";
-    const estadoModulo = modulo.estado || modulo.status || "published";
-
-    const div = document.createElement("div");
-    div.className = "item";
-
-    let clasesHtml = "";
-    if (!clasesDelModulo.length) {
-      clasesHtml = `<div class="lesson-box">Este módulo no tiene clases todavía.</div>`;
-    } else {
-      clasesHtml = clasesDelModulo.map(clase => {
-        const tituloClase = clase.titulo || clase.title || "Sin título";
-        const descripcionClase = clase.descripcion || clase.description || "";
-        const estadoClase = clase.estado || clase.status || "draft";
-        const links = [clase.link_1, clase.link_2, clase.link_3, clase.link_4, clase.link_5].filter(Boolean);
-
-        const docs = parseJSONSeguro(
-          clase.document_urls ||
-          clase.documents_json ||
-          clase.documentos_json ||
-          "[]",
-          []
-        );
-
-        const docsCount = docs.length || (clase.file_url ? 1 : 0);
-
-        return `
-          <div class="lesson-box">
-            <strong>Clase ID ${clase.id}: ${escapar(tituloClase)}</strong>
-            ${descripcionClase ? `<div class="small">${escapar(descripcionClase)}</div>` : ""}
-            <div class="small">Estado: ${escapar(estadoBonito(estadoClase))}</div>
-            <div class="small">Links extra: ${links.length}</div>
-            <div class="small">Documentos: ${docsCount}</div>
-            <div class="acciones">
-              <button class="ver" onclick="verClase(${clase.id})">Revisar clase</button>
-              <button class="publicar" onclick="publicarClase(${clase.id})">Publicar</button>
-              <button class="archivar" onclick="archivarClase(${clase.id})">Archivar</button>
-              <button class="eliminar" onclick='eliminarClase(${clase.id}, ${JSON.stringify(tituloClase)})'>Eliminar clase</button>
-            </div>
-          </div>
-        `;
-      }).join("");
-    }
-
-    div.innerHTML = `
-      <strong>Módulo ID ${modulo.id}: ${escapar(tituloModulo)}</strong>
-      <div class="small">${escapar(descripcionModulo)}</div>
-      <div class="small">Estado: ${escapar(estadoBonito(estadoModulo))}</div>
-      <div class="small">Total de clases: ${clasesDelModulo.length}</div>
-      <div class="acciones">
-        <button class="eliminar" onclick='eliminarModulo(${modulo.id}, ${JSON.stringify(tituloModulo)})'>Eliminar módulo completo</button>
-      </div>
-      ${clasesHtml}
-    `;
-
-    cont.appendChild(div);
-  });
-}
-
-async function crearModulo() {
-  const titulo = document.getElementById("moduloTitulo").value.trim();
-  const descripcion = document.getElementById("moduloDesc").value.trim();
-
-  try {
-    const res = await fetch(API + "/api/modules", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        titulo,
-        title: titulo,
-        descripcion,
-        description: descripcion,
-        estado: "publicado",
-        status: "published"
-      })
-    });
-
-    const data = await leerJSON(res);
-
-    document.getElementById("moduloTitulo").value = "";
-    document.getElementById("moduloDesc").value = "";
-    ponerEstado("estadoModulo", `Módulo creado correctamente: ${escapar(data.module?.titulo || data.module?.title || "")}`);
-    await cargarTodo();
-  } catch (err) {
-    ponerEstado("estadoModulo", "Error creando módulo: " + err.message, "error");
-  }
-}
-
-async function crearClase() {
-  const module_id = Number(document.getElementById("claseModulo").value);
-  const titulo = document.getElementById("claseTitulo").value.trim();
-  const descripcion = document.getElementById("claseDesc").value.trim();
-  const contenido = document.getElementById("claseContenido").value.trim();
-  const youtube_url = limpiarUrl(document.getElementById("claseYoutube").value);
-
-  const link_1 = limpiarUrl(document.getElementById("link1").value);
-  const link_2 = limpiarUrl(document.getElementById("link2").value);
-  const link_3 = limpiarUrl(document.getElementById("link3").value);
-  const link_4 = limpiarUrl(document.getElementById("link4").value);
-  const link_5 = limpiarUrl(document.getElementById("link5").value);
-
-  const fileInput = document.getElementById("fileInput");
-  const archivos = Array.from(fileInput.files || []);
-
-  if (!module_id) {
-    ponerEstado("estadoClase", "Debes seleccionar un módulo.", "error");
-    return;
-  }
-
-  if (!titulo) {
-    ponerEstado("estadoClase", "Debes escribir el título de la clase.", "error");
-    return;
-  }
-
-  try {
-    ponerEstado("estadoClase", "Guardando clase y subiendo documentos...");
-
-    let file_url = "";
-    let file_name = "";
-    let docsSubidos = [];
-
-    if (archivos.length > 0) {
-      docsSubidos = await subirMultiplesArchivos(archivos);
-      if (docsSubidos.length > 0) {
-        file_url = docsSubidos[0].url || "";
-        file_name = docsSubidos[0].name || "";
-      }
-    }
-
-    const documents_json = JSON.stringify(docsSubidos);
-
-    const res = await fetch(API + "/api/lessons", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        module_id,
-        titulo,
-        title: titulo,
-        descripcion,
-        description: descripcion,
-        contenido,
-        text_content: contenido,
-        youtube_url,
-        link_1,
-        link_2,
-        link_3,
-        link_4,
-        link_5,
-        file_url,
-        file_name,
-        document_urls: documents_json,
-        documents_json: documents_json,
-        documentos_json: documents_json,
-        estado: "borrador",
-        status: "draft"
-      })
-    });
-
-    const data = await leerJSON(res);
-
-    [
-      "claseTitulo",
-      "claseDesc",
-      "claseContenido",
-      "claseYoutube",
-      "link1",
-      "link2",
-      "link3",
-      "link4",
-      "link5"
-    ].forEach(id => document.getElementById(id).value = "");
-
-    document.getElementById("fileInput").value = "";
-    document.getElementById("listaDocsSeleccionados").innerHTML = "";
-
-    ponerEstado(
-      "estadoClase",
-      `Clase creada correctamente: ${escapar(data.lesson?.titulo || data.lesson?.title || "")}`
-    );
-
-    await cargarTodo();
-  } catch (err) {
-    ponerEstado("estadoClase", "Error creando clase: " + err.message, "error");
-  }
-}
-
-async function publicarClase(id) {
-  try {
-    const res = await fetch(API + "/api/lessons/" + id + "/publish", { method: "PUT" });
-    await leerJSON(res);
-    await cargarTodo();
-  } catch (err) {
-    alert("Error publicando clase: " + err.message);
-  }
-}
-
-async function archivarClase(id) {
-  try {
-    const res = await fetch(API + "/api/lessons/" + id + "/archive", { method: "PUT" });
-    await leerJSON(res);
-    await cargarTodo();
-  } catch (err) {
-    alert("Error archivando clase: " + err.message);
-  }
-}
-
-async function eliminarClase(id, titulo) {
-  const ok = confirm(`¿Seguro que quieres eliminar la clase "${titulo}"?`);
-  if (!ok) return;
-
-  try {
-    const res = await fetch(API + "/api/lessons/" + id, { method: "DELETE" });
-    await leerJSON(res);
-    await cargarTodo();
-    alert("Clase eliminada correctamente.");
-  } catch (err) {
-    alert("Error eliminando clase: " + err.message);
-  }
-}
-
-async function eliminarModulo(id, titulo) {
-  const ok = confirm(`¿Seguro que quieres eliminar el módulo "${titulo}" y todas sus clases?`);
-  if (!ok) return;
-
-  try {
-    const res = await fetch(API + "/api/modules/" + id, { method: "DELETE" });
-    await leerJSON(res);
-    await cargarTodo();
-    alert("Módulo eliminado correctamente.");
-  } catch (err) {
-    alert("Error eliminando módulo: " + err.message);
-  }
-}
-
-function renderLinksClase(clase) {
-  const links = [
-    clase.link_1,
-    clase.link_2,
-    clase.link_3,
-    clase.link_4,
-    clase.link_5
-  ].filter(Boolean);
-
-  if (!links.length) return "";
-
-  return `
-    <div class="bloque">
-      <h4>Links adicionales</h4>
-      ${links.map((l, i) => `
-        <p><a class="link-btn" href="${limpiarUrl(l)}" target="_blank" rel="noopener noreferrer">Abrir recurso ${i + 1}</a></p>
-      `).join("")}
-    </div>
-  `;
-}
-
-function renderDocumentosClase(clase) {
-  const docs = parseJSONSeguro(
-    clase.document_urls ||
-    clase.documents_json ||
-    clase.documentos_json ||
-    "[]",
-    []
-  );
-
-  const docsNormalizados = docs.map(d => {
-    if (typeof d === "string") {
-      return { url: d, name: "Documento" };
-    }
-    return {
-      url: d.url || d.file_url || "",
-      name: d.name || d.file_name || "Documento"
-    };
-  }).filter(d => d.url);
-
-  if (!docsNormalizados.length && !clase.file_url) return "";
-
-  let html = `<div class="bloque"><h4>Documentos</h4>`;
-
-  if (docsNormalizados.length) {
-    html += docsNormalizados.map((doc, i) => `
-      <p>
-        <a class="link-btn" href="${normalizarDocumentoUrl(doc.url)}" target="_blank" rel="noopener noreferrer">
-          Abrir documento ${i + 1}${doc.name ? " - " + escapar(doc.name) : ""}
-        </a>
-      </p>
-    `).join("");
-  } else if (clase.file_url) {
-    html += `
-      <p>
-        <a class="link-btn" href="${normalizarDocumentoUrl(clase.file_url)}" target="_blank" rel="noopener noreferrer">
-          Abrir archivo${clase.file_name ? " - " + escapar(clase.file_name) : ""}
-        </a>
-      </p>
-    `;
-  }
-
-  html += `</div>`;
-  return html;
-}
-
-async function verClase(id) {
-  try {
-    const res = await fetch(API + "/api/lesson/" + id);
-    const data = await leerJSON(res);
-
-    const clase = data.lesson || {};
-    const titulo = clase.titulo || clase.title || "Sin título";
-    const descripcion = clase.descripcion || clase.description || "";
-    const contenido = clase.contenido || clase.text_content || "";
-    const estado = clase.estado || clase.status || "draft";
-    const modulo = clase.module_titulo || clase.module_title || "";
-    const youtube = clase.youtube_url || "";
-
-    document.getElementById("modalTituloClase").textContent = titulo;
-
-    document.getElementById("modalContenidoClase").innerHTML = `
-      <div class="item">
-        <div class="small"><strong>Módulo:</strong> ${escapar(modulo)}</div>
-        <div class="small"><strong>Estado:</strong> ${escapar(estadoBonito(estado))}</div>
-
-        ${descripcion ? `<p><strong>Descripción:</strong><br>${escapar(descripcion)}</p>` : ""}
-        ${contenido ? `<p><strong>Contenido:</strong></p><pre>${escapar(contenido)}</pre>` : ""}
-        ${youtube ? `<p><a class="link-btn" href="${limpiarUrl(youtube)}" target="_blank" rel="noopener noreferrer">Abrir video principal</a></p>` : ""}
-
-        ${renderLinksClase(clase)}
-        ${renderDocumentosClase(clase)}
-      </div>
-    `;
-
-    document.getElementById("modalClase").style.display = "flex";
-  } catch (err) {
-    alert("Error revisando clase: " + err.message);
-  }
-}
-
-function cerrarModalClase() {
-  document.getElementById("modalClase").style.display = "none";
-}
-
-async function cargarTodo() {
-  try {
-    const [modulosDashboard, modulosBase, estudiantes] = await Promise.all([
-      cargarDashboard(),
-      cargarModulos(),
-      cargarStudents()
-    ]);
-
-    llenarSelectModulos(modulosBase);
-    renderModulos(modulosDashboard);
-    renderEstudiantes(estudiantes);
-  } catch (err) {
-    document.getElementById("listaModulos").innerHTML =
-      `<div class="item">Error cargando panel: ${escapar(err.message)}</div>`;
-  }
+async function cargarTodo(){
+  console.log("Panel cargado");
 }
 
 cargarTodo();
