@@ -1,11 +1,10 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Chambari - Panel Profesor</title>
 
-<!-- 🔥 LOGO GLOBAL -->
 <link rel="icon" type="image/jpeg" href="./CHAMBARI.jpeg">
 <link rel="apple-touch-icon" href="./CHAMBARI.jpeg">
 <link rel="manifest" href="./manifest.json">
@@ -19,20 +18,13 @@
   --card-soft: #f6f1e8;
   --text: #2b2430;
   --muted: #6f6472;
-
   --primary: #7b5ea7;
   --primary-2: #62458f;
-
   --accent: #a8c3a0;
   --accent-2: #7ea172;
-
-  --wood: #c7a27c;
-  --wood-2: #a67c52;
-
   --warning: #e0b35b;
   --danger: #c85c5c;
   --success: #6f9f6f;
-
   --border: #e6ddd2;
   --shadow: 0 10px 26px rgba(66, 40, 80, 0.08);
 }
@@ -49,12 +41,11 @@ body {
   padding: 20px;
 }
 
-.header-wrap {
-  max-width: 1400px;
-  margin: 0 auto 18px auto;
+.main, .header-wrap {
+  max-width: 1450px;
+  margin: 0 auto;
 }
 
-/* 🔥 LOGO REAL */
 .logo-bar {
   display: flex;
   align-items: center;
@@ -68,6 +59,7 @@ body {
   border-radius: 16px;
   overflow: hidden;
   box-shadow: var(--shadow);
+  background: white;
 }
 
 .logo-box img {
@@ -78,7 +70,7 @@ body {
 
 .logo-text strong {
   display: block;
-  font-size: 20px;
+  font-size: 22px;
   color: var(--primary-2);
 }
 
@@ -89,8 +81,7 @@ body {
 
 h1 {
   color: var(--primary-2);
-  margin-top: 0;
-  margin-bottom: 8px;
+  margin: 0 0 8px 0;
   font-size: 34px;
 }
 
@@ -100,16 +91,6 @@ h1 {
   font-size: 15px;
 }
 
-h2, h3, h4 {
-  margin-top: 0;
-  color: var(--primary-2);
-}
-
-.main {
-  max-width: 1400px;
-  margin: 0 auto;
-}
-
 .card {
   background: var(--card);
   padding: 22px;
@@ -117,6 +98,18 @@ h2, h3, h4 {
   margin-bottom: 20px;
   box-shadow: var(--shadow);
   border: 1px solid var(--border);
+}
+
+.grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.grid-3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
 }
 
 .stats {
@@ -147,6 +140,12 @@ input, textarea, select {
   border-radius: 12px;
   border: 1px solid var(--border);
   font-size: 15px;
+  background: #fff;
+}
+
+textarea {
+  min-height: 100px;
+  resize: vertical;
 }
 
 button {
@@ -161,11 +160,18 @@ button {
   cursor: pointer;
 }
 
+button:hover { opacity: 0.95; }
+
 button.secundario { background: #7e8798; }
 button.eliminar { background: var(--danger); }
 button.publicar { background: var(--success); }
-button.archivar { background: var(--warning); }
+button.archivar { background: var(--warning); color: #2b2430; }
 button.ver { background: var(--accent-2); }
+button.mini {
+  width: auto;
+  padding: 10px 12px;
+  margin-top: 8px;
+}
 
 .item {
   background: #fbfaf7;
@@ -174,25 +180,104 @@ button.ver { background: var(--accent-2); }
   margin-top: 12px;
   border: 1px solid var(--border);
 }
+
+.item h4 {
+  margin: 0 0 6px 0;
+  color: var(--primary-2);
+}
+
+.item small {
+  color: var(--muted);
+}
+
+.row {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.row > * {
+  flex: 1;
+}
+
+.exercise-box {
+  background: #f9f6ff;
+  border: 1px dashed #c7b7e6;
+  border-radius: 14px;
+  padding: 12px;
+  margin-top: 12px;
+}
+
+.exercise-chip {
+  background: #eee6fb;
+  color: var(--primary-2);
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  display: inline-block;
+  margin-right: 8px;
+  margin-top: 6px;
+}
+
+.link-list a, .doc-list a {
+  color: var(--primary-2);
+  text-decoration: none;
+  display: block;
+  margin-top: 6px;
+  word-break: break-word;
+}
+
+.estado {
+  margin-top: 10px;
+  font-size: 14px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  display: none;
+}
+
+.estado.ok {
+  display: block;
+  background: #eef8ee;
+  color: var(--success);
+  border: 1px solid #cfe4cf;
+}
+
+.estado.error {
+  display: block;
+  background: #fff1f1;
+  color: var(--danger);
+  border: 1px solid #efc5c5;
+}
+
+.kicker {
+  color: var(--muted);
+  font-size: 13px;
+  margin-top: 4px;
+}
+
+@media (max-width: 1100px) {
+  .grid-2, .grid-3 {
+    grid-template-columns: 1fr;
+  }
+}
 </style>
 </head>
-
 <body>
 
 <div class="header-wrap">
   <div class="logo-bar">
     <div class="logo-box">
-      <img src="./CHAMBARI.jpeg">
+      <img src="./CHAMBARI.jpeg" alt="Chambari">
     </div>
     <div class="logo-text">
       <strong>Chambari Academy</strong>
-      <span>Panel integrado del profesor</span>
+      <span>Panel blindado del profesor</span>
     </div>
   </div>
 
   <h1>Panel del Profesor</h1>
   <div class="subtitulo">
-    Panel visual para crear módulos y clases.
+    Crea módulos, clases, documentos, videos, ejercicios y revisa alumnos sin complicaciones.
   </div>
 </div>
 
@@ -206,30 +291,88 @@ button.ver { background: var(--accent-2); }
       <div class="stat"><strong id="statEstudiantes">0</strong>Estudiantes</div>
     </div>
     <button class="secundario" onclick="cargarTodo()">Actualizar panel</button>
+    <div id="estadoGeneral" class="estado"></div>
+  </div>
+
+  <div class="grid-2">
+    <div class="card">
+      <h3>Crear módulo rápido</h3>
+      <div class="kicker">El título puede ser flexible. Si lo dejas vacío, se genera uno automáticamente.</div>
+      <input id="moduloTitulo" placeholder="Título del módulo (opcional)">
+      <textarea id="moduloDesc" placeholder="Descripción del módulo (opcional)"></textarea>
+      <select id="moduloEstado">
+        <option value="published">Publicado</option>
+        <option value="draft">Borrador</option>
+        <option value="archived">Archivado</option>
+      </select>
+      <button onclick="crearModulo()">Guardar módulo</button>
+      <div id="estadoModulo" class="estado"></div>
+    </div>
+
+    <div class="card">
+      <h3>Estudiantes</h3>
+      <div class="kicker">Vista rápida de alumnos registrados y progreso promedio.</div>
+      <div id="listaEstudiantes"></div>
+    </div>
   </div>
 
   <div class="card">
-    <h3>Crear módulo</h3>
-    <input id="moduloTitulo" placeholder="Título del módulo">
-    <textarea id="moduloDesc" placeholder="Descripción"></textarea>
-    <button onclick="crearModulo()">Guardar módulo</button>
-    <div id="estadoModulo"></div>
-  </div>
-
-  <div class="card">
-    <h3>Crear clase</h3>
+    <h3>Crear clase blindada</h3>
+    <div class="kicker">Puedes crear clases con título opcional, documentos, varios links, video y ejercicios didácticos.</div>
 
     <select id="claseModulo"></select>
 
-    <input id="claseTitulo" placeholder="Título">
-    <textarea id="claseDesc"></textarea>
-    <textarea id="claseContenido"></textarea>
-    <input id="claseYoutube" placeholder="Video">
+    <div class="grid-2">
+      <div>
+        <input id="claseTitulo" placeholder="Título de la clase (opcional)">
+        <textarea id="claseDesc" placeholder="Descripción breve"></textarea>
+        <textarea id="claseContenido" placeholder="Contenido principal de la clase"></textarea>
+      </div>
+      <div>
+        <input id="claseYoutube" placeholder="Link principal de video / YouTube">
+        <input id="claseLink1" placeholder="Link adicional 1">
+        <input id="claseLink2" placeholder="Link adicional 2">
+        <input id="claseLink3" placeholder="Link adicional 3">
+        <input id="claseLink4" placeholder="Link adicional 4">
+        <input id="claseLink5" placeholder="Link adicional 5">
+      </div>
+    </div>
 
-    <input type="file" id="fileInput" multiple>
+    <div class="row">
+      <div>
+        <label>Subir documentos o archivos</label>
+        <input type="file" id="fileInput" multiple>
+      </div>
+      <div>
+        <label>Estado de la clase</label>
+        <select id="claseEstado">
+          <option value="draft">Borrador</option>
+          <option value="published">Publicado</option>
+          <option value="archived">Archivado</option>
+        </select>
+      </div>
+    </div>
 
-    <button onclick="crearClase()">Guardar clase</button>
-    <div id="estadoClase"></div>
+    <div class="exercise-box">
+      <h4>Ejercicios didácticos de esta clase</h4>
+
+      <select id="tipoEjercicio">
+        <option value="opcion_multiple">Opción múltiple</option>
+        <option value="verdadero_falso">Verdadero/Falso</option>
+        <option value="respuesta_corta">Respuesta corta</option>
+      </select>
+
+      <textarea id="ejPregunta" placeholder="Pregunta o enunciado"></textarea>
+      <input id="ejOpciones" placeholder="Opciones separadas por |  Ejemplo: rojo|azul|verde">
+      <input id="ejRespuesta" placeholder="Respuesta correcta">
+
+      <button class="mini ver" onclick="agregarEjercicio()">Agregar ejercicio</button>
+
+      <div id="listaEjercicios"></div>
+    </div>
+
+    <button onclick="crearClase()">Guardar clase completa</button>
+    <div id="estadoClase" class="estado"></div>
   </div>
 
   <div class="card">
@@ -237,20 +380,477 @@ button.ver { background: var(--accent-2); }
     <div id="listaModulos"></div>
   </div>
 
-  <div class="card">
-    <h2>Estudiantes</h2>
-    <div id="listaEstudiantes"></div>
-  </div>
-
 </div>
 
 <script>
 const API = "https://chambari-academia.onrender.com";
+let ejerciciosTemp = [];
 
-async function cargarTodo(){
-  console.log("Panel cargado");
+function mostrarEstado(id, texto, tipo = "ok") {
+  const box = document.getElementById(id);
+  box.textContent = texto;
+  box.className = "estado " + tipo;
 }
 
+function limpiarEstado(id) {
+  const box = document.getElementById(id);
+  box.textContent = "";
+  box.className = "estado";
+}
+
+function esc(texto) {
+  return String(texto || "")
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;");
+}
+
+function normalizarModuloNombre(m) {
+  return m.titulo || m.title || "Módulo sin título";
+}
+
+function normalizarClaseNombre(c) {
+  return c.titulo || c.title || "Clase sin título";
+}
+
+function renderEjerciciosTemp() {
+  const box = document.getElementById("listaEjercicios");
+  box.innerHTML = "";
+
+  if (!ejerciciosTemp.length) {
+    box.innerHTML = `<div class="kicker">Aún no has agregado ejercicios.</div>`;
+    return;
+  }
+
+  ejerciciosTemp.forEach((ej, index) => {
+    const div = document.createElement("div");
+    div.className = "item";
+    div.innerHTML = `
+      <div class="exercise-chip">${esc(ej.tipo)}</div>
+      <h4>${esc(ej.pregunta)}</h4>
+      ${ej.opciones && ej.opciones.length ? `<small>Opciones: ${esc(ej.opciones.join(" | "))}</small><br>` : ""}
+      <small>Respuesta: ${esc(ej.respuesta)}</small>
+      <button class="mini eliminar" onclick="eliminarEjercicioTemp(${index})">Quitar</button>
+    `;
+    box.appendChild(div);
+  });
+}
+
+function agregarEjercicio() {
+  const tipo = document.getElementById("tipoEjercicio").value;
+  const pregunta = document.getElementById("ejPregunta").value.trim();
+  const opcionesRaw = document.getElementById("ejOpciones").value.trim();
+  const respuesta = document.getElementById("ejRespuesta").value.trim();
+
+  if (!pregunta || !respuesta) {
+    mostrarEstado("estadoClase", "La pregunta y la respuesta del ejercicio son obligatorias.", "error");
+    return;
+  }
+
+  const opciones = opcionesRaw ? opcionesRaw.split("|").map(v => v.trim()).filter(Boolean) : [];
+
+  ejerciciosTemp.push({
+    tipo,
+    pregunta,
+    opciones,
+    respuesta
+  });
+
+  document.getElementById("ejPregunta").value = "";
+  document.getElementById("ejOpciones").value = "";
+  document.getElementById("ejRespuesta").value = "";
+
+  renderEjerciciosTemp();
+  mostrarEstado("estadoClase", "Ejercicio agregado a la clase.", "ok");
+}
+
+function eliminarEjercicioTemp(index) {
+  ejerciciosTemp.splice(index, 1);
+  renderEjerciciosTemp();
+}
+
+async function subirArchivos(files) {
+  const documentos = [];
+
+  for (const file of files) {
+    const formData = new FormData();
+    formData.append("file", file);
+
+    const res = await fetch(`${API}/api/upload-file`, {
+      method: "POST",
+      body: formData
+    });
+
+    const data = await res.json();
+
+    if (!res.ok || !data.ok) {
+      throw new Error(data.error || `No se pudo subir ${file.name}`);
+    }
+
+    documentos.push({
+      name: data.file.originalName,
+      url: data.file.directUrl,
+      viewerUrl: data.file.viewerUrl
+    });
+  }
+
+  return documentos;
+}
+
+async function crearModulo() {
+  limpiarEstado("estadoModulo");
+
+  const titulo = document.getElementById("moduloTitulo").value.trim();
+  const descripcion = document.getElementById("moduloDesc").value.trim();
+  const estado = document.getElementById("moduloEstado").value;
+
+  try {
+    const res = await fetch(`${API}/api/modules`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        title: titulo,
+        description: descripcion,
+        status: estado
+      })
+    });
+
+    const data = await res.json();
+
+    if (!res.ok || !data.ok) {
+      mostrarEstado("estadoModulo", data.error || "No se pudo crear el módulo.", "error");
+      return;
+    }
+
+    document.getElementById("moduloTitulo").value = "";
+    document.getElementById("moduloDesc").value = "";
+    document.getElementById("moduloEstado").value = "published";
+
+    mostrarEstado("estadoModulo", "Módulo creado correctamente.", "ok");
+    await cargarTodo();
+  } catch (error) {
+    console.error(error);
+    mostrarEstado("estadoModulo", "Error conectando con el servidor.", "error");
+  }
+}
+
+async function crearClase() {
+  limpiarEstado("estadoClase");
+
+  const module_id = document.getElementById("claseModulo").value;
+  const title = document.getElementById("claseTitulo").value.trim();
+  const description = document.getElementById("claseDesc").value.trim();
+  const text_content = document.getElementById("claseContenido").value.trim();
+  const youtube_url = document.getElementById("claseYoutube").value.trim();
+  const link_1 = document.getElementById("claseLink1").value.trim();
+  const link_2 = document.getElementById("claseLink2").value.trim();
+  const link_3 = document.getElementById("claseLink3").value.trim();
+  const link_4 = document.getElementById("claseLink4").value.trim();
+  const link_5 = document.getElementById("claseLink5").value.trim();
+  const status = document.getElementById("claseEstado").value;
+  const files = Array.from(document.getElementById("fileInput").files || []);
+
+  if (!module_id) {
+    mostrarEstado("estadoClase", "Debes seleccionar un módulo.", "error");
+    return;
+  }
+
+  try {
+    let documentos = [];
+    if (files.length) {
+      mostrarEstado("estadoClase", "Subiendo archivos, espera un momento...", "ok");
+      documentos = await subirArchivos(files);
+    }
+
+    const contenidoFinal = text_content + (ejerciciosTemp.length
+      ? `\n\n---EJERCICIOS_CHAMBARI---\n${JSON.stringify(ejerciciosTemp)}`
+      : "");
+
+    const res = await fetch(`${API}/api/lessons`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        module_id,
+        title,
+        description,
+        text_content: contenidoFinal,
+        youtube_url,
+        link_1,
+        link_2,
+        link_3,
+        link_4,
+        link_5,
+        status,
+        documents_json: JSON.stringify(documentos)
+      })
+    });
+
+    const data = await res.json();
+
+    if (!res.ok || !data.ok) {
+      mostrarEstado("estadoClase", data.error || "No se pudo crear la clase.", "error");
+      return;
+    }
+
+    document.getElementById("claseTitulo").value = "";
+    document.getElementById("claseDesc").value = "";
+    document.getElementById("claseContenido").value = "";
+    document.getElementById("claseYoutube").value = "";
+    document.getElementById("claseLink1").value = "";
+    document.getElementById("claseLink2").value = "";
+    document.getElementById("claseLink3").value = "";
+    document.getElementById("claseLink4").value = "";
+    document.getElementById("claseLink5").value = "";
+    document.getElementById("fileInput").value = "";
+    document.getElementById("claseEstado").value = "draft";
+    ejerciciosTemp = [];
+    renderEjerciciosTemp();
+
+    mostrarEstado("estadoClase", "Clase guardada correctamente.", "ok");
+    await cargarTodo();
+  } catch (error) {
+    console.error(error);
+    mostrarEstado("estadoClase", "Error conectando con el servidor.", "error");
+  }
+}
+
+async function eliminarClase(id) {
+  if (!confirm("¿Seguro que deseas eliminar esta clase?")) return;
+
+  try {
+    const res = await fetch(`${API}/api/lessons/${id}`, {
+      method: "DELETE"
+    });
+
+    const data = await res.json();
+
+    if (!res.ok || !data.ok) {
+      alert(data.error || "No se pudo eliminar la clase.");
+      return;
+    }
+
+    alert("Clase eliminada correctamente.");
+    await cargarTodo();
+  } catch (error) {
+    console.error(error);
+    alert("Error conectando con el servidor.");
+  }
+}
+
+async function publicarClase(id) {
+  try {
+    const res = await fetch(`${API}/api/lessons/${id}/publish`, {
+      method: "PUT"
+    });
+    const data = await res.json();
+    if (!res.ok || !data.ok) {
+      alert(data.error || "No se pudo publicar.");
+      return;
+    }
+    await cargarTodo();
+  } catch (error) {
+    console.error(error);
+    alert("Error conectando con el servidor.");
+  }
+}
+
+async function archivarClase(id) {
+  try {
+    const res = await fetch(`${API}/api/lessons/${id}/archive`, {
+      method: "PUT"
+    });
+    const data = await res.json();
+    if (!res.ok || !data.ok) {
+      alert(data.error || "No se pudo archivar.");
+      return;
+    }
+    await cargarTodo();
+  } catch (error) {
+    console.error(error);
+    alert("Error conectando con el servidor.");
+  }
+}
+
+function extraerEjerciciosDesdeContenido(contenido) {
+  const texto = String(contenido || "");
+  const marcador = "---EJERCICIOS_CHAMBARI---";
+  const pos = texto.indexOf(marcador);
+  if (pos === -1) return [];
+
+  const jsonText = texto.slice(pos + marcador.length).trim();
+  try {
+    const parsed = JSON.parse(jsonText);
+    return Array.isArray(parsed) ? parsed : [];
+  } catch {
+    return [];
+  }
+}
+
+function limpiarContenidoVisible(contenido) {
+  const texto = String(contenido || "");
+  const marcador = "---EJERCICIOS_CHAMBARI---";
+  const pos = texto.indexOf(marcador);
+  if (pos === -1) return texto;
+  return texto.slice(0, pos).trim();
+}
+
+async function cargarEstudiantes() {
+  try {
+    const res = await fetch(`${API}/api/students`);
+    const data = await res.json();
+
+    const box = document.getElementById("listaEstudiantes");
+    box.innerHTML = "";
+
+    if (!res.ok || !data.ok) {
+      box.innerHTML = `<div class="item">No se pudieron cargar los estudiantes.</div>`;
+      return;
+    }
+
+    if (!data.students.length) {
+      box.innerHTML = `<div class="item">Aún no hay estudiantes registrados.</div>`;
+      return;
+    }
+
+    data.students.forEach(student => {
+      const div = document.createElement("div");
+      div.className = "item";
+      div.innerHTML = `
+        <h4>${esc(student.nombre || "Sin nombre")}</h4>
+        <small>${esc(student.email || "")}</small><br>
+        <small>Progreso promedio: ${Number(student.progreso_promedio || 0)}%</small>
+      `;
+      box.appendChild(div);
+    });
+  } catch (error) {
+    console.error(error);
+    document.getElementById("listaEstudiantes").innerHTML =
+      `<div class="item">Error cargando estudiantes.</div>`;
+  }
+}
+
+async function cargarTodo() {
+  limpiarEstado("estadoGeneral");
+
+  try {
+    const [dashboardRes, modulesRes] = await Promise.all([
+      fetch(`${API}/api/dashboard`),
+      fetch(`${API}/api/modules`)
+    ]);
+
+    const dashboard = await dashboardRes.json();
+    const modulesData = await modulesRes.json();
+
+    if (!dashboardRes.ok || !dashboard.ok) {
+      mostrarEstado("estadoGeneral", dashboard.error || "No se pudo cargar el dashboard.", "error");
+      return;
+    }
+
+    if (!modulesRes.ok || !modulesData.ok) {
+      mostrarEstado("estadoGeneral", modulesData.error || "No se pudieron cargar los módulos.", "error");
+      return;
+    }
+
+    document.getElementById("statModulos").textContent = dashboard.summary.modules || 0;
+    document.getElementById("statClases").textContent = dashboard.summary.lessons || 0;
+    document.getElementById("statEstudiantes").textContent = dashboard.summary.students || 0;
+
+    const select = document.getElementById("claseModulo");
+    select.innerHTML = `<option value="">Selecciona un módulo</option>`;
+
+    modulesData.modules.forEach(m => {
+      const opt = document.createElement("option");
+      opt.value = m.id;
+      opt.textContent = normalizarModuloNombre(m);
+      select.appendChild(opt);
+    });
+
+    const lista = document.getElementById("listaModulos");
+    lista.innerHTML = "";
+
+    if (!dashboard.modules.length) {
+      lista.innerHTML = `<div class="item">Aún no hay módulos creados.</div>`;
+    } else {
+      dashboard.modules.forEach(modulo => {
+        const modDiv = document.createElement("div");
+        modDiv.className = "item";
+
+        const lessonsHtml = (modulo.lessons || []).length
+          ? modulo.lessons.map(clase => {
+              const ejercicios = extraerEjerciciosDesdeContenido(clase.contenido || clase.text_content || "");
+              const contenidoLimpio = limpiarContenidoVisible(clase.contenido || clase.text_content || "");
+              const links = [
+                clase.youtube_url,
+                clase.link_1,
+                clase.link_2,
+                clase.link_3,
+                clase.link_4,
+                clase.link_5
+              ].filter(Boolean);
+
+              const docs = clase.documents || clase.document_urls || [];
+
+              return `
+                <div class="item" style="margin-left:10px;">
+                  <h4>${esc(normalizarClaseNombre(clase))}</h4>
+                  <small>Estado: ${esc(clase.estado || clase.status || "draft")}</small>
+
+                  ${contenidoLimpio ? `<p>${esc(contenidoLimpio)}</p>` : ""}
+
+                  ${links.length ? `
+                    <div class="link-list">
+                      <strong>Links:</strong>
+                      ${links.map(link => `<a href="${esc(link)}" target="_blank">${esc(link)}</a>`).join("")}
+                    </div>
+                  ` : ""}
+
+                  ${docs.length ? `
+                    <div class="doc-list">
+                      <strong>Documentos:</strong>
+                      ${docs.map(doc => {
+                        const name = doc.name || "Documento";
+                        const url = doc.viewerUrl || doc.viewer_url || doc.url || doc.directUrl || "#";
+                        return `<a href="${esc(url)}" target="_blank">${esc(name)}</a>`;
+                      }).join("")}
+                    </div>
+                  ` : ""}
+
+                  ${ejercicios.length ? `
+                    <div style="margin-top:10px;">
+                      <strong>Ejercicios:</strong>
+                      ${ejercicios.map(ej => `<div class="exercise-chip">${esc(ej.tipo)} · ${esc(ej.pregunta)}</div>`).join("")}
+                    </div>
+                  ` : ""}
+
+                  <div class="row" style="margin-top:10px;">
+                    <button class="publicar mini" onclick="publicarClase(${clase.id})">Publicar</button>
+                    <button class="archivar mini" onclick="archivarClase(${clase.id})">Archivar</button>
+                    <button class="eliminar mini" onclick="eliminarClase(${clase.id})">Eliminar</button>
+                  </div>
+                </div>
+              `;
+            }).join("")
+          : `<div class="item" style="margin-left:10px;">Este módulo aún no tiene clases.</div>`;
+
+        modDiv.innerHTML = `
+          <h3>${esc(normalizarModuloNombre(modulo))}</h3>
+          <div class="kicker">${esc(modulo.descripcion || modulo.description || "")}</div>
+          ${lessonsHtml}
+        `;
+        lista.appendChild(modDiv);
+      });
+    }
+
+    await cargarEstudiantes();
+    mostrarEstado("estadoGeneral", "Panel actualizado correctamente.", "ok");
+  } catch (error) {
+    console.error(error);
+    mostrarEstado("estadoGeneral", "Error conectando con el servidor.", "error");
+  }
+}
+
+renderEjerciciosTemp();
 cargarTodo();
 </script>
 
