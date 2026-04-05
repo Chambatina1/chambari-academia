@@ -40,19 +40,35 @@ try {
 }
 
 // Ruta directa pública
-app.use("/files", express.static(DISK_FILES_DIR, {
-  fallthrough: false,
-  etag: true,
-  maxAge: "1d",
-  setHeaders: (res, filePath) => {
-    res.setHeader("Access-Control-Allow-Origin", "*");
-    const ext = path.extname(filePath).toLowerCase();
-    const inlineExts = [".pdf", ".jpg", ".jpeg", ".png", ".gif", ".webp", ".mp3", ".wav", ".ogg", ".mp4", ".webm", ".txt"];
-    if (inlineExts.includes(ext)) {
-      res.setHeader("Content-Disposition", "inline");
+app.use(
+  "/files",
+  express.static(DISK_FILES_DIR, {
+    fallthrough: false,
+    etag: true,
+    maxAge: "1d",
+    setHeaders: (res, filePath) => {
+      res.setHeader("Access-Control-Allow-Origin", "*");
+      const ext = path.extname(filePath).toLowerCase();
+      const inlineExts = [
+        ".pdf",
+        ".jpg",
+        ".jpeg",
+        ".png",
+        ".gif",
+        ".webp",
+        ".mp3",
+        ".wav",
+        ".ogg",
+        ".mp4",
+        ".webm",
+        ".txt"
+      ];
+      if (inlineExts.includes(ext)) {
+        res.setHeader("Content-Disposition", "inline");
+      }
     }
-  }
-}));
+  })
+);
 
 // =========================
 // DB
@@ -182,21 +198,56 @@ function safeParseJsonArray(value) {
   }
 }
 
-function normalizeDocumentItem(doc) {
+function getAppBaseUrl(req) {
+  return (
+    process.env.APP_BASE_URL ||
+    `${req.protocol}://${req.get("host")}`
+  ).replace(/\/+$/, "");
+}
+
+function toAbsoluteUrl(url, req) {
+  const clean = String(url || "").trim();
+  if (!clean) return "";
+
+  if (/^https?:\/\//i.test(clean)) return clean;
+
+  const baseUrl = getAppBaseUrl(req);
+
+  if (clean.startsWith("/")) {
+    return `${baseUrl}${clean}`;
+  }
+
+  return `${baseUrl}/${clean}`;
+}
+
+function buildViewerUrlFromAny(url, req) {
+  const absolute = toAbsoluteUrl(url, req);
+  if (!absolute) return "";
+
+  if (absolute.includes("/viewer/")) return absolute;
+  if (absolute.includes("/files/")) return absolute.replace("/files/", "/viewer/");
+
+  return absolute;
+}
+
+function normalizeDocumentItem(doc, req) {
   if (!doc) return null;
 
   if (typeof doc === "string") {
     const cleanUrl = doc.trim();
     if (!cleanUrl) return null;
+
+    const absoluteUrl = toAbsoluteUrl(cleanUrl, req);
+
     return {
       name: path.basename(cleanUrl) || "Documento",
-      url: cleanUrl,
-      directUrl: cleanUrl,
-      viewerUrl: cleanUrl.includes("/viewer/") ? cleanUrl : cleanUrl
+      url: absoluteUrl,
+      directUrl: absoluteUrl,
+      viewerUrl: buildViewerUrlFromAny(absoluteUrl, req)
     };
   }
 
-  const url =
+  const rawUrl =
     doc.url ||
     doc.file_url ||
     doc.fileUrl ||
@@ -204,31 +255,27 @@ function normalizeDocumentItem(doc) {
     doc.viewerUrl ||
     "";
 
-  if (!url) return null;
+  if (!rawUrl) return null;
+
+  const absoluteUrl = toAbsoluteUrl(rawUrl, req);
 
   const name =
     doc.name ||
     doc.file_name ||
     doc.fileName ||
-    path.basename(url) ||
+    path.basename(rawUrl) ||
     "Documento";
-
-  const viewerUrl =
-    doc.viewerUrl ||
-    (url.includes("/files/")
-      ? url.replace("/files/", "/viewer/")
-      : url);
 
   return {
     ...doc,
     name,
-    url,
-    directUrl: doc.directUrl || url,
-    viewerUrl
+    url: absoluteUrl,
+    directUrl: absoluteUrl,
+    viewerUrl: buildViewerUrlFromAny(doc.viewerUrl || absoluteUrl, req)
   };
 }
 
-function normalizeLessonRow(row) {
+function normalizeLessonRow(row, req) {
   const docsRaw =
     row.document_urls ??
     row.documents_json ??
@@ -236,18 +283,18 @@ function normalizeLessonRow(row) {
     "[]";
 
   const parsedDocs = safeParseJsonArray(docsRaw)
-    .map(normalizeDocumentItem)
+    .map((doc) => normalizeDocumentItem(doc, req))
     .filter(Boolean);
 
   const mainFile = row.file_url
-    ? [{
-        name: row.file_name || path.basename(row.file_url) || "Documento principal",
-        url: row.file_url,
-        directUrl: row.file_url,
-        viewerUrl: row.file_url.includes("/files/")
-          ? row.file_url.replace("/files/", "/viewer/")
-          : row.file_url
-      }]
+    ? [
+        {
+          name: row.file_name || path.basename(row.file_url) || "Documento principal",
+          url: toAbsoluteUrl(row.file_url, req),
+          directUrl: toAbsoluteUrl(row.file_url, req),
+          viewerUrl: buildViewerUrlFromAny(row.file_url, req)
+        }
+      ]
     : [];
 
   const combined = [...mainFile, ...parsedDocs];
@@ -273,10 +320,8 @@ function normalizeLessonRow(row) {
     song_lyrics: row.song_lyrics ?? "",
     song_translation: row.song_translation ?? "",
     song_notes: row.song_notes ?? "",
-    file_url: row.file_url ?? "",
+    file_url: row.file_url ? toAbsoluteUrl(row.file_url, req) : "",
     file_name: row.file_name ?? "",
-
-    // Compatibilidad máxima para frontend
     document_urls: uniqueDocuments,
     documents_json: uniqueDocuments,
     documentos_json: uniqueDocuments,
@@ -514,7 +559,12 @@ app.get("/viewer/:file", (req, res) => {
     res.setHeader("Accept-Ranges", "bytes");
     res.setHeader("Content-Type", mimeType);
     res.setHeader("Cache-Control", "public, max-age=86400");
-    res.setHeader("Content-Disposition", isInlineFriendly(filePath) ? "inline" : `attachment; filename="${fileName}"`);
+    res.setHeader(
+      "Content-Disposition",
+      isInlineFriendly(filePath)
+        ? "inline"
+        : `attachment; filename="${fileName}"`
+    );
 
     if (range) {
       const parts = range.replace(/bytes=/, "").split("-");
@@ -526,7 +576,7 @@ app.get("/viewer/:file", (req, res) => {
         return res.end();
       }
 
-      const chunkSize = (end - start) + 1;
+      const chunkSize = end - start + 1;
       res.status(206);
       res.setHeader("Content-Range", `bytes ${start}-${end}/${stat.size}`);
       res.setHeader("Content-Length", chunkSize);
@@ -555,7 +605,6 @@ app.get("/viewer/:file", (req, res) => {
       }
     });
     return stream.pipe(res);
-
   } catch (error) {
     console.error("VIEWER ERROR:", error);
     return res.status(500).send("Error abriendo archivo");
@@ -567,17 +616,22 @@ app.get("/viewer/:file", (req, res) => {
 // =========================
 app.get("/api/files", (req, res) => {
   try {
-    const files = fs.readdirSync(DISK_FILES_DIR).map((name) => {
-      const filePath = path.join(DISK_FILES_DIR, name);
-      const stat = fs.statSync(filePath);
-      return {
-        name,
-        size: stat.size,
-        modified_at: stat.mtime,
-        url: `/files/${name}`,
-        viewer_url: `/viewer/${name}`
-      };
-    }).sort((a, b) => new Date(b.modified_at) - new Date(a.modified_at));
+    const baseUrl = getAppBaseUrl(req);
+
+    const files = fs
+      .readdirSync(DISK_FILES_DIR)
+      .map((name) => {
+        const filePath = path.join(DISK_FILES_DIR, name);
+        const stat = fs.statSync(filePath);
+        return {
+          name,
+          size: stat.size,
+          modified_at: stat.mtime,
+          url: `${baseUrl}/files/${name}`,
+          viewer_url: `${baseUrl}/viewer/${name}`
+        };
+      })
+      .sort((a, b) => new Date(b.modified_at) - new Date(a.modified_at));
 
     res.json({ ok: true, files });
   } catch (error) {
@@ -593,7 +647,8 @@ app.get("/", (req, res) => {
     ok: true,
     message: "Servidor Chambari Academy activo",
     disk_mount_path: DISK_MOUNT_PATH,
-    disk_files_dir: DISK_FILES_DIR
+    disk_files_dir: DISK_FILES_DIR,
+    app_base_url: getAppBaseUrl(req)
   });
 });
 
@@ -602,7 +657,8 @@ app.get("/api/test", (req, res) => {
     ok: true,
     time: new Date().toISOString(),
     disk_mount_path: DISK_MOUNT_PATH,
-    disk_files_dir: DISK_FILES_DIR
+    disk_files_dir: DISK_FILES_DIR,
+    app_base_url: getAppBaseUrl(req)
   });
 });
 
@@ -639,7 +695,7 @@ app.get("/api/dashboard", async (req, res) => {
       ...normalizeModuleRow(module),
       lessons: lessonsResult.rows
         .filter((lesson) => lesson.module_id === module.id)
-        .map(normalizeLessonRow)
+        .map((lesson) => normalizeLessonRow(lesson, req))
     }));
 
     res.json({
@@ -735,7 +791,7 @@ app.get("/api/lessons/:moduleId", async (req, res) => {
 
     res.json({
       ok: true,
-      lessons: result.rows.map(normalizeLessonRow)
+      lessons: result.rows.map((lesson) => normalizeLessonRow(lesson, req))
     });
   } catch (error) {
     res.status(500).json({ ok: false, error: error.message });
@@ -759,7 +815,7 @@ app.get("/api/lesson/:id", async (req, res) => {
 
     res.json({
       ok: true,
-      lesson: normalizeLessonRow(result.rows[0])
+      lesson: normalizeLessonRow(result.rows[0], req)
     });
   } catch (error) {
     res.status(500).json({ ok: false, error: error.message });
@@ -810,17 +866,15 @@ app.post("/api/lessons", async (req, res) => {
 
     const docsArray = safeParseJsonArray(documentUrlsRaw);
     const normalizedDocs = docsArray
-      .map(normalizeDocumentItem)
+      .map((doc) => normalizeDocumentItem(doc, req))
       .filter(Boolean);
 
     if (fileUrl) {
       normalizedDocs.unshift({
         name: fileName || path.basename(fileUrl) || "Documento principal",
-        url: fileUrl,
-        directUrl: fileUrl,
-        viewerUrl: fileUrl.includes("/files/")
-          ? fileUrl.replace("/files/", "/viewer/")
-          : fileUrl
+        url: toAbsoluteUrl(fileUrl, req),
+        directUrl: toAbsoluteUrl(fileUrl, req),
+        viewerUrl: buildViewerUrlFromAny(fileUrl, req)
       });
     }
 
@@ -879,7 +933,7 @@ app.post("/api/lessons", async (req, res) => {
 
     res.json({
       ok: true,
-      lesson: normalizeLessonRow(result.rows[0]),
+      lesson: normalizeLessonRow(result.rows[0], req),
       message: "Clase creada correctamente"
     });
   } catch (error) {
@@ -903,7 +957,7 @@ app.put("/api/lessons/:id/publish", async (req, res) => {
 
     res.json({
       ok: true,
-      lesson: normalizeLessonRow(result.rows[0]),
+      lesson: normalizeLessonRow(result.rows[0], req),
       message: "Clase publicada correctamente"
     });
   } catch (error) {
@@ -927,7 +981,7 @@ app.put("/api/lessons/:id/archive", async (req, res) => {
 
     res.json({
       ok: true,
-      lesson: normalizeLessonRow(result.rows[0]),
+      lesson: normalizeLessonRow(result.rows[0], req),
       message: "Clase archivada correctamente"
     });
   } catch (error) {
@@ -1145,7 +1199,7 @@ app.post("/api/upload-file", upload.single("file"), async (req, res) => {
       return res.status(400).json({ ok: false, error: "No se recibió ningún archivo" });
     }
 
-    const baseUrl = `${req.protocol}://${req.get("host")}`;
+    const baseUrl = getAppBaseUrl(req);
     const directUrl = `${baseUrl}/files/${req.file.filename}`;
     const viewerUrl = `${baseUrl}/viewer/${req.file.filename}`;
 
@@ -1208,7 +1262,7 @@ app.get("/api/public/lessons/:moduleId", async (req, res) => {
 
     res.json({
       ok: true,
-      lessons: result.rows.map(normalizeLessonRow)
+      lessons: result.rows.map((lesson) => normalizeLessonRow(lesson, req))
     });
   } catch (error) {
     res.status(500).json({ ok: false, error: error.message });
@@ -1237,7 +1291,7 @@ app.get("/api/student-dashboard", async (req, res) => {
       ...normalizeModuleRow(module),
       lessons: lessonsResult.rows
         .filter((lesson) => lesson.module_id === module.id)
-        .map(normalizeLessonRow)
+        .map((lesson) => normalizeLessonRow(lesson, req))
     }));
 
     res.json({ ok: true, modules });
@@ -1268,6 +1322,7 @@ async function startServer() {
       console.log(`✅ Servidor corriendo en puerto ${PORT}`);
       console.log(`✅ Disk mount path: ${DISK_MOUNT_PATH}`);
       console.log(`✅ Disk files dir: ${DISK_FILES_DIR}`);
+      console.log(`✅ App base url: ${process.env.APP_BASE_URL || "(auto)"}`);
     });
   } catch (error) {
     console.error("❌ No se pudo iniciar el servidor:", error.message);
