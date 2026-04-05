@@ -1,9 +1,9 @@
 {
-  "id": "/chambari-academia/alumno.html",
+  "id": "/chambari-academia/alumno.html?v=20260406",
   "name": "Chambari Alumno",
   "short_name": "Alumno",
   "start_url": "/chambari-academia/alumno.html?v=20260406",
-  "scope": "/chambari-academia/alumno/",
+  "scope": "/chambari-academia/",
   "display": "standalone",
   "background_color": "#f5f3f8",
   "theme_color": "#7b5ea7",
