@@ -1,7 +1,7 @@
 {
   "name": "chambari-academy",
   "version": "1.0.0",
-  "description": "Backend de Chambari Academy con Express, PostgreSQL y subida de archivos al disco de Render",
+  "description": "Backend Chambari Academy",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
