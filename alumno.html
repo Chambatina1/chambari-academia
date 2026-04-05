@@ -5,13 +5,22 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Chambari - Alumno</title>
 
-<link rel="icon" href="./CHAMBARI.jpeg">
+<link rel="icon" type="image/jpeg" href="https://chambatina1.github.io/chambari-academia/CHAMBARI.jpeg?v=20260405">
+<link rel="apple-touch-icon" href="https://chambatina1.github.io/chambari-academia/CHAMBARI.jpeg?v=20260405">
+<link rel="manifest" href="https://chambatina1.github.io/chambari-academia/manifest-alumno.json?v=20260405">
+
+<meta name="theme-color" content="#7b5ea7">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Alumno">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
 
 <style>
 body{
-  font-family: Arial;
+  font-family: Arial, sans-serif;
   background:#f5f3f8;
   padding:20px;
+  margin:0;
 }
 
 .container{
@@ -32,6 +41,7 @@ input{
   margin-top:10px;
   border-radius:8px;
   border:1px solid #ccc;
+  box-sizing:border-box;
 }
 
 button{
@@ -62,6 +72,17 @@ button:hover{
 #estado{
   margin-top:10px;
   font-size:14px;
+  min-height:20px;
+}
+
+.version-badge{
+  background:#62458f;
+  color:#fff;
+  padding:8px 12px;
+  border-radius:12px;
+  font-size:12px;
+  display:inline-block;
+  margin-bottom:12px;
 }
 </style>
 </head>
@@ -70,14 +91,16 @@ button:hover{
 
 <div class="container">
 
+<div class="version-badge">Alumno 05-04-26</div>
+
 <div id="loginBox" class="card">
 <h2>Chambari Academy</h2>
 
-<input id="email" placeholder="Correo">
+<input id="email" type="email" placeholder="Correo">
 <input id="password" type="password" placeholder="Contraseña">
 
-<button onclick="login()">Entrar</button>
-<button class="sec" onclick="register()">Registrarme</button>
+<button type="button" onclick="login()">Entrar</button>
+<button type="button" class="sec" onclick="registerUser()">Registrarme</button>
 
 <div id="estado"></div>
 </div>
@@ -87,24 +110,35 @@ button:hover{
 
 <p id="user"></p>
 
-<button onclick="logout()">Cerrar sesión</button>
+<button type="button" onclick="logout()">Cerrar sesión</button>
 </div>
 
 </div>
 
 <script>
-
 const API = "https://chambari-academia.onrender.com";
 
-function msg(text,color="red"){
-  estado.innerText=text;
-  estado.style.color=color;
+const emailInput = document.getElementById("email");
+const passwordInput = document.getElementById("password");
+const estadoBox = document.getElementById("estado");
+const loginBox = document.getElementById("loginBox");
+const panelBox = document.getElementById("panel");
+const userBox = document.getElementById("user");
+
+function msg(text, color = "red"){
+  estadoBox.innerText = text;
+  estadoBox.style.color = color;
 }
 
-async function register(){
+function mostrarPanel(student){
+  loginBox.classList.add("hidden");
+  panelBox.classList.remove("hidden");
+  userBox.innerText = "Bienvenido " + (student.nombre || student.email || "Alumno");
+}
 
-  const emailVal = email.value.trim().toLowerCase();
-  const passVal = password.value.trim();
+async function registerUser(){
+  const emailVal = emailInput.value.trim().toLowerCase();
+  const passVal = passwordInput.value.trim();
 
   if(!emailVal || !passVal){
     msg("Completa los campos");
@@ -112,7 +146,6 @@ async function register(){
   }
 
   try{
-
     const res = await fetch(API + "/api/register",{
       method:"POST",
       headers:{"Content-Type":"application/json"},
@@ -133,14 +166,14 @@ async function register(){
     msg("Registrado correctamente","green");
 
   }catch(e){
+    console.error(e);
     msg("No conecta servidor");
   }
 }
 
 async function login(){
-
-  const emailVal = email.value.trim().toLowerCase();
-  const passVal = password.value.trim();
+  const emailVal = emailInput.value.trim().toLowerCase();
+  const passVal = passwordInput.value.trim();
 
   if(!emailVal || !passVal){
     msg("Faltan datos");
@@ -148,6 +181,7 @@ async function login(){
   }
 
   try{
+    msg("Entrando...", "#7b5ea7");
 
     const res = await fetch(API + "/api/login",{
       method:"POST",
@@ -165,33 +199,39 @@ async function login(){
       return;
     }
 
-    localStorage.setItem("user", JSON.stringify(data.student));
+    if(!data.student){
+      msg("No llegaron datos del alumno");
+      console.log(data);
+      return;
+    }
 
-    loginBox.classList.add("hidden");
-    panel.classList.remove("hidden");
-
-    user.innerText = "Bienvenido " + data.student.nombre;
+    localStorage.setItem("user_alumno", JSON.stringify(data.student));
+    mostrarPanel(data.student);
+    msg("", "green");
 
   }catch(e){
+    console.error(e);
     msg("No conecta servidor");
   }
 }
 
 function logout(){
-  localStorage.removeItem("user");
+  localStorage.removeItem("user_alumno");
   location.reload();
 }
 
 window.onload = () => {
-  const u = localStorage.getItem("user");
+  const u = localStorage.getItem("user_alumno");
 
   if(u){
-    loginBox.classList.add("hidden");
-    panel.classList.remove("hidden");
-    user.innerText = "Bienvenido " + JSON.parse(u).nombre;
+    try{
+      const student = JSON.parse(u);
+      mostrarPanel(student);
+    }catch(e){
+      localStorage.removeItem("user_alumno");
+    }
   }
-}
-
+};
 </script>
 
 </body>
