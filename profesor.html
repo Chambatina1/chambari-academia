@@ -5,9 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Chambari - Panel Profesor</title>
 
-<link rel="icon" type="image/jpeg" href="https://chambatina1.github.io/chambari-academia/CHAMBARI.jpeg?v=20260405">
-<link rel="apple-touch-icon" href="https://chambatina1.github.io/chambari-academia/CHAMBARI.jpeg?v=20260405">
-<link rel="manifest" href="https://chambatina1.github.io/chambari-academia/manifest.json?v=20260405">
+<link rel="icon" type="image/jpeg" href="https://chambatina1.github.io/chambari-academia/CHAMBARI.jpeg?v=20260406">
+<link rel="apple-touch-icon" href="https://chambatina1.github.io/chambari-academia/CHAMBARI.jpeg?v=20260406">
+<link rel="manifest" href="https://chambatina1.github.io/chambari-academia/manifest-profesor.json?v=20260406">
 
 <meta name="theme-color" content="#7b5ea7">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -172,6 +172,7 @@ button.eliminar { background: var(--danger); }
 button.publicar { background: var(--success); }
 button.archivar { background: var(--warning); color: #2b2430; }
 button.ver { background: var(--accent-2); }
+button.whatsapp { background: #25D366; color: #fff; }
 button.mini {
   width: auto;
   padding: 10px 12px;
@@ -271,6 +272,19 @@ button.mini {
   box-shadow: var(--shadow);
 }
 
+.card-soft {
+  background: var(--card-soft);
+  padding: 16px;
+  border-radius: 16px;
+  border: 1px solid var(--border);
+  margin-top: 14px;
+}
+
+.preview-box {
+  white-space: pre-wrap;
+  line-height: 1.65;
+}
+
 @media (max-width: 1100px) {
   .grid-2, .grid-3 {
     grid-template-columns: 1fr;
@@ -281,11 +295,11 @@ button.mini {
 <body>
 
 <div class="header-wrap">
-  <div class="version-badge">Profesor build 05-04-26</div>
+  <div class="version-badge">Profesor build 06-04-26</div>
 
   <div class="logo-bar">
     <div class="logo-box">
-      <img src="https://chambatina1.github.io/chambari-academia/CHAMBARI.jpeg?v=20260405" alt="Chambari">
+      <img src="https://chambatina1.github.io/chambari-academia/CHAMBARI.jpeg?v=20260406" alt="Chambari">
     </div>
     <div class="logo-text">
       <strong>Chambari Academy</strong>
@@ -295,7 +309,7 @@ button.mini {
 
   <h1>Panel del Profesor</h1>
   <div class="subtitulo">
-    Crea módulos, clases, documentos, videos, ejercicios y revisa alumnos sin complicaciones.
+    Crea módulos, clases, documentos, videos, reuniones, invitaciones y revisa alumnos sin complicaciones.
   </div>
 </div>
 
@@ -336,7 +350,7 @@ button.mini {
 
   <div class="card">
     <h3>Crear clase blindada</h3>
-    <div class="kicker">Puedes crear clases con título opcional, documentos, varios links, video y ejercicios didácticos.</div>
+    <div class="kicker">Puedes crear clases con texto, video, reunión, documentos, invitación y ejercicios didácticos.</div>
 
     <select id="claseModulo"></select>
 
@@ -346,14 +360,44 @@ button.mini {
         <textarea id="claseDesc" placeholder="Descripción breve"></textarea>
         <textarea id="claseContenido" placeholder="Contenido principal de la clase"></textarea>
       </div>
+
       <div>
         <input id="claseYoutube" placeholder="Link principal de video / YouTube">
+        <input id="claseMeeting" placeholder="Link de reunión en vivo (Jitsi / Meet / Zoom)">
+        <input id="claseCodigoSala" placeholder="Código o nombre de sala (opcional)">
         <input id="claseLink1" placeholder="Link adicional 1">
         <input id="claseLink2" placeholder="Link adicional 2">
         <input id="claseLink3" placeholder="Link adicional 3">
         <input id="claseLink4" placeholder="Link adicional 4">
         <input id="claseLink5" placeholder="Link adicional 5">
       </div>
+    </div>
+
+    <div class="card-soft">
+      <h4 style="margin:0 0 8px 0;">Invitación de esta clase</h4>
+      <div class="kicker">Programa el día y la hora de la clase y deja listo el mensaje para compartir.</div>
+
+      <div class="row">
+        <div>
+          <label>Día de la clase</label>
+          <input type="date" id="claseFecha">
+        </div>
+        <div>
+          <label>Hora de la clase</label>
+          <input type="time" id="claseHora">
+        </div>
+      </div>
+
+      <textarea id="claseMensajeInvitacion" placeholder="Mensaje personalizado de invitación (opcional)"></textarea>
+
+      <div class="row">
+        <button type="button" class="ver" onclick="generarInvitacionClase()">Generar invitación</button>
+        <button type="button" class="secundario" onclick="copiarInvitacionClase()">Copiar invitación</button>
+        <button type="button" class="secundario" onclick="copiarLinkReunion()">Copiar link reunión</button>
+        <button type="button" class="whatsapp" onclick="abrirWhatsAppInvitacion()">Enviar por WhatsApp</button>
+      </div>
+
+      <div id="previewInvitacion" class="item" style="display:none;"></div>
     </div>
 
     <div class="row">
@@ -421,7 +465,8 @@ function esc(texto) {
     .replaceAll("&", "&amp;")
     .replaceAll("<", "&lt;")
     .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;");
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#39;");
 }
 
 function normalizarModuloNombre(m) {
@@ -486,6 +531,85 @@ function agregarEjercicio() {
 function eliminarEjercicioTemp(index) {
   ejerciciosTemp.splice(index, 1);
   renderEjerciciosTemp();
+}
+
+function formatearFechaBonita(fechaISO) {
+  if (!fechaISO) return "";
+  const [y, m, d] = fechaISO.split("-");
+  if (!y || !m || !d) return fechaISO;
+  return `${d}/${m}/${y.slice(-2)}`;
+}
+
+function formatearHoraBonita(hora) {
+  if (!hora) return "";
+  return hora.length >= 5 ? hora.slice(0, 5) : hora;
+}
+
+function construirInvitacionClase() {
+  const titulo = document.getElementById("claseTitulo").value.trim() || "Tu clase en Chambari";
+  const fecha = document.getElementById("claseFecha").value;
+  const hora = document.getElementById("claseHora").value;
+  const meeting = document.getElementById("claseMeeting").value.trim();
+  const sala = document.getElementById("claseCodigoSala").value.trim();
+  const mensajeManual = document.getElementById("claseMensajeInvitacion").value.trim();
+
+  if (mensajeManual) return mensajeManual;
+
+  return [
+    `Hola, te invito a tu clase: ${titulo}`,
+    fecha ? `Día: ${formatearFechaBonita(fecha)}` : "",
+    hora ? `Hora: ${formatearHoraBonita(hora)}` : "",
+    sala ? `Sala: ${sala}` : "",
+    meeting ? `Enlace de reunión: ${meeting}` : "",
+    "Entra desde la app de Chambari para ver texto, video, documentos y participar en la clase."
+  ].filter(Boolean).join("\n");
+}
+
+function generarInvitacionClase() {
+  const mensaje = construirInvitacionClase();
+  const box = document.getElementById("previewInvitacion");
+  box.style.display = "block";
+  box.innerHTML = `
+    <h4>Vista previa de invitación</h4>
+    <div class="preview-box">${esc(mensaje)}</div>
+  `;
+}
+
+async function copiarInvitacionClase() {
+  const mensaje = construirInvitacionClase();
+  try {
+    await navigator.clipboard.writeText(mensaje);
+    const box = document.getElementById("previewInvitacion");
+    box.style.display = "block";
+    box.innerHTML = `
+      <h4>Invitación copiada</h4>
+      <div class="preview-box">${esc(mensaje)}</div>
+    `;
+  } catch {
+    alert("No se pudo copiar la invitación.");
+  }
+}
+
+async function copiarLinkReunion() {
+  const meeting = document.getElementById("claseMeeting").value.trim();
+
+  if (!meeting) {
+    alert("Primero agrega un link de reunión.");
+    return;
+  }
+
+  try {
+    await navigator.clipboard.writeText(meeting);
+    alert("Link de reunión copiado.");
+  } catch {
+    alert("No se pudo copiar el link.");
+  }
+}
+
+function abrirWhatsAppInvitacion() {
+  const mensaje = construirInvitacionClase();
+  const url = "https://wa.me/?text=" + encodeURIComponent(mensaje);
+  window.open(url, "_blank");
 }
 
 async function subirArchivos(files) {
@@ -561,6 +685,11 @@ async function crearClase() {
   const description = document.getElementById("claseDesc").value.trim();
   const text_content = document.getElementById("claseContenido").value.trim();
   const youtube_url = document.getElementById("claseYoutube").value.trim();
+  const meeting_url = document.getElementById("claseMeeting").value.trim();
+  const meeting_room = document.getElementById("claseCodigoSala").value.trim();
+  const class_date = document.getElementById("claseFecha").value;
+  const class_time = document.getElementById("claseHora").value;
+  const invitation_message = document.getElementById("claseMensajeInvitacion").value.trim();
   const link_1 = document.getElementById("claseLink1").value.trim();
   const link_2 = document.getElementById("claseLink2").value.trim();
   const link_3 = document.getElementById("claseLink3").value.trim();
@@ -594,6 +723,11 @@ async function crearClase() {
         description,
         text_content: contenidoFinal,
         youtube_url,
+        meeting_url,
+        meeting_room,
+        class_date,
+        class_time,
+        invitation_message,
         link_1,
         link_2,
         link_3,
@@ -615,6 +749,11 @@ async function crearClase() {
     document.getElementById("claseDesc").value = "";
     document.getElementById("claseContenido").value = "";
     document.getElementById("claseYoutube").value = "";
+    document.getElementById("claseMeeting").value = "";
+    document.getElementById("claseCodigoSala").value = "";
+    document.getElementById("claseFecha").value = "";
+    document.getElementById("claseHora").value = "";
+    document.getElementById("claseMensajeInvitacion").value = "";
     document.getElementById("claseLink1").value = "";
     document.getElementById("claseLink2").value = "";
     document.getElementById("claseLink3").value = "";
@@ -622,6 +761,8 @@ async function crearClase() {
     document.getElementById("claseLink5").value = "";
     document.getElementById("fileInput").value = "";
     document.getElementById("claseEstado").value = "draft";
+    document.getElementById("previewInvitacion").style.display = "none";
+    document.getElementById("previewInvitacion").innerHTML = "";
     ejerciciosTemp = [];
     renderEjerciciosTemp();
 
@@ -798,6 +939,12 @@ async function cargarTodo() {
           ? modulo.lessons.map(clase => {
               const ejercicios = extraerEjerciciosDesdeContenido(clase.contenido || clase.text_content || "");
               const contenidoLimpio = limpiarContenidoVisible(clase.contenido || clase.text_content || "");
+              const meetingUrl = clase.meeting_url || "";
+              const meetingRoom = clase.meeting_room || "";
+              const classDate = clase.class_date || "";
+              const classTime = clase.class_time || "";
+              const invitationMessage = clase.invitation_message || "";
+
               const links = [
                 clase.youtube_url,
                 clase.link_1,
@@ -815,6 +962,17 @@ async function cargarTodo() {
                   <small>Estado: ${esc(clase.estado || clase.status || "draft")}</small>
 
                   ${contenidoLimpio ? `<p>${esc(contenidoLimpio)}</p>` : ""}
+
+                  ${(classDate || classTime || meetingUrl || meetingRoom || invitationMessage) ? `
+                    <div class="item" style="margin-top:10px;background:#f8f4fc;">
+                      <strong>Invitación de esta clase</strong><br>
+                      ${classDate ? `<small>Día: ${esc(formatearFechaBonita(classDate))}</small><br>` : ""}
+                      ${classTime ? `<small>Hora: ${esc(formatearHoraBonita(classTime))}</small><br>` : ""}
+                      ${meetingRoom ? `<small>Sala: ${esc(meetingRoom)}</small><br>` : ""}
+                      ${meetingUrl ? `<small>Reunión: ${esc(meetingUrl)}</small><br>` : ""}
+                      ${invitationMessage ? `<small>Mensaje: ${esc(invitationMessage)}</small>` : ""}
+                    </div>
+                  ` : ""}
 
                   ${links.length ? `
                     <div class="link-list">
