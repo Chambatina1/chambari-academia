@@ -6,151 +6,278 @@
 <title>Chambari - Panel Profesor</title>
 
 <style>
+:root{
+  --bg: #f4f7fb;
+  --card: #ffffff;
+  --card-soft: #eef4ff;
+  --text: #1f2937;
+  --muted: #6b7280;
+  --primary: #2563eb;
+  --primary-2: #1d4ed8;
+  --accent: #14b8a6;
+  --accent-2: #0f766e;
+  --warning: #f59e0b;
+  --danger: #dc2626;
+  --success: #16a34a;
+  --border: #dbe4f0;
+  --shadow: 0 8px 24px rgba(31, 41, 55, 0.08);
+}
+
+* { box-sizing: border-box; }
+
 body {
   font-family: Arial, sans-serif;
-  background: #0f0f0f;
-  color: white;
+  background: linear-gradient(180deg, #eef4ff 0%, #f8fbff 100%);
+  color: var(--text);
   margin: 0;
   padding: 20px;
 }
-h1 { color: #ff8a00; margin-top: 0; }
-h2, h3, h4 { margin-top: 0; }
-.card {
-  background: #1b1b1b;
-  padding: 20px;
-  border-radius: 14px;
-  margin-bottom: 20px;
+
+h1 {
+  color: var(--primary-2);
+  margin-top: 0;
+  margin-bottom: 8px;
+  font-size: 32px;
 }
+
+.subtitulo {
+  color: var(--muted);
+  margin-bottom: 22px;
+}
+
+h2, h3, h4 {
+  margin-top: 0;
+  color: var(--primary-2);
+}
+
+.card {
+  background: var(--card);
+  padding: 20px;
+  border-radius: 18px;
+  margin-bottom: 20px;
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border);
+}
+
 .stats {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
   gap: 14px;
 }
+
 .stat {
-  background: #222;
+  background: linear-gradient(180deg, #eff6ff 0%, #ffffff 100%);
   padding: 16px;
-  border-radius: 12px;
+  border-radius: 14px;
   text-align: center;
+  border: 1px solid var(--border);
 }
+
 .stat strong {
   display: block;
-  font-size: 28px;
-  color: #ff8a00;
+  font-size: 30px;
+  color: var(--primary);
+  margin-bottom: 4px;
 }
+
 input, textarea, select {
   width: 100%;
   padding: 12px;
   margin-top: 10px;
-  border-radius: 8px;
-  border: none;
+  border-radius: 10px;
+  border: 1px solid var(--border);
   box-sizing: border-box;
   font-size: 15px;
+  background: #fff;
+  color: var(--text);
 }
+
+textarea {
+  min-height: 110px;
+  resize: vertical;
+}
+
 input[type="file"] {
   background: #fff;
-  color: #000;
+  color: var(--text);
+  padding: 10px;
 }
+
 button {
   margin-top: 12px;
-  padding: 12px;
+  padding: 12px 14px;
   width: 100%;
-  background: #ff8a00;
+  background: var(--primary);
   border: none;
-  color: black;
+  color: white;
   font-weight: bold;
-  border-radius: 8px;
+  border-radius: 10px;
   cursor: pointer;
   font-size: 15px;
+  transition: .18s ease;
 }
-button.secundario { background: #333; color: white; }
-button.eliminar { background: #c62828; color: white; }
-button.publicar { background: #2e7d32; color: white; }
-button.archivar { background: #6d4c41; color: white; }
-button.ver { background: #1565c0; color: white; }
-button.didactico { background: #7b1fa2; color: white; }
+
+button:hover {
+  transform: translateY(-1px);
+  opacity: .96;
+}
+
+button.secundario {
+  background: #64748b;
+  color: white;
+}
+
+button.eliminar {
+  background: var(--danger);
+  color: white;
+}
+
+button.publicar {
+  background: var(--success);
+  color: white;
+}
+
+button.archivar {
+  background: var(--warning);
+  color: #111827;
+}
+
+button.ver {
+  background: var(--accent);
+  color: white;
+}
 
 .item {
-  background: #222;
-  padding: 14px;
-  border-radius: 10px;
-  margin-top: 10px;
+  background: #f8fbff;
+  padding: 16px;
+  border-radius: 14px;
+  margin-top: 12px;
+  border: 1px solid var(--border);
 }
+
 .small {
   font-size: 13px;
-  color: #bbb;
+  color: var(--muted);
   margin-top: 6px;
 }
+
 .estado {
   margin-top: 12px;
   padding: 12px;
-  border-radius: 8px;
-  background: #111;
+  border-radius: 10px;
+  background: #f8fbff;
 }
-.ok { border-left: 4px solid #2e7d32; }
-.error { border-left: 4px solid #c62828; }
+
+.ok {
+  border-left: 4px solid var(--success);
+}
+
+.error {
+  border-left: 4px solid var(--danger);
+}
+
 .acciones {
   display: grid;
   gap: 8px;
-  margin-top: 10px;
+  margin-top: 12px;
 }
+
 .lesson-box {
-  background: #111;
-  padding: 12px;
-  margin-top: 10px;
-  border-radius: 10px;
+  background: #ffffff;
+  padding: 14px;
+  margin-top: 12px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
 }
+
 .topbar {
   display: grid;
-  gap: 12px;
+  gap: 18px;
   margin-bottom: 20px;
 }
+
 .modal {
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,.75);
+  background: rgba(15, 23, 42, 0.62);
   display: none;
   align-items: center;
   justify-content: center;
   padding: 20px;
   z-index: 999;
 }
+
 .modal-content {
   width: min(980px, 100%);
   max-height: 90vh;
   overflow: auto;
-  background: #1a1a1a;
-  border-radius: 16px;
-  padding: 20px;
+  background: #ffffff;
+  border-radius: 18px;
+  padding: 22px;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
 }
+
 .modal-close {
-  background: #c62828;
+  background: var(--danger);
   color: white;
 }
+
 .link-btn {
   display: inline-block;
-  background: #ff8a00;
-  color: black;
+  background: var(--primary);
+  color: white;
   text-decoration: none;
   padding: 10px 14px;
-  border-radius: 8px;
+  border-radius: 10px;
   font-weight: bold;
   margin-top: 10px;
   margin-right: 8px;
 }
+
 .bloque {
   margin-top: 18px;
   padding-top: 12px;
-  border-top: 1px solid #333;
+  border-top: 1px solid var(--border);
 }
+
 pre {
   white-space: pre-wrap;
-  background: #101010;
-  border-radius: 10px;
+  background: #f3f7fd;
+  border-radius: 12px;
   padding: 12px;
   overflow: auto;
+  border: 1px solid var(--border);
+  color: var(--text);
 }
+
+.doc-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #e0f2fe;
+  color: #0c4a6e;
+  padding: 8px 12px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: bold;
+  margin-top: 10px;
+  margin-right: 8px;
+  border: 1px solid #bae6fd;
+}
+
+.ayuda {
+  margin-top: 8px;
+  font-size: 13px;
+  color: var(--muted);
+  background: #f8fbff;
+  border: 1px dashed var(--border);
+  border-radius: 10px;
+  padding: 10px 12px;
+}
+
 @media (min-width: 900px) {
-  .topbar { grid-template-columns: 1fr 1fr; }
+  .topbar { grid-template-columns: 0.95fr 1.35fr; }
 }
 </style>
 </head>
@@ -158,6 +285,7 @@ pre {
 <body>
 
 <h1>Panel del Profesor</h1>
+<div class="subtitulo">Panel visual para crear módulos y clases con hasta 5 links y varios documentos por clase.</div>
 
 <div class="card">
   <h2>Resumen general</h2>
@@ -172,8 +300,8 @@ pre {
 <div class="topbar">
   <div class="card">
     <h3>Crear módulo</h3>
-    <input id="moduloTitulo" placeholder="Título del módulo (opcional)">
-    <textarea id="moduloDesc" placeholder="Descripción del módulo (opcional)"></textarea>
+    <input id="moduloTitulo" placeholder="Título del módulo">
+    <textarea id="moduloDesc" placeholder="Descripción del módulo"></textarea>
     <button onclick="crearModulo()">Guardar módulo</button>
     <div id="estadoModulo"></div>
   </div>
@@ -186,10 +314,10 @@ pre {
       <option value="">Cargando módulos...</option>
     </select>
 
-    <input id="claseTitulo" placeholder="Título de la clase (opcional)">
-    <textarea id="claseDesc" placeholder="Descripción corta (opcional)"></textarea>
-    <textarea id="claseContenido" placeholder="Contenido o explicación (opcional)"></textarea>
-    <input id="claseYoutube" placeholder="Video principal / YouTube (opcional)">
+    <input id="claseTitulo" placeholder="Título de la clase">
+    <textarea id="claseDesc" placeholder="Descripción corta"></textarea>
+    <textarea id="claseContenido" placeholder="Contenido, explicación o guía de la clase"></textarea>
+    <input id="claseYoutube" placeholder="Video principal o YouTube (opcional)">
 
     <div class="bloque">
       <h4>Links adicionales</h4>
@@ -198,26 +326,14 @@ pre {
       <input id="link3" placeholder="Link 3">
       <input id="link4" placeholder="Link 4">
       <input id="link5" placeholder="Link 5">
+      <div class="ayuda">Puedes poner hasta 5 links: videos, lecturas, ejercicios, canciones, documentos en Drive o páginas externas.</div>
     </div>
 
     <div class="bloque">
-      <h4>Canción didáctica</h4>
-      <input id="songTitle" placeholder="Nombre de la canción">
-      <input id="songUrl" placeholder="Link de la canción">
-      <textarea id="songLyrics" placeholder="Letra original"></textarea>
-      <textarea id="songTranslation" placeholder="Traducción"></textarea>
-      <textarea id="songNotes" placeholder="Notas didácticas"></textarea>
-      <button class="didactico" onclick="generarEjerciciosDidacticos()">Generar ejercicios automáticos</button>
-    </div>
-
-    <div class="bloque">
-      <h4>Ejercicios automáticos</h4>
-      <textarea id="ejerciciosAuto" placeholder="Aquí se generarán los ejercicios automáticamente"></textarea>
-    </div>
-
-    <div class="bloque">
-      <label class="small">Subir archivo</label>
-      <input type="file" id="fileInput">
+      <h4>Documentos de la clase</h4>
+      <input type="file" id="fileInput" multiple>
+      <div class="ayuda">Puedes subir varios documentos en una sola clase. El sistema los intentará cargar uno por uno.</div>
+      <div id="listaDocsSeleccionados"></div>
     </div>
 
     <button onclick="crearClase()">Guardar clase</button>
@@ -292,80 +408,33 @@ function estadoBonito(estado) {
   return estado || "Borrador";
 }
 
-function normalizarLineas(texto) {
-  return String(texto || "")
-    .split("\n")
-    .map(x => x.trim())
-    .filter(Boolean);
+function parseJSONSeguro(valor, fallback = []) {
+  try {
+    if (!valor) return fallback;
+    if (Array.isArray(valor)) return valor;
+    return JSON.parse(valor);
+  } catch {
+    return fallback;
+  }
 }
 
-function generarEjerciciosDidacticos() {
-  const titulo = document.getElementById("songTitle").value.trim() || "Canción";
-  const lyrics = document.getElementById("songLyrics").value.trim();
-  const translation = document.getElementById("songTranslation").value.trim();
+function renderDocsSeleccionados() {
+  const input = document.getElementById("fileInput");
+  const cont = document.getElementById("listaDocsSeleccionados");
+  cont.innerHTML = "";
 
-  if (!lyrics) {
-    ponerEstado("estadoClase", "Pega la letra original para generar ejercicios.", "error");
-    return;
-  }
+  const files = Array.from(input.files || []);
+  if (!files.length) return;
 
-  const lineasOriginal = normalizarLineas(lyrics).slice(0, 8);
-  const lineasTrad = normalizarLineas(translation).slice(0, 8);
-
-  let ejercicios = `EJERCICIOS DIDÁCTICOS AUTOMÁTICOS\n`;
-  ejercicios += `Canción: ${titulo}\n\n`;
-
-  ejercicios += `1) Comprensión general\n`;
-  ejercicios += `- ¿De qué trata la canción?\n`;
-  ejercicios += `- ¿Qué emoción transmite?\n`;
-  ejercicios += `- Resume el mensaje principal en 3 oraciones.\n\n`;
-
-  ejercicios += `2) Vocabulario clave\n`;
-  lineasOriginal.slice(0, 4).forEach((linea, i) => {
-    ejercicios += `- Línea ${i + 1}: "${linea}"\n`;
-    ejercicios += `  Busca 3 palabras importantes y explica su significado.\n`;
+  files.forEach(file => {
+    const div = document.createElement("span");
+    div.className = "doc-chip";
+    div.textContent = file.name;
+    cont.appendChild(div);
   });
-  ejercicios += `\n`;
-
-  ejercicios += `3) Traducción guiada\n`;
-  lineasOriginal.slice(0, 4).forEach((linea, i) => {
-    ejercicios += `${i + 1}. Traduce: "${linea}"\n`;
-  });
-  ejercicios += `\n`;
-
-  ejercicios += `4) Completa los espacios\n`;
-  lineasOriginal.slice(0, 4).forEach((linea, i) => {
-    const palabras = linea.split(" ");
-    if (palabras.length > 3) {
-      const pos = Math.min(1, palabras.length - 1);
-      const original = palabras[pos];
-      palabras[pos] = "________";
-      ejercicios += `${i + 1}. ${palabras.join(" ")}   [palabra faltante: ${original}]\n`;
-    }
-  });
-  ejercicios += `\n`;
-
-  ejercicios += `5) Pronunciación\n`;
-  lineasOriginal.slice(0, 3).forEach((linea, i) => {
-    ejercicios += `${i + 1}. Repite 3 veces: "${linea}"\n`;
-  });
-  ejercicios += `\n`;
-
-  ejercicios += `6) Producción oral\n`;
-  ejercicios += `- Explica con tus palabras qué quiso decir el cantante.\n`;
-  ejercicios += `- Usa 5 palabras de la canción en una oración propia.\n\n`;
-
-  if (lineasTrad.length) {
-    ejercicios += `7) Relación original / traducción\n`;
-    lineasOriginal.slice(0, Math.min(lineasOriginal.length, lineasTrad.length)).forEach((linea, i) => {
-      ejercicios += `Original: ${linea}\n`;
-      ejercicios += `Traducción: ${lineasTrad[i] || ""}\n\n`;
-    });
-  }
-
-  document.getElementById("ejerciciosAuto").value = ejercicios;
-  ponerEstado("estadoClase", "Ejercicios generados automáticamente.");
 }
+
+document.getElementById("fileInput").addEventListener("change", renderDocsSeleccionados);
 
 async function subirArchivo(file) {
   const formData = new FormData();
@@ -378,6 +447,20 @@ async function subirArchivo(file) {
 
   const data = await leerJSON(res);
   return data.file || {};
+}
+
+async function subirMultiplesArchivos(files) {
+  const resultados = [];
+
+  for (const file of files) {
+    const fileData = await subirArchivo(file);
+    resultados.push({
+      url: fileData.url || "",
+      name: fileData.originalName || fileData.savedName || file.name || "Documento"
+    });
+  }
+
+  return resultados.filter(x => x.url);
 }
 
 async function cargarDashboard() {
@@ -473,8 +556,10 @@ function renderModulos(modulosConClases) {
         const tituloClase = clase.titulo || clase.title || "Sin título";
         const descripcionClase = clase.descripcion || clase.description || "";
         const estadoClase = clase.estado || clase.status || "draft";
-        const songTitle = clase.song_title || "";
         const links = [clase.link_1, clase.link_2, clase.link_3, clase.link_4, clase.link_5].filter(Boolean);
+
+        const docs = parseJSONSeguro(clase.document_urls || clase.documents_json || "[]", []);
+        const docsCount = docs.length || (clase.file_url ? 1 : 0);
 
         return `
           <div class="lesson-box">
@@ -482,7 +567,7 @@ function renderModulos(modulosConClases) {
             ${descripcionClase ? `<div class="small">${escapar(descripcionClase)}</div>` : ""}
             <div class="small">Estado: ${escapar(estadoBonito(estadoClase))}</div>
             <div class="small">Links extra: ${links.length}</div>
-            <div class="small">Canción: ${songTitle ? escapar(songTitle) : "No"}</div>
+            <div class="small">Documentos: ${docsCount}</div>
             <div class="acciones">
               <button class="ver" onclick="verClase(${clase.id})">Revisar clase</button>
               <button class="publicar" onclick="publicarClase(${clase.id})">Publicar</button>
@@ -542,234 +627,8 @@ async function crearClase() {
   const module_id = Number(document.getElementById("claseModulo").value);
   const titulo = document.getElementById("claseTitulo").value.trim();
   const descripcion = document.getElementById("claseDesc").value.trim();
-  const contenidoBase = document.getElementById("claseContenido").value.trim();
-  const ejerciciosAuto = document.getElementById("ejerciciosAuto").value.trim();
-  const contenido = [contenidoBase, ejerciciosAuto].filter(Boolean).join("\n\n====================\nEJERCICIOS\n====================\n\n");
-
+  const contenido = document.getElementById("claseContenido").value.trim();
   const youtube_url = limpiarUrl(document.getElementById("claseYoutube").value);
 
   const link_1 = limpiarUrl(document.getElementById("link1").value);
-  const link_2 = limpiarUrl(document.getElementById("link2").value);
-  const link_3 = limpiarUrl(document.getElementById("link3").value);
-  const link_4 = limpiarUrl(document.getElementById("link4").value);
-  const link_5 = limpiarUrl(document.getElementById("link5").value);
-
-  const song_title = document.getElementById("songTitle").value.trim();
-  const song_url = limpiarUrl(document.getElementById("songUrl").value);
-  const song_lyrics = document.getElementById("songLyrics").value.trim();
-  const song_translation = document.getElementById("songTranslation").value.trim();
-  const song_notes = document.getElementById("songNotes").value.trim();
-
-  const fileInput = document.getElementById("fileInput");
-
-  if (!module_id) {
-    ponerEstado("estadoClase", "Debes seleccionar un módulo.", "error");
-    return;
-  }
-
-  try {
-    ponerEstado("estadoClase", "Guardando clase...");
-
-    let file_url = "";
-    let file_name = "";
-
-    if (fileInput.files.length > 0) {
-      const archivo = fileInput.files[0];
-      const fileData = await subirArchivo(archivo);
-      file_url = fileData.url || "";
-      file_name = fileData.originalName || fileData.savedName || "";
-    }
-
-    const res = await fetch(API + "/api/lessons", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        module_id,
-        titulo,
-        title: titulo,
-        descripcion,
-        description: descripcion,
-        contenido,
-        text_content: contenido,
-        youtube_url,
-        file_url,
-        file_name,
-        link_1,
-        link_2,
-        link_3,
-        link_4,
-        link_5,
-        song_title,
-        song_url,
-        song_lyrics,
-        song_translation,
-        song_notes,
-        estado: "borrador",
-        status: "draft"
-      })
-    });
-
-    const data = await leerJSON(res);
-
-    [
-      "claseTitulo","claseDesc","claseContenido","claseYoutube",
-      "link1","link2","link3","link4","link5",
-      "songTitle","songUrl","songLyrics","songTranslation","songNotes",
-      "ejerciciosAuto"
-    ].forEach(id => document.getElementById(id).value = "");
-
-    document.getElementById("fileInput").value = "";
-
-    ponerEstado("estadoClase", `Clase creada correctamente: ${escapar(data.lesson?.titulo || data.lesson?.title || "")}`);
-    await cargarTodo();
-  } catch (err) {
-    ponerEstado("estadoClase", "Error creando clase: " + err.message, "error");
-  }
-}
-
-async function publicarClase(id) {
-  try {
-    const res = await fetch(API + "/api/lessons/" + id + "/publish", { method: "PUT" });
-    await leerJSON(res);
-    await cargarTodo();
-  } catch (err) {
-    alert("Error publicando clase: " + err.message);
-  }
-}
-
-async function archivarClase(id) {
-  try {
-    const res = await fetch(API + "/api/lessons/" + id + "/archive", { method: "PUT" });
-    await leerJSON(res);
-    await cargarTodo();
-  } catch (err) {
-    alert("Error archivando clase: " + err.message);
-  }
-}
-
-async function eliminarClase(id, titulo) {
-  const ok = confirm(`¿Seguro que quieres eliminar la clase "${titulo}"?`);
-  if (!ok) return;
-
-  try {
-    const res = await fetch(API + "/api/lessons/" + id, { method: "DELETE" });
-    await leerJSON(res);
-    await cargarTodo();
-    alert("Clase eliminada correctamente.");
-  } catch (err) {
-    alert("Error eliminando clase: " + err.message);
-  }
-}
-
-async function eliminarModulo(id, titulo) {
-  const ok = confirm(`¿Seguro que quieres eliminar el módulo "${titulo}" y todas sus clases?`);
-  if (!ok) return;
-
-  try {
-    const res = await fetch(API + "/api/modules/" + id, { method: "DELETE" });
-    await leerJSON(res);
-    await cargarTodo();
-    alert("Módulo eliminado correctamente.");
-  } catch (err) {
-    alert("Error eliminando módulo: " + err.message);
-  }
-}
-
-function linksHtml(clase) {
-  const links = [
-    clase.link_1, clase.link_2, clase.link_3, clase.link_4, clase.link_5
-  ].filter(Boolean);
-
-  if (!links.length) return "";
-
-  return `
-    <div class="bloque">
-      <h4>Links adicionales</h4>
-      ${links.map((l, i) => `<p><a class="link-btn" href="${l}" target="_blank">Abrir link ${i + 1}</a></p>`).join("")}
-    </div>
-  `;
-}
-
-function songHtml(clase) {
-  const title = clase.song_title || "";
-  const url = clase.song_url || "";
-  const lyrics = clase.song_lyrics || "";
-  const translation = clase.song_translation || "";
-  const notes = clase.song_notes || "";
-
-  if (!title && !url && !lyrics && !translation && !notes) return "";
-
-  return `
-    <div class="bloque">
-      <h4>Canción didáctica</h4>
-      ${title ? `<p><strong>Título:</strong> ${escapar(title)}</p>` : ""}
-      ${url ? `<p><a class="link-btn" href="${url}" target="_blank">Abrir canción</a></p>` : ""}
-      ${lyrics ? `<p><strong>Letra original:</strong></p><pre>${escapar(lyrics)}</pre>` : ""}
-      ${translation ? `<p><strong>Traducción:</strong></p><pre>${escapar(translation)}</pre>` : ""}
-      ${notes ? `<p><strong>Notas didácticas:</strong></p><pre>${escapar(notes)}</pre>` : ""}
-    </div>
-  `;
-}
-
-async function verClase(id) {
-  try {
-    const res = await fetch(API + "/api/lesson/" + id);
-    const data = await leerJSON(res);
-
-    const clase = data.lesson || {};
-    const titulo = clase.titulo || clase.title || "Sin título";
-    const descripcion = clase.descripcion || clase.description || "";
-    const contenido = clase.contenido || clase.text_content || "";
-    const estado = clase.estado || clase.status || "draft";
-    const modulo = clase.module_titulo || clase.module_title || "";
-    const youtube = clase.youtube_url || "";
-    const archivo = clase.file_url || "";
-    const archivoNombre = clase.file_name || "";
-
-    document.getElementById("modalTituloClase").textContent = titulo;
-
-    document.getElementById("modalContenidoClase").innerHTML = `
-      <div class="item">
-        <div class="small"><strong>Módulo:</strong> ${escapar(modulo)}</div>
-        <div class="small"><strong>Estado:</strong> ${escapar(estadoBonito(estado))}</div>
-        ${descripcion ? `<p><strong>Descripción:</strong><br>${escapar(descripcion)}</p>` : ""}
-        ${contenido ? `<p><strong>Contenido y ejercicios:</strong></p><pre>${escapar(contenido)}</pre>` : ""}
-        ${youtube ? `<p><a class="link-btn" href="${youtube}" target="_blank">Abrir video principal</a></p>` : ""}
-        ${archivo ? `<p><a class="link-btn" href="${archivo}" target="_blank">Abrir archivo ${archivoNombre ? "- " + escapar(archivoNombre) : ""}</a></p>` : ""}
-        ${linksHtml(clase)}
-        ${songHtml(clase)}
-      </div>
-    `;
-
-    document.getElementById("modalClase").style.display = "flex";
-  } catch (err) {
-    alert("Error revisando clase: " + err.message);
-  }
-}
-
-function cerrarModalClase() {
-  document.getElementById("modalClase").style.display = "none";
-}
-
-async function cargarTodo() {
-  try {
-    const [modulosDashboard, modulosBase, estudiantes] = await Promise.all([
-      cargarDashboard(),
-      cargarModulos(),
-      cargarStudents()
-    ]);
-
-    llenarSelectModulos(modulosBase);
-    renderModulos(modulosDashboard);
-    renderEstudiantes(estudiantes);
-  } catch (err) {
-    document.getElementById("listaModulos").innerHTML =
-      `<div class="item">Error cargando panel: ${escapar(err.message)}</div>`;
-  }
-}
-
-cargarTodo();
-</script>
-
-</body>
-</html>
+  const link_2 = limpiarUrl(document.getElement
