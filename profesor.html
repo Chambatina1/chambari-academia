@@ -13,8 +13,13 @@ body {
   margin: 0;
   padding: 20px;
 }
-h1 { color: #ff8a00; margin-top: 0; }
-h2, h3 { margin-top: 0; }
+h1 {
+  color: #ff8a00;
+  margin-top: 0;
+}
+h2, h3 {
+  margin-top: 0;
+}
 .card {
   background: #1b1b1b;
   padding: 20px;
@@ -46,7 +51,10 @@ input, textarea, select {
   box-sizing: border-box;
   font-size: 15px;
 }
-input[type="file"] { background: #fff; color: #000; }
+input[type="file"] {
+  background: #fff;
+  color: #000;
+}
 button {
   margin-top: 12px;
   padding: 12px;
@@ -232,14 +240,15 @@ function escapar(texto) {
 }
 
 async function leerJSON(res) {
-  let data = null;
+  const texto = await res.text();
+  let data;
   try {
-    data = await res.json();
+    data = JSON.parse(texto);
   } catch {
-    throw new Error("El servidor no devolvió JSON válido");
+    throw new Error("Respuesta no válida del servidor: " + texto);
   }
   if (!res.ok || !data.ok) {
-    throw new Error(data?.error || "Error del servidor");
+    throw new Error(data?.error || `Error HTTP ${res.status}`);
   }
   return data;
 }
@@ -407,8 +416,11 @@ async function crearModulo() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         titulo,
+        title: titulo,
         descripcion,
-        estado: "publicado"
+        description: descripcion,
+        estado: "publicado",
+        status: "published"
       })
     });
 
@@ -455,12 +467,16 @@ async function crearClase() {
       body: JSON.stringify({
         module_id,
         titulo,
+        title: titulo,
         descripcion,
+        description: descripcion,
         contenido,
+        text_content: contenido,
         youtube_url,
         file_url,
         file_name,
-        estado: "borrador"
+        estado: "borrador",
+        status: "draft"
       })
     });
 
