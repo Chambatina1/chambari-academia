@@ -1266,7 +1266,7 @@ async function cargarAlumno() {
   limpiarEstado("estadoGeneral");
 
   try {
-    const res = await fetch(`${API}/api/dashboard`);
+    const res = await fetch(`${API}/api/student-dashboard`);
     const data = await res.json();
 
     if (!res.ok || !data.ok) {
