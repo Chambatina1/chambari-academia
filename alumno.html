@@ -486,7 +486,11 @@ textarea {
 
 <div class="main">
 
-  <div class="grid-2">
+  <div class="card">
+  <h2>Selecciona tu clase</h2>
+  <div id="listaClases" class="row"></div>
+
+  </div>  <div class="grid-2">
     <div class="card hero-card">
       <h2>Continúa tu clase</h2>
       <div id="claseActualBox" class="vacio">Cargando clase...</div>
@@ -612,6 +616,26 @@ function limpiarContenidoVisible(contenido) {
   const pos = texto.indexOf(marcador);
   if (pos === -1) return texto;
   return texto.slice(0, pos).trim();
+}
+
+</script>
+function renderListaClases() {
+  const contenedor = document.getElementById("listaClases");
+
+  if (!window._clases || !window._clases.length) {
+    contenedor.innerHTML = "<div class='vacio'>No hay clases disponibles</div>";
+    return;
+  }
+
+  contenedor.innerHTML = window._clases.map((item, index) => {
+    const nombre = normalizarClaseNombre(item.clase);
+
+    return `
+      <button onclick="verClase(${index})" class="secundario">
+        ${index + 1}. ${nombre}
+      </button>
+    `;
+  }).join("");
 }
 
 function getYoutubeEmbed(url) {
@@ -1168,6 +1192,7 @@ function revisarRespuestaCorta(btn, correcta) {
     box.style.color = "#7b5ea7";
   }
 }
+
 function calcularProgreso(total, actualIndex) {
   if (!total) return 0;
   const progreso = Math.round(((actualIndex + 1) / total) * 100);
@@ -1260,6 +1285,7 @@ async function cargarAlumno() {
     }
 
     window._clases = clases;
+    renderListaClases();
     verClase(0);
 
     mostrarEstado("estadoGeneral", "Clases cargadas correctamente.", "ok");
@@ -1275,16 +1301,6 @@ document.getElementById("modalViewer").addEventListener("click", function(e) {
 });
 
 cargarAlumno();
-</script>
-
-</body>
-</html>
-document.getElementById("modalViewer").addEventListener("click", function(e) {
-  if (e.target.id === "modalViewer") cerrarModalViewer();
-});
-
-cargarAlumno();
-</script>
 
 </body>
 </html>
