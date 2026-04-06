@@ -1195,8 +1195,26 @@ function seleccionarClaseVisible(modulo) {
     index: 0
   };
 }
+function obtenerClasesPublicas(modulos) {
+  const resultado = [];
 
-async function cargarAlumno() {
+  modulos.forEach(modulo => {
+    const lessons = Array.isArray(modulo.lessons) ? modulo.lessons : [];
+
+    lessons.forEach(clase => {
+      const estado = String(clase.estado || clase.status || "").toLowerCase();
+
+      if (estado === "published" || estado === "publicado" || estado === "") {
+        resultado.push({
+          modulo,
+          clase
+        });
+      }
+    });
+  });
+
+ return resultado;
+}async function cargarAlumno() {
   limpiarEstado("estadoGeneral");
 
   try {
@@ -1209,49 +1227,26 @@ async function cargarAlumno() {
     }
 
     const modulos = Array.isArray(data.modules) ? data.modules : [];
-    const modulo = seleccionarModuloVisible(modulos);
+    const clases = obtenerClasesPublicas(modulos);
 
-    if (!modulo) {
+    if (!clases.length) {
       document.getElementById("claseActualBox").className = "vacio";
-      document.getElementById("claseActualBox").textContent = "Aún no hay clases disponibles.";
-      document.getElementById("textoBox").className = "vacio";
-      document.getElementById("textoBox").textContent = "Todavía no hay texto disponible.";
-      document.getElementById("videoBox").className = "vacio";
-      document.getElementById("videoBox").textContent = "Todavía no hay video disponible.";
-      document.getElementById("zoomBox").className = "vacio";
-      document.getElementById("zoomBox").textContent = "Todavía no hay clase en vivo disponible.";
-      document.getElementById("documentoBox").className = "vacio";
-      document.getElementById("documentoBox").textContent = "Todavía no hay documento disponible.";
-      document.getElementById("ejerciciosBox").className = "vacio";
-      document.getElementById("ejerciciosBox").textContent = "Todavía no hay ejercicios.";
+      document.getElementById("claseActualBox").textContent = "No hay clases disponibles.";
       return;
     }
 
-    const claseInfo = seleccionarClaseVisible(modulo);
-    const clase = claseInfo.clase;
+    // 🔥 NUEVA LÓGICA
+    window._clases = clases;
+    verClase(0);
 
-    if (!clase) {
-      document.getElementById("claseActualBox").className = "vacio";
-      document.getElementById("claseActualBox").textContent = "Este módulo no tiene clase visible todavía.";
-      return;
-    }
+    // stats básicos
+    document.getElementById("statClases").textContent = clases.length;
+    document.getElementById("statProgreso").textContent = "0%";
+    document.getElementById("barraProgreso").style.width = "0%";
+    document.getElementById("siguientePaso").textContent = "Selecciona una clase.";
 
-    renderClaseActual(modulo, clase);
-    renderTexto(clase);
-    renderVideo(clase);
-    renderZoom(clase);
-    renderDocumento(clase);
-    renderEjercicios(clase);
+    mostrarEstado("estadoGeneral", "Clases cargadas correctamente.", "ok");
 
-    const progreso = calcularProgreso(claseInfo.total || 1, claseInfo.index || 0);
-
-    document.getElementById("statModulo").textContent = normalizarModuloNombre(modulo);
-    document.getElementById("statClases").textContent = String(claseInfo.total || 1);
-    document.getElementById("statProgreso").textContent = progreso + "%";
-    document.getElementById("barraProgreso").style.width = progreso + "%";
-    document.getElementById("siguientePaso").textContent = `Completa la clase "${normalizarClaseNombre(clase)}".`;
-
-    mostrarEstado("estadoGeneral", "Clase cargada correctamente.", "ok");
   } catch (error) {
     console.error(error);
     mostrarEstado("estadoGeneral", "Error conectando con el servidor.", "error");
