@@ -1168,7 +1168,6 @@ function revisarRespuestaCorta(btn, correcta) {
     box.style.color = "#7b5ea7";
   }
 }
-
 function calcularProgreso(total, actualIndex) {
   if (!total) return 0;
   const progreso = Math.round(((actualIndex + 1) / total) * 100);
@@ -1195,6 +1194,7 @@ function seleccionarClaseVisible(modulo) {
     index: 0
   };
 }
+
 function obtenerClasesPublicas(modulos) {
   const resultado = [];
 
@@ -1213,8 +1213,32 @@ function obtenerClasesPublicas(modulos) {
     });
   });
 
- return resultado;
-}async function cargarAlumno() {
+  return resultado;
+}
+
+function verClase(index) {
+  const item = window._clases[index];
+  if (!item) return;
+
+  const { modulo, clase } = item;
+
+  renderClaseActual(modulo, clase);
+  renderTexto(clase);
+  renderVideo(clase);
+  renderZoom(clase);
+  renderDocumento(clase);
+  renderEjercicios(clase);
+
+  document.getElementById("statModulo").textContent = normalizarModuloNombre(modulo);
+  document.getElementById("statClases").textContent = String(window._clases.length);
+
+  const progreso = calcularProgreso(window._clases.length, index);
+  document.getElementById("statProgreso").textContent = progreso + "%";
+  document.getElementById("barraProgreso").style.width = progreso + "%";
+  document.getElementById("siguientePaso").textContent = `Estás viendo "${normalizarClaseNombre(clase)}".`;
+}
+
+async function cargarAlumno() {
   limpiarEstado("estadoGeneral");
 
   try {
@@ -1235,15 +1259,8 @@ function obtenerClasesPublicas(modulos) {
       return;
     }
 
-    // 🔥 NUEVA LÓGICA
     window._clases = clases;
     verClase(0);
-
-    // stats básicos
-    document.getElementById("statClases").textContent = clases.length;
-    document.getElementById("statProgreso").textContent = "0%";
-    document.getElementById("barraProgreso").style.width = "0%";
-    document.getElementById("siguientePaso").textContent = "Selecciona una clase.";
 
     mostrarEstado("estadoGeneral", "Clases cargadas correctamente.", "ok");
 
@@ -1253,6 +1270,15 @@ function obtenerClasesPublicas(modulos) {
   }
 }
 
+document.getElementById("modalViewer").addEventListener("click", function(e) {
+  if (e.target.id === "modalViewer") cerrarModalViewer();
+});
+
+cargarAlumno();
+</script>
+
+</body>
+</html>
 document.getElementById("modalViewer").addEventListener("click", function(e) {
   if (e.target.id === "modalViewer") cerrarModalViewer();
 });
