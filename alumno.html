@@ -618,8 +618,8 @@ function limpiarContenidoVisible(contenido) {
   return texto.slice(0, pos).trim();
 }
 
-</script>
 function renderListaClases() {
+
   const contenedor = document.getElementById("listaClases");
 
   if (!window._clases || !window._clases.length) {
@@ -627,16 +627,16 @@ function renderListaClases() {
     return;
   }
 
-  contenedor.innerHTML = window._clases.map((item, index) => {
-    const nombre = normalizarClaseNombre(item.clase);
+ contenedor.innerHTML = window._clases.map((item, index) => {
+  const nombreClase = normalizarClaseNombre(item.clase);
+  const nombreModulo = normalizarModuloNombre(item.modulo);
 
-    return `
-      <button onclick="verClase(${index})" class="secundario">
-        ${index + 1}. ${nombre}
-      </button>
-    `;
-  }).join("");
-}
+  return `
+    <button onclick="verClase(${index})" class="secundario">
+      ${index + 1}. ${nombreModulo} - ${nombreClase}
+    </button>
+  `;
+}).join("");}
 
 function getYoutubeEmbed(url) {
   if (!url) return "";
@@ -1219,29 +1219,28 @@ function seleccionarClaseVisible(modulo) {
     index: 0
   };
 }
-
 function obtenerClasesPublicas(modulos) {
   const resultado = [];
 
+  if (!Array.isArray(modulos)) return resultado;
+
   modulos.forEach(modulo => {
-    const lessons = Array.isArray(modulo.lessons) ? modulo.lessons : [];
+    // 🔥 Detecta cualquier array dentro del módulo
+    const posibles = Object.values(modulo).find(v => Array.isArray(v));
 
-    lessons.forEach(clase => {
-      const estado = String(clase.estado || clase.status || "").toLowerCase();
-
-      if (estado === "published" || estado === "publicado" || estado === "") {
+    if (Array.isArray(posibles)) {
+      posibles.forEach(clase => {
         resultado.push({
           modulo,
           clase
         });
-      }
-    });
+      });
+    }
   });
 
   return resultado;
 }
-
-function verClase(index) {
+  function verClase(index) {
   const item = window._clases[index];
   if (!item) return;
 
@@ -1275,9 +1274,18 @@ async function cargarAlumno() {
       return;
     }
 
-    const modulos = Array.isArray(data.modules) ? data.modules : [];
-    const clases = obtenerClasesPublicas(modulos);
+    const modulos = Array.isArray(data.modules)
+  ? data.modules
+  : Array.isArray(data.modulos)
+    ? data.modulos
+    : [];
 
+console.log("DATA DASHBOARD:", data);
+console.log("MODULOS DETECTADOS:", modulos);
+
+const clases = obtenerClasesPublicas(modulos);
+console.log("CLASES DETECTADAS:", clases);
+    
     if (!clases.length) {
       document.getElementById("claseActualBox").className = "vacio";
       document.getElementById("claseActualBox").textContent = "No hay clases disponibles.";
@@ -1301,6 +1309,7 @@ document.getElementById("modalViewer").addEventListener("click", function(e) {
 });
 
 cargarAlumno();
+</script>
 
 </body>
 </html>
